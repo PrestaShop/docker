@@ -2,9 +2,9 @@
 
 ## Supported tags
 
-* 1.6, 1.6.0, 1.6.0.14, latest
-* 1.5, 1.5.6, 1.5.6.2
-* 1.4, 1.4.11, 1.4.11.0
+* `1.6`, `1.6.0`, `1.6.0.14`, `latest`
+* `1.5`, `1.5.6`, `1.5.6.2`
+* `1.4`, `1.4.11`, `1.4.11.0`
 
 ## What is PrestaShop
 
@@ -27,15 +27,27 @@ $ docker run -ti --name some-prestashop -p 8080:80 -d quetzacoalt/prestashop
 
 A new shop will be built, already installed. You can then use it by reaching `http://localhost:8080`.
 However, if you want to customize the container execution, here are many available options:
-
+* **dev_mode=1**: The constant `_PS_MODE_DEV_` will be set at `true`
+* **host_mode=1**: The constant `_PS_HOST_MODE_` will be set at `true`. Usefull to simulate a PrestaShop Cloud environment.
 * **DB_SERVER**: If set, the external MySQL database will be used instead of the volatile internal one *(default value: localhost)*
 * **DB_USER**: Override default MySQL user *(default value: root)*
 * **DB_PASSWD**: Override default MySQL password *(default value: admin)*
 * **DB_PREFIX**: Override default tables prefix *(default value: ps_)*
 * **DB_NAME**: Override default database name *(default value: prestashop)*
 
-By default, we use the employee existing on the [PrestaShop demo](http://demo.prestashop.com). But you can change them with the following parameters:
+By default, we use the employee existing on the [PrestaShop demo](http://demo.prestashop.com). But you can change it with the following parameters:
 * **ADMIN_MAIL**: Override default admin email *(default value: demo@prestashop.com)*
 * **ADMIN_PASSWD**: Override default admin password *(default value: prestashop_demo)*
 
-* **no_install=1**: The installation won't be executed. Usefull to check any issue during the installation wizard.
+* **no_install=1**: The installation won't be executed. Useful to check any issue during the installation wizard. (Please note that PrestaShop can be installed automatically from PS 1.5)
+
+## License
+
+View [license information](https://www.prestashop.com/en/osl-license) for the software contained in this image.
+
+## Documentation
+
+The documentation (in English by default) is available at the following addresses:
+* [PrestaShop 1.6](http://doc.prestashop.com/display/PS16)
+* [PrestaShop 1.5](http://doc.prestashop.com/display/PS15)
+* [PrestaShop 1.4](http://doc.prestashop.com/display/PS14)

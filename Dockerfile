@@ -23,13 +23,14 @@ RUN apt-get update \
 		libfreetype6-dev \
 		mysql-client \
 		mysql-server \
-	&& docker-php-ext-install iconv mcrypt pdo pdo_mysql mbstring \
+	&& docker-php-ext-install iconv mcrypt pdo mysql pdo_mysql mbstring \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd
 
 # Apache configuration
 RUN a2enmod rewrite
 RUN chown www-data:www-data -R /var/www/html/
+
 RUN mv /var/www/html/install /var/www/html/install-dev
 RUN mv /var/www/html/admin /var/www/html/admin-dev
 
