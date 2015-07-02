@@ -2,7 +2,7 @@
 
 service mysql start
 
-if [ ! -z "$no_install" ]; then
+if [ $PS_INSTALL_AUTO = 0 ]; then
 	echo "Executing PrestaShop without installation ...";
 else
 	if [ $DB_PASSWD = "" ]; then
@@ -20,12 +20,12 @@ else
 	chown www-data:www-data -R /var/www/html/
 fi
 
-if [ ! -z "$dev_mode" ]; then
+if [ $PS_DEV_MODE -ne 0 ]; then
 	#echo "Set DEV MODE > true";
 	sed -ie "s/define('_PS_MODE_DEV_', false);/define('_PS_MODE_DEV_',\ true);/g" /var/www/html/config/defines.inc.php
 fi
 
-if [ ! -z "$host_mode" ]; then
+if [ $PS_HOST_MODE -ne 0 ]; then
 	#echo "Set HOST MODE > true";
 	echo "define('_PS_HOST_MODE_', true);" >> /var/www/html/config/defines.inc.php
 fi

@@ -11,6 +11,9 @@ ENV DB_USER root
 ENV DB_PASSWD admin
 ENV ADMIN_MAIL demo@prestashop.com
 ENV ADMIN_PASSWD prestashop_demo
+ENV PS_INSTALL_AUTO 0
+ENV PS_DEV_MODE 0
+ENV PS_HOST_MODE 0
 
 
 # Avoid MySQL questions during installation
