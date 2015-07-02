@@ -2,7 +2,7 @@ FROM php:5.6-apache
 
 MAINTAINER Thomas Nabord <thomas.nabord@prestashop.com
 
-ENV PS_VERSION {PS_VERSION}
+ENV PS_VERSION 1.5.0.17
 
 ENV PS_DOMAIN prestashop.local
 ENV DB_SERVER 127.0.0.1
@@ -32,7 +32,7 @@ RUN apt-get update \
     && docker-php-ext-install gd
 
 # Get PrestaShop
-ADD {PS_URL} /tmp/prestashop.zip
+ADD https://www.prestashop.com/download/old/prestashop_1.5.0.17.zip /tmp/prestashop.zip
 RUN unzip -q /tmp/prestashop.zip -d /tmp/
 RUN cp -R /tmp/prestashop/* /var/www/html
 RUN mv /var/www/html/install /var/www/html/install-dev

@@ -1,10 +1,14 @@
 #!/bin/sh
 
 while read version; do
-    echo "Generate PrestaShop $version"
+    echo "Generate Dockerfile for PrestaShop $version"
 
-    sed -ri '
-			s/^{PS_VERSION} .*/\1 '"$version"'/;
-			s/^{PS_URL} .*/\1 '"https://www.prestashop.com/download/old/prestashop_$version.zip"'/
-		images/$version/Dockerfile' "Dockerfile.model"
+    mkdir -p images/$version/
+
+    sed  '
+			s/{PS_VERSION}/'"$version"'/;
+			s/{PS_URL}/'"https:\/\/www.prestashop.com\/download\/old\/prestashop_$version.zip"'/
+		' Dockerfile.model > images/$version/Dockerfile
+
+    cp -R config_files/ images/$version/
 done <versions.txt
