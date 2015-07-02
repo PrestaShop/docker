@@ -1,19 +1,10 @@
 #!/bin/sh
 
-rm wget.log
-
 while read version; do
-    echo "Generate $version"
+    echo "Generate PrestaShop $version"
 
-    wget https://www.prestashop.com/download/old/prestashop_$version.zip -O ./extracts/prestashop.zip
-    if [ $? = 0 ]; then
-        unzip ./extracts/prestashop.zip -d ./extracts/
-
-        docker build -t quetzacoalt/prestashop:$version .
-
-        rm -rf ./extracts/*
-        docker push quetzacoalt/prestashop:$version
-    else
-        echo "Failed to download $version" >> wget.log
-    fi
+    sed -ri '
+			s/^{PS_VERSION} .*/\1 '"$version"'/;
+			s/^{PS_URL} .*/\1 '"https://www.prestashop.com/download/old/prestashop_$version.zip"'/
+		images/$version/Dockerfile' "Dockerfile.model"
 done <versions.txt
