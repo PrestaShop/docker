@@ -30,7 +30,4 @@ if [ $PS_HOST_MODE -ne 0 ]; then
 	echo "define('_PS_HOST_MODE_', true);" >> /var/www/html/config/defines.inc.php
 fi
 
-/usr/sbin/apache2ctl start
-
-
-/bin/bash
+/usr/sbin/apache2ctl -D FOREGROUND
