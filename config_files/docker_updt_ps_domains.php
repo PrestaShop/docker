@@ -30,14 +30,14 @@ $_POST['id_shop'] = 1;
 
 require_once 'config/config.inc.php';
 
-if (!defined('_PS_VERSION_') || version_compare(_PS_VERSION_, '1.5', '<'))
+if (!defined('_PS_VERSION_'))
 	exit;
 
 // First, we get the URL used to reach this page.
 $domain = Tools::getHttpHost();
 $old_domain = Configuration::get('PS_SHOP_DOMAIN');
 
-if ($domain != $old_domain && !Shop::isFeatureActive())
+if (version_compare(_PS_VERSION_, '1.5', '>=') && $domain != $old_domain && !Shop::isFeatureActive())
 {
 	$url = ShopUrl::getShopUrls(Configuration::get('PS_SHOP_DEFAULT'))->where('main', '=', 1)->getFirst();
 	if ($url)
