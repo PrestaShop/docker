@@ -14,6 +14,7 @@ fi
 
 if [ $PS_INSTALL_AUTO = 0 ]; then
 	echo "Executing PrestaShop without installation ...";
+	rm /var/www/html/docker_updt_ps_domains.php
 else
 	echo "Installing PrestaShop ...";
 	if [ $DB_PASSWD = "" ]; then
@@ -23,6 +24,8 @@ else
 		mysqladmin -h $DB_SERVER -u $DB_USER -p$DB_PASSWD drop $DB_NAME --force 2> /dev/null;
 		mysqladmin -h $DB_SERVER -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
 	fi
+
+	sed -ie "s/DirectoryIndex\ index.php\ index.html/DirectoryIndex\ docker_updt_ps_domains.php\ index.php\ index.html/g" /etc/apache2/apache2.conf
 
 	php /var/www/html/install-dev/index_cli.php --domain=$(hostname -i) --db_server=$DB_SERVER --db_name="$DB_NAME" --db_user=$DB_USER \
 		--db_password=$DB_PASSWD --firstname="John" --lastname="Doe" \

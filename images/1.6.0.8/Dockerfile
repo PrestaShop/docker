@@ -11,6 +11,7 @@ ENV DB_USER root
 ENV DB_PASSWD admin
 ENV ADMIN_MAIL demo@prestashop.com
 ENV ADMIN_PASSWD prestashop_demo
+ENV PS_LANGUAGE en
 ENV PS_INSTALL_AUTO 0
 ENV PS_DEV_MODE 0
 ENV PS_HOST_MODE 0
@@ -52,7 +53,9 @@ COPY config_files/php.ini /usr/local/etc/php/
 RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 EXPOSE 3306
 
-VOLUME /var/www/html
+VOLUME /var/www/html/modules
+VOLUME /var/www/html/themes
+VOLUME /var/www/html/override
 
 COPY config_files/docker_run.sh /tmp/
 ENTRYPOINT ["/tmp/docker_run.sh"]
