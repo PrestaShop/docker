@@ -1,5 +1,13 @@
 #!/bin/sh
 
+if [ -z "$1" ]; then
+    ps_versions_file="versions.txt";
+else
+    ps_versions_file="$1";
+fi
+
+echo "Reading verions in $ps_versions_file ..."
+
 while read version; do
     echo "Generate Dockerfile for PrestaShop $version"
 
@@ -13,4 +21,5 @@ while read version; do
     cp -R config_files/ images/$version/
 
     docker build -t quetzacoalt/prestashop:$version images/$version/
-done <versions.txt
+    #docker push quetzacoalt/prestashop:$version
+done <$ps_versions_file
