@@ -16,7 +16,7 @@ if [ $PS_INSTALL_AUTO = 0 ]; then
 	echo "Executing PrestaShop without installation ...";
 	rm /var/www/html/docker_updt_ps_domains.php
 else
-	echo "Installing PrestaShop ...";
+	echo "Installing PrestaShop, this may take a while ...";
 	if [ $DB_PASSWD = "" ]; then
 		mysqladmin -h $DB_SERVER -u $DB_USER drop $DB_NAME --force 2> /dev/null;
 		mysqladmin -h $DB_SERVER -u $DB_USER create $DB_NAME --force 2> /dev/null;
