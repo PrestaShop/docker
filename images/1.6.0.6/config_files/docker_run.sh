@@ -1,6 +1,8 @@
 #!/bin/sh
 
-service mysql start
+if [ $DB_SERVER = "localhost" ] || [ $DB_SERVER = "127.0.0.1" ]; then
+	service mysql start
+fi
 
 if [ $PS_DEV_MODE -ne 0 ]; then
 	#echo "Set DEV MODE > true";
@@ -13,7 +15,7 @@ if [ $PS_HOST_MODE -ne 0 ]; then
 fi
 
 if [ $PS_INSTALL_AUTO = 0 ]; then
-	echo "Executing PrestaShop without installation ...";
+	echo "\nExecuting PrestaShop without installation ...";
 	rm /var/www/html/docker_updt_ps_domains.php
 else
 	echo "Installing PrestaShop, this may take a while ...";

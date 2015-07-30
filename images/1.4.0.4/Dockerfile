@@ -27,13 +27,13 @@ RUN apt-get update \
 		libjpeg62-turbo-dev \
 		libpng12-dev \
 		libfreetype6-dev \
+		libxml2-dev \
 		mysql-client \
 		mysql-server \
 		wget \
 		unzip \
-	&& docker-php-ext-install iconv mcrypt pdo mysql pdo_mysql mbstring \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install gd
+    && docker-php-ext-install iconv mcrypt pdo mysql pdo_mysql mbstring soap gd
 
 # Get PrestaShop
 ADD https://www.prestashop.com/download/old/prestashop_1.4.0.4.zip /tmp/prestashop.zip
@@ -49,6 +49,8 @@ RUN chown www-data:www-data -R /var/www/html/
 
 # PHP configuration
 COPY config_files/php.ini /usr/local/etc/php/
+RUN mv /usr/local/etc/php/conf.d/docker-php-ext-pdo.ini /usr/local/etc/php/conf.d/docker-php-ext-pdo.ini.nope
+RUN mv /usr/local/etc/php/conf.d/docker-php-ext-iconv.ini /usr/local/etc/php/conf.d/docker-php-ext-iconv.ini.nope
 
 # MySQL configuration
 RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
