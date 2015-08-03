@@ -1,7 +1,13 @@
 #!/bin/sh
 
 if [ $DB_SERVER = "localhost" ] || [ $DB_SERVER = "127.0.0.1" ]; then
+	echo "\n* Starting internal MySQL server ...";
 	service mysql start
+	if [ $DB_PASSWD != "" ]; then
+		echo "\n* Grant access to MySQL server ...";
+		mysql -h $DB_SERVER -u $DB_USER -p$DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'%' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
+		mysql -h $DB_SERVER -u $DB_USER -p$DB_PASSWD --execute="flush privileges; " 2> /dev/null;
+	fi
 fi
 
 if [ $PS_DEV_MODE -ne 0 ]; then
@@ -15,10 +21,9 @@ if [ $PS_HOST_MODE -ne 0 ]; then
 fi
 
 if [ $PS_INSTALL_AUTO = 0 ]; then
-	echo "\nExecuting PrestaShop without installation ...";
 	rm /var/www/html/docker_updt_ps_domains.php
 else
-	echo "Installing PrestaShop, this may take a while ...";
+	echo "\n* Installing PrestaShop, this may take a while ...";
 	if [ $DB_PASSWD = "" ]; then
 		mysqladmin -h $DB_SERVER -u $DB_USER drop $DB_NAME --force 2> /dev/null;
 		mysqladmin -h $DB_SERVER -u $DB_USER create $DB_NAME --force 2> /dev/null;
@@ -37,4 +42,5 @@ else
 	chown www-data:www-data -R /var/www/html/
 fi
 
+echo "\n* Almost ! Starting Apache now\n";
 /usr/sbin/apache2ctl -D FOREGROUND
