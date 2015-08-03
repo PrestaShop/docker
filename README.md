@@ -2,7 +2,7 @@
 
 ## Supported tags
 
-* `1.6`, 1.6.1`, `1.6.1.0`, `latest`
+* `1.6`, `1.6.1`, `1.6.1.0`, `latest`
 * `1.5`, `1.5.6.3`
 * `1.4`, `1.4.11.1`
 
@@ -13,7 +13,7 @@ PrestaShop is a free and open-source e-commerce web application, committed to pr
 > www.prestashop.com
 
 <p align="center">
-  <img src="http://www.prestashop.com/images/banners/general/ps16-screenshot-github.png" alt="PrestaShop's back office dashboard"/>
+  <img src="http://www.prestashop.com/images/banners/general/ps161-screenshot-github.png" alt="PrestaShop's back office dashboard"/>
 </p>
 
 ## How to run this image
