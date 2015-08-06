@@ -20,7 +20,7 @@ This image is running with the latest Apache version in the [official PHP reposi
 
 The most simple way to run this container is:
 ```
-$ docker run -ti --name some-prestashop -p 8080:80 -d quetzacoalt/prestashop
+$ docker run -ti --name some-prestashop -p 8080:80 -d prestashop/prestashop
 ```
 
 A new shop will be built, ready to be installed. You can then use it by reaching `http://localhost:8080`.
