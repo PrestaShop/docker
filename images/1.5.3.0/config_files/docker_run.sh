@@ -36,7 +36,7 @@ else
 
 	php /var/www/html/install-dev/index_cli.php --domain=$(hostname -i) --db_server=$DB_SERVER --db_name="$DB_NAME" --db_user=$DB_USER \
 		--db_password=$DB_PASSWD --firstname="John" --lastname="Doe" \
-		--password=$ADMIN_PASSWD --email="$ADMIN_MAIL" --language=$PS_LANGUAGE\
+		--password=$ADMIN_PASSWD --email="$ADMIN_MAIL" --language=$PS_LANGUAGE --country=$PS_COUNTRY \
 		--newsletter=0 --send_email=0
 
 	chown www-data:www-data -R /var/www/html/

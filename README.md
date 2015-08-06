@@ -34,7 +34,8 @@ However, if you want to customize the container execution, here are many availab
 * **DB_PREFIX**: Override default tables prefix *(default value: ps_)*
 * **DB_NAME**: Override default database name *(default value: prestashop)*
 * **PS_INSTALL_AUTO=1**: The installation will be executed. Useful to initialize your image faster. (Please note that PrestaShop can be installed automatically from PS 1.5)
-* **PS_LANGUAGE**: Change the default value installed with PrestaShop *(default value: en)*
+* **PS_LANGUAGE**: Change the default language installed with PrestaShop *(default value: en)*
+* **PS_COUNTRY**: Change the default country installed with PrestaShop *(default value: gb)*
 
 By default, we use the employee existing on the [PrestaShop demo](http://demo.prestashop.com). But you can change it with the following parameters:
 
