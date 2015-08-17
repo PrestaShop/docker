@@ -42,7 +42,7 @@ By default, we use the employee existing on the [PrestaShop demo](http://demo.pr
 * **ADMIN_MAIL**: Override default admin email *(default value: demo@prestashop.com)*
 * **ADMIN_PASSWD**: Override default admin password *(default value: prestashop_demo)*
 
-If your IP / port (or domain) change between two executions of your container, you will need to execute this option:
+If your IP / port (or domain) change between two executions of your container, you will need to modify this option:
 
 * **PS_HANDLE_DYNAMIC_DOMAIN**: Add specific configuration to handle dynamic domain *(default value: 0)*
 
