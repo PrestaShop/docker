@@ -52,6 +52,6 @@ if (version_compare(_PS_VERSION_, '1.5', '>=') && $domain != $old_domain && !Sho
 	}
 }
 
-unlink(__FILE__);
+//unlink(__FILE__);
 Tools::redirect("index.php");
 die();

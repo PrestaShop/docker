@@ -2,7 +2,7 @@
 
 ## Supported tags
 
-* `1.6`, `1.6.1.0`, `latest`
+* `1.6`, `1.6.1.1`, `latest`
 * `1.5`, `1.5.6.3`
 * `1.4`, `1.4.11.1`
 
@@ -10,7 +10,7 @@
 
 PrestaShop is a free and open-source e-commerce web application, committed to providing the best shopping cart experience for both merchants and customers. It is written in PHP, is highly customizable, supports all the major payment services, is translated in many languages and localized for many countries, has a fully responsive design (both front and back office), etc. See all the available features.
 
-> www.prestashop.com
+> [www.prestashop.com](https://www.prestashop.com)
 
 ![PrestaShop's back office dashboard](http://www.prestashop.com/images/banners/general/ps161-screenshot-github.png "PrestaShop's back office dashboard")
 
