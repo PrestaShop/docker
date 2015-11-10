@@ -18,6 +18,9 @@ ENV PS_DEV_MODE 0
 ENV PS_HOST_MODE 0
 ENV PS_HANDLE_DYNAMIC_DOMAIN 0
 
+ENV PS_FOLDER_ADMIN admin
+ENV PS_FOLDER_INSTALL install
+
 
 # Avoid MySQL questions during installation
 ENV DEBIAN_FRONTEND noninteractive
@@ -41,8 +44,6 @@ RUN apt-get update \
 ADD https://www.prestashop.com/download/old/prestashop_1.5.6.2.zip /tmp/prestashop.zip
 RUN unzip -q /tmp/prestashop.zip -d /tmp/
 RUN cp -R /tmp/prestashop/* /var/www/html
-RUN mv /var/www/html/install /var/www/html/install-dev
-RUN mv /var/www/html/admin /var/www/html/admin-dev
 COPY config_files/docker_updt_ps_domains.php /var/www/html/
 
 # Apache configuration

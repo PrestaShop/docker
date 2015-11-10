@@ -13,13 +13,23 @@ fi
 
 if [ ! -f ./config/settings.inc.php  ]; then
 	if [ $PS_DEV_MODE -ne 0 ]; then
-		#echo "Set DEV MODE > true";
+		echo "\n* Enabling DEV mode ...";
 		sed -ie "s/define('_PS_MODE_DEV_', false);/define('_PS_MODE_DEV_',\ true);/g" /var/www/html/config/defines.inc.php
 	fi
 
 	if [ $PS_HOST_MODE -ne 0 ]; then
-		#echo "Set HOST MODE > true";
+		echo "\n* Enabling HOST mode ...";
 		echo "define('_PS_HOST_MODE_', true);" >> /var/www/html/config/defines.inc.php
+	fi
+
+	if [ $PS_FOLDER_INSTALL != "install" ]; then
+		echo "\n* Renaming install folder as $PS_FOLDER_INSTALL ...";
+		mv /var/www/html/install /var/www/html/$PS_FOLDER_INSTALL/
+	fi
+
+	if [ $PS_FOLDER_ADMIN != "admin" ]; then
+		echo "\n* Renaming admin folder as $PS_FOLDER_ADMIN ...";
+		mv /var/www/html/admin /var/www/html/$PS_FOLDER_ADMIN/
 	fi
 
 	if [ $PS_HANDLE_DYNAMIC_DOMAIN = 0 ]; then
@@ -38,7 +48,7 @@ if [ ! -f ./config/settings.inc.php  ]; then
 			mysqladmin -h $DB_SERVER -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
 		fi
 
-		php /var/www/html/install-dev/index_cli.php --domain=$(hostname -i) --db_server=$DB_SERVER --db_name="$DB_NAME" --db_user=$DB_USER \
+		php /var/www/html/$PS_FOLDER_INSTALL/index_cli.php --domain=$(hostname -i) --db_server=$DB_SERVER --db_name="$DB_NAME" --db_user=$DB_USER \
 			--db_password=$DB_PASSWD --firstname="John" --lastname="Doe" \
 			--password=$ADMIN_PASSWD --email="$ADMIN_MAIL" --language=$PS_LANGUAGE --country=$PS_COUNTRY \
 			--newsletter=0 --send_email=0

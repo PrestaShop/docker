@@ -20,6 +20,6 @@ while read version; do
 
     cp -R config_files/ images/$version/
 
-    #docker build -t quetzacoalt/prestashop:$version images/$version/
+    #docker build -t prestashop/prestashop:$version images/$version/
     #docker push quetzacoalt/prestashop:$version
 done <$ps_versions_file

@@ -36,6 +36,8 @@ However, if you want to customize the container execution, here are many availab
 * **PS_INSTALL_AUTO=1**: The installation will be executed. Useful to initialize your image faster. (Please note that PrestaShop can be installed automatically from PS 1.5)
 * **PS_LANGUAGE**: Change the default language installed with PrestaShop *(default value: en)*
 * **PS_COUNTRY**: Change the default country installed with PrestaShop *(default value: gb)*
+* **PS_FOLDER_ADMIN**: Change the name of the `admin` folder *(default value: admin. But will be automatically changed later)*
+* **PS_FOLDER_INSTALL**: Change the name of the `install` folder *(default value: install. But must be changed anyway later)*
 
 By default, we use the employee existing on the [PrestaShop demo](http://demo.prestashop.com). But you can change it with the following parameters:
 
