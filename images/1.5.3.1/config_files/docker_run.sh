@@ -2,6 +2,9 @@
 
 if [ $DB_SERVER = "localhost" ] || [ $DB_SERVER = "127.0.0.1" ]; then
 	echo "\n* Starting internal MySQL server ...";
+
+	echo "\n /!\ WARNING : The MySQL server will be shortly removed from this container !"
+	echo "\n /!\ An external server will be required."
 	service mysql start
 	if [ $DB_PASSWD != "" ] && [ ! -f ./config/settings.inc.php  ]; then
 		echo "\n* Grant access to MySQL server ...";

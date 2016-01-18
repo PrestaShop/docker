@@ -18,7 +18,9 @@ PrestaShop is a free and open-source e-commerce web application, committed to pr
 
 This image is running with the latest Apache version in the [official PHP repository](https://registry.hub.docker.com/_/php/).
 
-The most simple way to run this container is:
+**Important note:** In order to follow Docker best-practices, the database will be shortly removed from the PrestaShop container and an external one will be required.  You should immediately link a database container instead of using the internal one.
+
+Currently, the most simple way to run this container is:
 ```
 $ docker run -ti --name some-prestashop -p 8080:80 -d prestashop/prestashop
 ```
