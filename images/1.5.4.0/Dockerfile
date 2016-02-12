@@ -6,6 +6,7 @@ ENV PS_VERSION 1.5.4.0
 
 ENV PS_DOMAIN prestashop.local
 ENV DB_SERVER 127.0.0.1
+ENV DB_PORT 3306
 ENV DB_NAME prestashop
 ENV DB_USER root
 ENV DB_PASSWD admin
@@ -42,8 +43,7 @@ RUN apt-get update \
 
 # Get PrestaShop
 ADD https://www.prestashop.com/download/old/prestashop_1.5.4.0.zip /tmp/prestashop.zip
-RUN unzip -q /tmp/prestashop.zip -d /tmp/
-RUN cp -R /tmp/prestashop/* /var/www/html
+RUN unzip -q /tmp/prestashop.zip -d /tmp/ && mv /tmp/prestashop/* /var/www/html && rm /tmp/prestashop.zip
 COPY config_files/docker_updt_ps_domains.php /var/www/html/
 
 # Apache configuration

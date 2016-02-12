@@ -8,9 +8,9 @@ if [ $DB_SERVER = "localhost" ] || [ $DB_SERVER = "127.0.0.1" ]; then
 	service mysql start
 	if [ $DB_PASSWD != "" ] && [ ! -f ./config/settings.inc.php  ]; then
 		echo "\n* Grant access to MySQL server ...";
-		mysql -h $DB_SERVER -u $DB_USER -p$DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'localhost' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
-		mysql -h $DB_SERVER -u $DB_USER -p$DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'%' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
-		mysql -h $DB_SERVER -u $DB_USER -p$DB_PASSWD --execute="flush privileges; " 2> /dev/null;
+		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'localhost' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
+		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'%' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
+		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --execute="flush privileges; " 2> /dev/null;
 	fi
 fi
 
@@ -44,14 +44,14 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	if [ $PS_INSTALL_AUTO = 1 ]; then
 		echo "\n* Installing PrestaShop, this may take a while ...";
 		if [ $DB_PASSWD = "" ]; then
-			mysqladmin -h $DB_SERVER -u $DB_USER drop $DB_NAME --force 2> /dev/null;
-			mysqladmin -h $DB_SERVER -u $DB_USER create $DB_NAME --force 2> /dev/null;
+			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER drop $DB_NAME --force 2> /dev/null;
+			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME --force 2> /dev/null;
 		else
-			mysqladmin -h $DB_SERVER -u $DB_USER -p$DB_PASSWD drop $DB_NAME --force 2> /dev/null;
-			mysqladmin -h $DB_SERVER -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
+			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD drop $DB_NAME --force 2> /dev/null;
+			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
 		fi
 
-		php /var/www/html/$PS_FOLDER_INSTALL/index_cli.php --domain=$(hostname -i) --db_server=$DB_SERVER --db_name="$DB_NAME" --db_user=$DB_USER \
+		php /var/www/html/$PS_FOLDER_INSTALL/index_cli.php --domain=$(hostname -i) --db_server=$DB_SERVER:$DB_PORT --db_name="$DB_NAME" --db_user=$DB_USER \
 			--db_password=$DB_PASSWD --firstname="John" --lastname="Doe" \
 			--password=$ADMIN_PASSWD --email="$ADMIN_MAIL" --language=$PS_LANGUAGE --country=$PS_COUNTRY \
 			--newsletter=0 --send_email=0
