@@ -16,9 +16,9 @@ fi
 
 RET=1
 while [ $RET -ne 0 ]; do
-    echo "=> Waiting for confirmation of MySQL service startup"
+    echo "\n* Waiting for confirmation of MySQL service startup"
     sleep 5
-    mysql -h $DB_SERVER -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
+    mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
     RET=$?
 done
 
