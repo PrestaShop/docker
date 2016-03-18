@@ -14,6 +14,14 @@ if [ $DB_SERVER = "localhost" ] || [ $DB_SERVER = "127.0.0.1" ]; then
 	fi
 fi
 
+RET=1
+while [ $RET -ne 0 ]; do
+    echo "=> Waiting for confirmation of MySQL service startup"
+    sleep 5
+    mysql -h $DB_SERVER -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
+    RET=$?
+done
+
 if [ ! -f ./config/settings.inc.php  ]; then
 	if [ $PS_DEV_MODE -ne 0 ]; then
 		echo "\n* Enabling DEV mode ...";
