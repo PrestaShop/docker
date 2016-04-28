@@ -1,5 +1,7 @@
 # PrestaShop on Docker
 
+[![Build Status](https://travis-ci.org/PrestaShop/docker.svg?branch=master)](https://travis-ci.org/PrestaShop/docker)
+
 ## Supported tags
 
 * `1.7`, `1.7-alpha.3.0`, `alpha`

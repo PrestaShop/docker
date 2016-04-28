@@ -1,0 +1,25 @@
+language: bash
+services: docker
+
+env:
+  - VERSION=1.4.11.1
+  - VERSION=1.5.6.3
+  - VERSION=1.6.0.14
+  - VERSION=1.6.1.5
+  - VERSION=1.7.0.0-alpha.3.0
+
+install:
+  - git clone https://github.com/docker-library/official-images.git ~/official-images
+
+before_script:
+  - env | sort
+  - cd "images/$VERSION"
+  - image="prestashop/prestashop:${VERSION}"
+  - image="${image//'/'/-}"
+
+script:
+  - docker build -t "$image" .
+  - ~/official-images/test/run.sh "$image"
+
+after_script:
+  - docker images

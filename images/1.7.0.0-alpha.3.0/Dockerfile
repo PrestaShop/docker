@@ -38,6 +38,7 @@ RUN apt-get update \
 		mysql-server \
 		wget \
 		unzip \
+    && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install iconv mcrypt pdo mysql pdo_mysql mbstring soap gd zip
 
@@ -62,4 +63,4 @@ VOLUME /var/www/html/themes
 VOLUME /var/www/html/override
 
 COPY config_files/docker_run.sh /tmp/
-ENTRYPOINT ["/tmp/docker_run.sh"]
+CMD ["/tmp/docker_run.sh"]
