@@ -1,12 +1,11 @@
-FROM php:5.6-apache
+FROM php:7-apache
 
-MAINTAINER Thomas Nabord <thomas.nabord@prestashop.com>
+MAINTAINER Thomas Nabord <thomas.nabord@prestashop.com
 
-ENV PS_VERSION 1.4.2.5
+ENV PS_VERSION 1.6.1.0
 
 ENV PS_DOMAIN prestashop.local
 ENV DB_SERVER 127.0.0.1
-ENV DB_PORT 3306
 ENV DB_NAME prestashop
 ENV DB_USER root
 ENV DB_PASSWD admin
@@ -18,9 +17,6 @@ ENV PS_INSTALL_AUTO 0
 ENV PS_DEV_MODE 0
 ENV PS_HOST_MODE 0
 ENV PS_HANDLE_DYNAMIC_DOMAIN 0
-
-ENV PS_FOLDER_ADMIN admin
-ENV PS_FOLDER_INSTALL install
 
 
 # Avoid MySQL questions during installation
@@ -38,13 +34,15 @@ RUN apt-get update \
 		mysql-server \
 		wget \
 		unzip \
-    && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install iconv mcrypt opcache pdo mysql pdo_mysql mbstring soap gd
+    && docker-php-ext-install iconv mcrypt pdo pdo_mysql mbstring soap gd
 
 # Get PrestaShop
-ADD https://www.prestashop.com/download/old/prestashop_1.4.2.5.zip /tmp/prestashop.zip
-RUN unzip -q /tmp/prestashop.zip -d /tmp/ && mv /tmp/prestashop/* /var/www/html && rm /tmp/prestashop.zip
+ADD https://www.prestashop.com/download/old/prestashop_1.6.1.0.zip /tmp/prestashop.zip
+RUN unzip -q /tmp/prestashop.zip -d /tmp/
+RUN cp -R /tmp/prestashop/* /var/www/html
+RUN mv /var/www/html/install /var/www/html/install-dev
+RUN mv /var/www/html/admin /var/www/html/admin-dev
 COPY config_files/docker_updt_ps_domains.php /var/www/html/
 
 # Apache configuration
@@ -63,4 +61,4 @@ VOLUME /var/www/html/themes
 VOLUME /var/www/html/override
 
 COPY config_files/docker_run.sh /tmp/
-CMD ["/tmp/docker_run.sh"]
+ENTRYPOINT ["/tmp/docker_run.sh"]
