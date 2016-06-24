@@ -2,8 +2,6 @@ FROM php:5.6-apache
 
 MAINTAINER Thomas Nabord <thomas.nabord@prestashop.com>
 
-ENV PS_VERSION 1.4.7.0
-
 ENV PS_DOMAIN prestashop.local
 ENV DB_SERVER 127.0.0.1
 ENV DB_PORT 3306
@@ -41,6 +39,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install iconv mcrypt opcache pdo mysql pdo_mysql mbstring soap gd
+
+ENV PS_VERSION 1.4.7.0
 
 # Get PrestaShop
 ADD https://www.prestashop.com/download/old/prestashop_1.4.7.0.zip /tmp/prestashop.zip
