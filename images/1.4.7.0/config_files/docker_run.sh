@@ -68,10 +68,5 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	fi
 fi
 
-# We need to remove the pid file or Apache won't start after being stopped
-if [ -f /var/run/apache2/apache2.pid  ]; then
-    rm -f /var/run/apache2/apache2.pid
-fi
-
 echo "\n* Almost ! Starting Apache now\n";
-exec apache2 -DFOREGROUND
+exec apache2-foreground
