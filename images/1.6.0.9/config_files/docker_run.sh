@@ -16,10 +16,12 @@ fi
 
 RET=1
 while [ $RET -ne 0 ]; do
-    echo "\n* Waiting for confirmation of MySQL service startup"
-    sleep 5
     mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
     RET=$?
+    if [ $RET -ne 0 ]; then
+        echo "\n* Waiting for confirmation of MySQL service startup";
+        sleep 5
+    fi
 done
 
 if [ ! -f ./config/settings.inc.php  ]; then
