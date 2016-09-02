@@ -8,15 +8,15 @@ if [ $DB_SERVER = "localhost" ] || [ $DB_SERVER = "127.0.0.1" ]; then
 	service mysql start
 	if [ $DB_PASSWD != "" ] && [ ! -f ./config/settings.inc.php  ]; then
 		echo "\n* Grant access to MySQL server ...";
-		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'localhost' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
-		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'%' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
-		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --execute="flush privileges; " 2> /dev/null;
+		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p $DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'localhost' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
+		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p $DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'%' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
+		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p $DB_PASSWD --execute="flush privileges; " 2> /dev/null;
 	fi
 fi
 
 RET=1
 while [ $RET -ne 0 ]; do
-    mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
+    mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p $DB_PASSWD -e "status" > /dev/null 2>&1
     RET=$?
     if [ $RET -ne 0 ]; then
         echo "\n* Waiting for confirmation of MySQL service startup";
