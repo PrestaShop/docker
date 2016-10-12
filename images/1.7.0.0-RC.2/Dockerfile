@@ -49,6 +49,9 @@ COPY config_files/ps-extractor.sh /tmp/
 RUN mkdir /tmp/data-ps && unzip -q /tmp/prestashop.zip -d /tmp/data-ps/ && bash /tmp/ps-extractor.sh /tmp/data-ps && rm /tmp/prestashop.zip /tmp/ps-extractor.sh
 COPY config_files/docker_updt_ps_domains.php /var/www/html/
 
+# Fix for this release
+RUN rm /var/www/html/config/settings.inc.php
+
 # Apache configuration
 RUN a2enmod rewrite
 RUN chown www-data:www-data -R /var/www/html/
