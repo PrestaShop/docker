@@ -2,7 +2,7 @@ FROM php:5.6-apache
 
 MAINTAINER Thomas Nabord <thomas.nabord@prestashop.com>
 
-ENV PS_DOMAIN prestashop.local
+ENV PS_DOMAIN <to be defined>
 ENV DB_SERVER 127.0.0.1
 ENV DB_PORT 3306
 ENV DB_NAME prestashop

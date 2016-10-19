@@ -61,6 +61,10 @@ if [ ! -f ./config/settings.inc.php  ]; then
 			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
 		fi
 
+		if [ "$PS_DOMAIN" = "<to be defined>" ]; then
+			export PS_DOMAIN=$(hostname -i)
+		fi
+
 		php /var/www/html/$PS_FOLDER_INSTALL/index_cli.php --domain="$PS_DOMAIN" --db_server=$DB_SERVER:$DB_PORT --db_name="$DB_NAME" --db_user=$DB_USER \
 			--db_password=$DB_PASSWD --firstname="John" --lastname="Doe" \
 			--password=$ADMIN_PASSWD --email="$ADMIN_MAIL" --language=$PS_LANGUAGE --country=$PS_COUNTRY \
