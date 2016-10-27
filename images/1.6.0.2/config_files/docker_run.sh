@@ -48,7 +48,7 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	if [ $PS_HANDLE_DYNAMIC_DOMAIN = 0 ]; then
 		rm /var/www/html/docker_updt_ps_domains.php
 	else
-		sed -ie "s/DirectoryIndex\ index.php\ index.html/DirectoryIndex\ docker_updt_ps_domains.php\ index.php\ index.html/g" /etc/apache2/apache2.conf
+		sed -ie "s/DirectoryIndex\ index.php\ index.html/DirectoryIndex\ docker_updt_ps_domains.php\ index.php\ index.html/g" $APACHE_CONFDIR/conf-available/docker-php.conf
 	fi
 
 	if [ $PS_INSTALL_AUTO = 1 ]; then
