@@ -6,7 +6,7 @@ else
     ps_versions_file="$1";
 fi
 
-echo "Reading verions in $ps_versions_file ..."
+echo "Reading versions in $ps_versions_file ..."
 
 while read version; do
     echo "Generate Dockerfile for PrestaShop $version"

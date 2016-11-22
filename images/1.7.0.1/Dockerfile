@@ -41,10 +41,10 @@ RUN apt-get update \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install iconv intl mcrypt opcache pdo mysql pdo_mysql mbstring soap gd zip
 
-ENV PS_VERSION {PS_VERSION}
+ENV PS_VERSION 1.7.0.1
 
 # Get PrestaShop
-ADD {PS_URL} /tmp/prestashop.zip
+ADD https://www.prestashop.com/download/old/prestashop_1.7.0.1.zip /tmp/prestashop.zip
 COPY config_files/ps-extractor.sh /tmp/
 RUN mkdir /tmp/data-ps && unzip -q /tmp/prestashop.zip -d /tmp/data-ps/ && bash /tmp/ps-extractor.sh /tmp/data-ps && rm /tmp/prestashop.zip /tmp/ps-extractor.sh
 COPY config_files/docker_updt_ps_domains.php /var/www/html/
