@@ -46,7 +46,7 @@ ENV PS_VERSION 1.7.0.2
 # Get PrestaShop
 ADD https://www.prestashop.com/download/old/prestashop_1.7.0.2.zip /tmp/prestashop.zip
 COPY config_files/ps-extractor.sh /tmp/
-RUN mkdir /tmp/data-ps && unzip -q /tmp/prestashop.zip -d /tmp/data-ps/ && bash /tmp/ps-extractor.sh /tmp/data-ps && rm /tmp/prestashop.zip /tmp/ps-extractor.sh
+RUN mkdir /tmp/data-ps && unzip -q /tmp/prestashop.zip -d /tmp/data-ps/ && bash /tmp/ps-extractor.sh /tmp/data-ps && rm /tmp/prestashop.zip
 COPY config_files/docker_updt_ps_domains.php /var/www/html/
 
 # Apache configuration

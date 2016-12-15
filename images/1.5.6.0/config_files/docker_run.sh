@@ -25,6 +25,9 @@ while [ $RET -ne 0 ]; do
 done
 
 if [ ! -f ./config/settings.inc.php  ]; then
+	echo "\n* Reapplying PrestaShop files for enabled volumes ...";
+	bash /tmp/ps-extractor.sh /tmp/data-ps
+
 	if [ $PS_DEV_MODE -ne 0 ]; then
 		echo "\n* Enabling DEV mode ...";
 		sed -ie "s/define('_PS_MODE_DEV_', false);/define('_PS_MODE_DEV_',\ true);/g" /var/www/html/config/defines.inc.php

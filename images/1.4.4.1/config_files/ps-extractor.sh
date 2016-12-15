@@ -5,9 +5,9 @@ destination="/var/www/html"
 
 if [[ -n "$folder" ]]; then
     if [ -d $folder/prestashop ]; then
-       mv -v $folder/prestashop/* $destination
+        cp -n -R $folder/prestashop/* $destination
     else
-        unzip -q $folder/prestashop.zip -d $destination
+        unzip -n -q $folder/prestashop.zip -d $destination
     fi
 else
     echo "Missing folder to move"
