@@ -72,9 +72,9 @@ if [ ! -f ./config/settings.inc.php  ]; then
 			--db_password=$DB_PASSWD --firstname="John" --lastname="Doe" \
 			--password=$ADMIN_PASSWD --email="$ADMIN_MAIL" --language=$PS_LANGUAGE --country=$PS_COUNTRY \
 			--newsletter=0 --send_email=0
-
-		chown www-data:www-data -R /var/www/html/
 	fi
+
+	chown www-data:www-data -R /var/www/html/
 fi
 
 echo "\n* Almost ! Starting Apache now\n";
