@@ -1,28 +1,10 @@
 #!/bin/sh
 
-if [ $DB_SERVER = "localhost" ] || [ $DB_SERVER = "127.0.0.1" ]; then
-	echo "\n* Starting internal MySQL server ...";
-
-	echo "\n /!\ WARNING : The MySQL server will be shortly removed from this container !"
-	echo "\n /!\ An external server will be required."
-	service mysql start
-	if [ $DB_PASSWD != "" ] && [ ! -f ./config/settings.inc.php  ]; then
-		echo "\n* Grant access to MySQL server ...";
-		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'localhost' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
-		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --execute="GRANT ALL ON *.* to $DB_USER@'%' IDENTIFIED BY '$DB_PASSWD'; " 2> /dev/null;
-		mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --execute="flush privileges; " 2> /dev/null;
-	fi
+if [ "$DB_SERVER" = "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
+	echo >&2 'error: You requested automatic PrestaShop installation but MySQL server address is not provided '
+	echo >&2 '  You need to specify DB_SERVER in order to proceed'
+	exit 1
 fi
-
-RET=1
-while [ $RET -ne 0 ]; do
-    mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
-    RET=$?
-    if [ $RET -ne 0 ]; then
-        echo "\n* Waiting for confirmation of MySQL service startup";
-        sleep 5
-    fi
-done
 
 if [ ! -f ./config/settings.inc.php  ]; then
 	echo "\n* Reapplying PrestaShop files for enabled volumes ...";
@@ -55,6 +37,16 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	fi
 
 	if [ $PS_INSTALL_AUTO = 1 ]; then
+		RET=1
+		while [ $RET -ne 0 ]; do
+		    mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
+		    RET=$?
+		    if [ $RET -ne 0 ]; then
+		        echo "\n* Waiting for confirmation of MySQL service startup";
+		        sleep 5
+		    fi
+		done
+
 		echo "\n* Installing PrestaShop, this may take a while ...";
 		if [ $DB_PASSWD = "" ]; then
 			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER drop $DB_NAME --force 2> /dev/null;
