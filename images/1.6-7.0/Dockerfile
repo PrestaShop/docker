@@ -3,7 +3,7 @@ FROM php:7.0-apache
 MAINTAINER Thomas Nabord <thomas.nabord@prestashop.com>
 
 ENV PS_DOMAIN <to be defined>
-ENV DB_SERVER 127.0.0.1
+ENV DB_SERVER <to be defined>
 ENV DB_PORT 3306
 ENV DB_NAME prestashop
 ENV DB_USER root
@@ -20,12 +20,6 @@ ENV PS_HANDLE_DYNAMIC_DOMAIN 0
 ENV PS_FOLDER_ADMIN admin
 ENV PS_FOLDER_INSTALL install
 
-
-# Avoid MySQL questions during installation
-ENV DEBIAN_FRONTEND noninteractive
-RUN echo mysql-server-5.6 mysql-server/root_password password $DB_PASSWD | debconf-set-selections
-RUN echo mysql-server-5.6 mysql-server/root_password_again password $DB_PASSWD | debconf-set-selections
-
 RUN apt-get update \
 	&& apt-get install -y libmcrypt-dev \
 		libjpeg62-turbo-dev \
@@ -34,7 +28,6 @@ RUN apt-get update \
 		libxml2-dev \
 		libicu-dev \
 		mysql-client \
-		mysql-server \
 		wget \
 		unzip \
     && rm -rf /var/lib/apt/lists/* \
@@ -60,10 +53,6 @@ RUN chown www-data:www-data -R /var/www/html/
 
 # PHP configuration
 COPY config_files/php.ini /usr/local/etc/php/
-
-# MySQL configuration
-RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
-EXPOSE 3306
 
 VOLUME /var/www/html/modules
 VOLUME /var/www/html/themes
