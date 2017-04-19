@@ -34,7 +34,10 @@ if (!defined('_PS_VERSION_'))
 	exit;
 
 // First, we get the URL used to reach this page.
-$domain = Tools::getHttpHost();
+$domain = $_ENV['PS_SHOP_DOMAIN'];
+if( $domain == "" ) {
+	$domain = Tools::getHttpHost();
+} 
 $old_domain = Configuration::get('PS_SHOP_DOMAIN');
 
 if (version_compare(_PS_VERSION_, '1.5', '>=') && $domain != $old_domain && !Shop::isFeatureActive())
