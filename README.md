@@ -26,15 +26,15 @@ PrestaShop is a free and open-source e-commerce web application, committed to pr
 ## How to run this image
 
 This image is running with the latest Apache version in the [official PHP repository](https://registry.hub.docker.com/_/php/).
+For the database, you can use and link any SQL server related to MySQL.
 
-**Important note:** In order to follow Docker best-practices, the database will be shortly removed from the PrestaShop container and an external one will be required.  You should immediately link a database container instead of using the internal one.
-
-Currently, the most simple way to run this container is:
+Currently if you do not have any MySQL server, the most simple way to run this container is:
 ```
-$ docker run -ti --name some-prestashop -p 8080:80 -d prestashop/prestashop
+$ docker run -ti --name some-mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql
+$ docker run -ti --name some-prestashop --link some-mysql -e DB_SERVER=some-mysql -p 8080:80 -d prestashop/prestashop
 ```
 
-A new shop will be built, ready to be installed. You can then use it by reaching `http://localhost:8080`.
+A new shop will be built, ready to be installed. You can then use it by reaching `http://localhost:8080`. The MySQL server can be reached with the URL `some-mysql:3306`.
 However, if you want to customize the container execution, here are many available options:
 
 * **PS_DEV_MODE**: The constant `_PS_MODE_DEV_` will be set at `true` *(default value: 0)*
