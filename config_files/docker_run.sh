@@ -6,9 +6,23 @@ if [ "$DB_SERVER" = "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
 	exit 1
 fi
 
+# init if empty
+for dockervol in modules themes override; do
+    # maybe protect dir with space into name ?
+    if [ ! -f /var/www/${dockervol}/index.php  ]; then
+	echo "\n* Reapplying PrestaShop volume ${dockervol}";
+        cp -n -R /tmp/data-ps/${dockervol}/* /var/www/${dockervol}
+	chown www-data:www-data -R /var/www/${dockervol}/
+    else
+         echo "\n* Pretashop ${dockervol} already installed...";
+    fi
+done
+
 if [ ! -f ./config/settings.inc.php  ]; then
 	echo "\n* Reapplying PrestaShop files for enabled volumes ...";
-	bash /tmp/ps-extractor.sh /tmp/data-ps
+
+	# init if empty
+	cp -n -R /tmp/data-ps/prestashop/* /var/www/html
 
 	if [ $PS_DEV_MODE -ne 0 ]; then
 		echo "\n* Enabling DEV mode ...";
@@ -67,6 +81,8 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	fi
 
 	chown www-data:www-data -R /var/www/html/
+else
+    echo "\n* Pretashop Core already installed...";
 fi
 
 echo "\n* Almost ! Starting Apache now\n";
