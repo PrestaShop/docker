@@ -62,14 +62,17 @@ if [ ! -f ./config/settings.inc.php  ]; then
 		done
 
 		echo "\n* Installing PrestaShop, this may take a while ...";
-		if [ $DB_PASSWD = "" ]; then
-			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER drop $DB_NAME --force 2> /dev/null;
-			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME --force 2> /dev/null;
-		else
-			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD drop $DB_NAME --force 2> /dev/null;
-			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
+		if [ $PS_ERASE_MYSQL = 1 ]; then
+			echo "\n* Drop & recreate mysql database...";
+			if [ $DB_PASSWD = "" ]; then
+				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER drop $DB_NAME --force 2> /dev/null;
+				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME --force 2> /dev/null;
+			else
+				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD drop $DB_NAME --force 2> /dev/null;
+				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
+			fi
 		fi
-
+	
 		if [ "$PS_DOMAIN" = "<to be defined>" ]; then
 			export PS_DOMAIN=$(hostname -i)
 		fi
