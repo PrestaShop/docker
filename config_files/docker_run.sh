@@ -62,7 +62,7 @@ if [ ! -f ./config/settings.inc.php  ]; then
 		done
 
 		echo "\n* Installing PrestaShop, this may take a while ...";
-		if [ $PS_ERASE_MYSQL = 1 ]; then
+		if [ $PS_ERASE_DB = 1 ]; then
 			echo "\n* Drop & recreate mysql database...";
 			if [ $DB_PASSWD = "" ]; then
 				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER drop $DB_NAME --force 2> /dev/null;
