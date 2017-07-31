@@ -45,7 +45,8 @@ However, if you want to customize the container execution, here are many availab
 * **DB_PREFIX**: Override default tables prefix *(default value: ps_)*
 * **DB_NAME**: Override default database name *(default value: prestashop)*
 * **PS_INSTALL_AUTO=1**: The installation will be executed. Useful to initialize your image faster. In some configurations, you may need to set **PS_DOMAIN** or **PS_HANDLE_DYNAMIC_DOMAIN** as well. (Please note that PrestaShop can be installed automatically from PS 1.5)
-* **PS_DOMAIN**: When installing automatically your shop, you can tell the shop how it will be reached. For advanced users only. *(no default value)*
+* **PS_ERASE_DB**: Only with **PS_INSTALL_AUTO=1**. Drop and create the mysql database. All previous mysql data will be lost *(default value: 0)*
+* **PS_DOMAIN**: When installing automatically your shop, you can tell the shop how it will be reached. For advanced users only *(no default value)*
 * **PS_LANGUAGE**: Change the default language installed with PrestaShop *(default value: en)*
 * **PS_COUNTRY**: Change the default country installed with PrestaShop *(default value: gb)*
 * **PS_FOLDER_ADMIN**: Change the name of the `admin` folder *(default value: admin. But will be automatically changed later)*
