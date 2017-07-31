@@ -1,24 +1,23 @@
 FROM php:{PHP_VERSION}-apache
-LABEL 'maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"'
+LABEL maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"
 
-ENV PS_DOMAIN <to be defined> \
-DB_SERVER <to be defined> \
-DB_PORT 3306 \
-DB_NAME prestashop \
-DB_USER root \
-DB_PASSWD admin \
-ADMIN_MAIL demo@prestashop.com \
-ADMIN_PASSWD prestashop_demo \
-PS_LANGUAGE en  
-PS_COUNTRY gb \
-PS_INSTALL_AUTO 0 \
-PS_ERASE_MYSQL 0 \
-PS_DEV_MODE 0 \
-PS_HOST_MODE 0 \
-PS_HANDLE_DYNAMIC_DOMAIN 0 \
-PS_FOLDER_ADMIN admin \
-PS_FOLDER_INSTALL install \
-PS_VERSION {PS_VERSION}
+ENV PS_DOMAIN="<to be defined>" \
+DB_SERVER="<to be defined>" \
+DB_PORT=3306 \
+DB_NAME=prestashop \
+DB_USER=root \
+DB_PASSWD=admin \
+ADMIN_MAIL=demo@prestashop.com \
+ADMIN_PASSWD=prestashop_demo \
+PS_LANGUAGE=en \
+PS_COUNTRY=gb \
+PS_INSTALL_AUTO=0 \
+PS_ERASE_DB=0 \
+PS_DEV_MODE=0 \
+PS_HOST_MODE=0 \
+PS_HANDLE_DYNAMIC_DOMAIN=0 \
+PS_FOLDER_ADMIN=admin \
+PS_FOLDER_INSTALL=install
 
 RUN apt-get update \
 	&& apt-get install -y libmcrypt-dev \
@@ -39,6 +38,8 @@ RUN docker-php-source extract \
 	&& if [ -d "/usr/src/php/ext/mysql" ]; then docker-php-ext-install mysql; fi \
 	&& if [ -d "/usr/src/php/ext/opcache" ]; then docker-php-ext-install opcache; fi \
 	&& docker-php-source delete
+
+ENV PS_VERSION {PS_VERSION}
 
 # Get PrestaShop
 ADD {PS_URL} /tmp/prestashop.zip
