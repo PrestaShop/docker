@@ -6,9 +6,23 @@ if [ "$DB_SERVER" = "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
 	exit 1
 fi
 
+# init if empty
+for dockervol in modules themes override; do
+    # maybe protect dir with space into name ?
+    if [ ! -f /var/www/${dockervol}/index.php  ]; then
+	echo "\n* Reapplying PrestaShop volume ${dockervol}";
+        cp -n -R /tmp/data-ps/${dockervol}/* /var/www/${dockervol}
+	chown www-data:www-data -R /var/www/${dockervol}/
+    else
+         echo "\n* Pretashop ${dockervol} already installed...";
+    fi
+done
+
 if [ ! -f ./config/settings.inc.php  ]; then
 	echo "\n* Reapplying PrestaShop files for enabled volumes ...";
-	bash /tmp/ps-extractor.sh /tmp/data-ps
+
+	# init if empty
+	cp -n -R /tmp/data-ps/prestashop/* /var/www/html
 
 	if [ $PS_DEV_MODE -ne 0 ]; then
 		echo "\n* Enabling DEV mode ...";
@@ -48,14 +62,17 @@ if [ ! -f ./config/settings.inc.php  ]; then
 		done
 
 		echo "\n* Installing PrestaShop, this may take a while ...";
-		if [ $DB_PASSWD = "" ]; then
-			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER drop $DB_NAME --force 2> /dev/null;
-			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME --force 2> /dev/null;
-		else
-			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD drop $DB_NAME --force 2> /dev/null;
-			mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
+		if [ $PS_ERASE_DB = 1 ]; then
+			echo "\n* Drop & recreate mysql database...";
+			if [ $DB_PASSWD = "" ]; then
+				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER drop $DB_NAME --force 2> /dev/null;
+				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME --force 2> /dev/null;
+			else
+				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD drop $DB_NAME --force 2> /dev/null;
+				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
+			fi
 		fi
-
+	
 		if [ "$PS_DOMAIN" = "<to be defined>" ]; then
 			export PS_DOMAIN=$(hostname -i)
 		fi
@@ -67,6 +84,8 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	fi
 
 	chown www-data:www-data -R /var/www/html/
+else
+    echo "\n* Pretashop Core already installed...";
 fi
 
 echo "\n* Almost ! Starting Apache now\n";
