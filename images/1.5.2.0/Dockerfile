@@ -1,24 +1,23 @@
 FROM php:5.6-apache
+LABEL maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"
 
-MAINTAINER Thomas Nabord <thomas.nabord@prestashop.com>
-
-ENV PS_DOMAIN <to be defined>
-ENV DB_SERVER <to be defined>
-ENV DB_PORT 3306
-ENV DB_NAME prestashop
-ENV DB_USER root
-ENV DB_PASSWD admin
-ENV ADMIN_MAIL demo@prestashop.com
-ENV ADMIN_PASSWD prestashop_demo
-ENV PS_LANGUAGE en
-ENV PS_COUNTRY gb
-ENV PS_INSTALL_AUTO 0
-ENV PS_DEV_MODE 0
-ENV PS_HOST_MODE 0
-ENV PS_HANDLE_DYNAMIC_DOMAIN 0
-
-ENV PS_FOLDER_ADMIN admin
-ENV PS_FOLDER_INSTALL install
+ENV PS_DOMAIN="<to be defined>" \
+DB_SERVER="<to be defined>" \
+DB_PORT=3306 \
+DB_NAME=prestashop \
+DB_USER=root \
+DB_PASSWD=admin \
+ADMIN_MAIL=demo@prestashop.com \
+ADMIN_PASSWD=prestashop_demo \
+PS_LANGUAGE=en \
+PS_COUNTRY=gb \
+PS_INSTALL_AUTO=0 \
+PS_ERASE_DB=0 \
+PS_DEV_MODE=0 \
+PS_HOST_MODE=0 \
+PS_HANDLE_DYNAMIC_DOMAIN=0 \
+PS_FOLDER_ADMIN=admin \
+PS_FOLDER_INSTALL=install
 
 RUN apt-get update \
 	&& apt-get install -y libmcrypt-dev \
@@ -44,20 +43,25 @@ ENV PS_VERSION 1.5.2.0
 
 # Get PrestaShop
 ADD https://www.prestashop.com/download/old/prestashop_1.5.2.0.zip /tmp/prestashop.zip
-COPY config_files/ps-extractor.sh /tmp/
-RUN mkdir /tmp/data-ps && unzip -q /tmp/prestashop.zip -d /tmp/data-ps/ && bash /tmp/ps-extractor.sh /tmp/data-ps && rm /tmp/prestashop.zip
+
+# Prepare install and CMD script
+COPY config_files/ps-extractor.sh config_files/docker_run.sh /tmp/
+
+# Extract
+RUN mkdir -p /tmp/data-ps /var/www/modules /var/www/themes /var/www/override \
+	&& unzip -q /tmp/prestashop.zip -d /tmp/data-ps/ \
+	&& bash /tmp/ps-extractor.sh /tmp/data-ps \
+	&& rm /tmp/prestashop.zip
 COPY config_files/docker_updt_ps_domains.php /var/www/html/
 
 # Apache configuration
 RUN a2enmod rewrite
-RUN chown www-data:www-data -R /var/www/html/
 
 # PHP configuration
 COPY config_files/php.ini /usr/local/etc/php/
 
-VOLUME /var/www/html/modules
-VOLUME /var/www/html/themes
-VOLUME /var/www/html/override
+# Declare
+VOLUME ["/var/www/html","/var/www/modules","/var/www/themes","/var/www/override"]
 
-COPY config_files/docker_run.sh /tmp/
+# Run
 CMD ["/tmp/docker_run.sh"]
