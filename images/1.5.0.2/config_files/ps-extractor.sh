@@ -2,12 +2,12 @@
 
 folder=$1
 
-if [[ -n "$folder" ]]; then  
+if [[ -n "$folder" ]]; then
 
     # dwl version contains zip file with tree structure (1.7)
     if [ ! -d $folder/prestashop ]; then
         unzip -n -q $folder/prestashop.zip -d $folder/prestashop
-	rm -rf $folder/prestashop.zip	
+        rm -rf $folder/prestashop.zip
     fi
 
     # prepair tree structure for volumes
@@ -17,6 +17,8 @@ if [[ -n "$folder" ]]; then
     ln -s ../themes $folder/prestashop/themes
     ln -s ../modules $folder/prestashop/modules
     ln -s ../override $folder/prestashop/override
+
+    cp -n -R $folder/prestashop/* /var/www/html
 else
     echo "Missing folder to move"
 fi
