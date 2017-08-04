@@ -10,14 +10,6 @@ if [[ -n "$folder" ]]; then
         rm -rf $folder/prestashop.zip
     fi
 
-    # prepair tree structure for volumes
-    mv $folder/prestashop/themes $folder/prestashop/modules $folder/prestashop/override $folder/
-
-    # build relative symlinks for volumes
-    ln -s ../themes $folder/prestashop/themes
-    ln -s ../modules $folder/prestashop/modules
-    ln -s ../override $folder/prestashop/override
-
     cp -n -R $folder/prestashop/* /var/www/html
 else
     echo "Missing folder to move"

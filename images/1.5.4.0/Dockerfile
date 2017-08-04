@@ -61,7 +61,7 @@ RUN a2enmod rewrite
 COPY config_files/php.ini /usr/local/etc/php/
 
 # Declare
-VOLUME ["/var/www/html","/var/www/modules","/var/www/themes","/var/www/override"]
+VOLUME ["/var/www/html"]
 
 # Run
 CMD ["/tmp/docker_run.sh"]

@@ -6,18 +6,6 @@ if [ "$DB_SERVER" = "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
 	exit 1
 fi
 
-# init if empty
-for dockervol in modules themes override; do
-    # maybe protect dir with space into name ?
-    if [ ! -f /var/www/${dockervol}/index.php  ]; then
-	echo "\n* Reapplying PrestaShop volume ${dockervol}";
-        cp -n -R /tmp/data-ps/${dockervol}/* /var/www/${dockervol}
-	chown www-data:www-data -R /var/www/${dockervol}/
-    else
-         echo "\n* Pretashop ${dockervol} already installed...";
-    fi
-done
-
 if [ ! -f ./config/settings.inc.php  ]; then
 	echo "\n* Reapplying PrestaShop files for enabled volumes ...";
 
@@ -72,7 +60,7 @@ if [ ! -f ./config/settings.inc.php  ]; then
 				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force 2> /dev/null;
 			fi
 		fi
-	
+
 		if [ "$PS_DOMAIN" = "<to be defined>" ]; then
 			export PS_DOMAIN=$(hostname -i)
 		fi
