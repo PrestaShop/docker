@@ -7,6 +7,7 @@ DB_PORT=3306 \
 DB_NAME=prestashop \
 DB_USER=root \
 DB_PASSWD=admin \
+DB_PREFIX=ps_ \
 ADMIN_MAIL=demo@prestashop.com \
 ADMIN_PASSWD=prestashop_demo \
 PS_LANGUAGE=en \
@@ -56,6 +57,7 @@ COPY config_files/docker_updt_ps_domains.php /var/www/html/
 
 # Apache configuration
 RUN a2enmod rewrite
+RUN chown www-data:www-data -R /var/www/html/
 
 # PHP configuration
 COPY config_files/php.ini /usr/local/etc/php/
