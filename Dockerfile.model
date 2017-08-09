@@ -57,6 +57,7 @@ COPY config_files/docker_updt_ps_domains.php /var/www/html/
 
 # Apache configuration
 RUN a2enmod rewrite
+RUN chown www-data:www-data -R /var/www/html/
 
 # PHP configuration
 COPY config_files/php.ini /usr/local/etc/php/
