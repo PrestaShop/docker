@@ -7,6 +7,7 @@ DB_PORT=3306 \
 DB_NAME=prestashop \
 DB_USER=root \
 DB_PASSWD=admin \
+DB_PREFIX=ps_ \
 ADMIN_MAIL=demo@prestashop.com \
 ADMIN_PASSWD=prestashop_demo \
 PS_LANGUAGE=en \
