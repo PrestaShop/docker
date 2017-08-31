@@ -5,7 +5,7 @@ env:
   - VERSION=1.4.11.1
   - VERSION=1.5.6.3
   - VERSION=1.6.1.16
-  - VERSION=1.7.2.1
+  - VERSION=1.7.2.2
 
   - VERSION=1.7-5.5
   - VERSION=1.5-7.0
