@@ -11,9 +11,14 @@
 * `1.4`, `1.4.11.1`
 
 ### Other PHP versions
-By default, our images are running with PHP 5.6. But each major version can be launched with another PHP version if you want to.
+By default, our images are running with PHP 5.6. But each major version can be launched with another PHP version if you want to. 
 * PHP 5.5: `1.5-5.5`, `1.6-5.5`, `1.7-5.5`
-* PHP 7.0: `1.5-7.0`, `1.6-7.0`, `1.7-7.0`
+* PHP 7.0: `1.5-7.0`, `1.6-7.0`, `1.7-7.0`  
+
+You can use tags for this. For example:
+```
+$ docker run -ti --name my-docker-name -e PS_DEV_MODE=false -e PS_INSTALL_AUTO=0 -p 8080:80 -d prestashop/prestashop:1.7-7.0
+```
 
 ## What is PrestaShop
 
