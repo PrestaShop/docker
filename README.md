@@ -5,13 +5,13 @@
 ## Supported tags
 
 ### Image by PrestaShop version
-* `1.7`, `1.7.2.2`, `latest`
+* `1.7`, `1.7.2.4`, `latest`
 * `1.6`, `1.6.1.17`
 * `1.5`, `1.5.6.3`
 * `1.4`, `1.4.11.1`
 
 ### Other PHP versions
-By default, our images are running with PHP 5.6. But each major version can be launched with another PHP version if you want to. 
+By default, our images are running with PHP 5.6. But each major version can be launched with another PHP version if you want to.
 * PHP 5.5: `1.5-5.5`, `1.6-5.5`, `1.7-5.5`
 * PHP 7.0: `1.5-7.0`, `1.6-7.0`, `1.7-7.0`  
 

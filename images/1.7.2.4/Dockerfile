@@ -1,4 +1,4 @@
-FROM php:7.0-apache
+FROM php:5.6-apache
 LABEL maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"
 
 ENV PS_DOMAIN="<to be defined>" \
