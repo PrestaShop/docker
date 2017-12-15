@@ -53,7 +53,9 @@ RUN mkdir -p /tmp/data-ps /var/www/modules /var/www/themes /var/www/override \
 	&& unzip -q /tmp/prestashop.zip -d /tmp/data-ps/ \
 	&& bash /tmp/ps-extractor.sh /tmp/data-ps \
 	&& rm /tmp/prestashop.zip
-COPY config_files/docker_updt_ps_domains.php /var/www/html/
+
+# If handle dynamic domain
+COPY config_files/docker_updt_ps_domains.php /tmp/
 
 # Apache configuration
 RUN a2enmod rewrite

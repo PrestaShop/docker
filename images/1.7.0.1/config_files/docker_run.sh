@@ -32,9 +32,8 @@ if [ ! -f ./config/settings.inc.php  ]; then
 		mv /var/www/html/admin /var/www/html/$PS_FOLDER_ADMIN/
 	fi
 
-	if [ $PS_HANDLE_DYNAMIC_DOMAIN = 0 ]; then
-		rm /var/www/html/docker_updt_ps_domains.php
-	else
+	if [ $PS_HANDLE_DYNAMIC_DOMAIN = 1 ]; then
+		cp /tmp/docker_updt_ps_domains.php /var/www/html
 		sed -ie "s/DirectoryIndex\ index.php\ index.html/DirectoryIndex\ docker_updt_ps_domains.php\ index.php\ index.html/g" $APACHE_CONFDIR/conf-available/docker-php.conf
 	fi
 
