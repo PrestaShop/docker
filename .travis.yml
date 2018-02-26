@@ -16,13 +16,12 @@ install:
 
 before_script:
   - env | sort
-  - cd "images/$VERSION"
   - image="prestashop/prestashop:${VERSION}"
   - image="${image//'/'/-}"
 
 script:
   - docker build -t "prestashop/base:5.6-apache" base/images/$BASE
-  - docker build -t "$image" .
+  - docker build -t "$image" images/$VERSION
   - ~/official-images/test/run.sh "$image"
   - docker run -tid --name prestashop $image && docker exec -ti prestashop cat /var/www/html/index.php
 
