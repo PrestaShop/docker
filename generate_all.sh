@@ -19,8 +19,6 @@ generate_image()
             s/{PHP_VERSION}/'"$php_version"'/;
             s/{PS_URL}/'"https:\/\/www.prestashop.com\/download\/old\/prestashop_$version.zip"'/
         ' Dockerfile.model > images/$folder/Dockerfile
-
-    cp -R config_files/ images/$folder/
 }
 
 if [ -z "$1" ]; then

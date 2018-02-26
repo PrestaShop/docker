@@ -3,12 +3,13 @@ services: docker
 
 env:
   - VERSION=1.4.11.1
+    BASE=5.3-apache
   - VERSION=1.5.6.3
+    BASE=5-apache
   - VERSION=1.6.1.18
+    BASE=7.0-apache
   - VERSION=1.7.2.4
-
-  - VERSION=1.7-5.5
-  - VERSION=1.5-7.0
+    BASE=apache
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
@@ -20,6 +21,7 @@ before_script:
   - image="${image//'/'/-}"
 
 script:
+  - docker build -t "prestashop/base:5.6-apache" base/images/$BASE
   - docker build -t "$image" .
   - ~/official-images/test/run.sh "$image"
   - docker run -tid --name prestashop $image && docker exec -ti prestashop cat /var/www/html/index.php
