@@ -5,7 +5,7 @@
 ## Supported tags
 
 ### Image by PrestaShop version
-* `1.7`, `1.7.2.4`, `latest`
+* `1.7`, `1.7.3.0`, `latest`
 * `1.6`, `1.6.1.18`
 * `1.5`, `1.5.6.3`
 * `1.4`, `1.4.11.1`
