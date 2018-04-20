@@ -1,6 +1,6 @@
 #!/bin/bash
 
-php_version_default="5.6"
+php_version_default="5.6-apache"
 
 generate_image()
 {
