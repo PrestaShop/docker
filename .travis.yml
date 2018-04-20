@@ -13,16 +13,12 @@ env:
 
   - VERSION=1.7-5.5
     BASE=5.5-apache
-  - VERSION=1.5-7.0
-    BASE=7.0-apache
   - VERSION=1.5-7.2
     BASE=7.2-apache
 
   - VERSION=1.7-5.5-fpm
     BASE=5.5-fpm
-  - VERSION=1.5-7.0-fpm
-    BASE=7.0-fpm
-  - VERSION=1.5-7.2
+  - VERSION=1.5-7.2-fpm
     BASE=7.2-fpm
 
 install:
