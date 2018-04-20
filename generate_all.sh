@@ -35,7 +35,7 @@ while read version; do
 done <$ps_versions_file
 
 # Generate images for each major version of PrestaShop on different PHP environment
-for php_version in "5.5" "7.0"
+for php_version in "5.5" "7.0" "7.1" "7.2" "5.5-fpm" "7.0-fpm" "7.1-fpm" "7.2-fpm"
 do
 
     for major_version in "15" "16" "17"
