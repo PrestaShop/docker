@@ -1,6 +1,6 @@
 #!/bin/bash
 
-php_version_default="5.6"
+php_version_default="5.6-apache"
 
 generate_image()
 {
@@ -35,7 +35,7 @@ while read version; do
 done <$ps_versions_file
 
 # Generate images for each major version of PrestaShop on different PHP environment
-for php_version in "5.5" "7.0"
+for php_version in "5.5-apache" "5.6-apache" "7.0-apache" "7.1-apache" "7.2-apache" "5.5-fpm" "5.6-fpm" "7.0-fpm" "7.1-fpm" "7.2-fpm"
 do
 
     for major_version in "15" "16" "17"

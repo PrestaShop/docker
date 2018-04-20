@@ -48,7 +48,7 @@ COPY config_files/ps-extractor.sh config_files/docker_run.sh /tmp/
 COPY config_files/docker_updt_ps_domains.php /tmp/
 
 # Apache configuration
-RUN a2enmod rewrite
+RUN if [ -x "$(command -v apache2-foreground)" ]; then a2enmod rewrite; fi
 
 # PHP configuration
 COPY config_files/php.ini /usr/local/etc/php/
