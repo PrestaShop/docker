@@ -1,4 +1,4 @@
-FROM prestashop/base:7.0-apache
+FROM prestashop/base:5.6-apache
 LABEL maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"
 
 ENV PS_VERSION 1.6.1.19
