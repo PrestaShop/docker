@@ -44,12 +44,27 @@ This image is running with the latest Apache version in the [official PHP reposi
 For the database, you can use and link any SQL server related to MySQL.
 
 Currently if you do not have any MySQL server, the most simple way to run this container is:
-```
-$ docker run -ti --name some-mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql
-$ docker run -ti --name some-prestashop --link some-mysql -e DB_SERVER=some-mysql -p 8080:80 -d prestashop/prestashop
+```bash
+# create a network for containers to communicate
+$ docker network create prestashop-net
+# launch mysql container
+$ docker run -ti --name some-mysql --network prestashop-net -e MYSQL_ROOT_PASSWORD=admin -p 3307:3306 -d mysql
+# launch prestashop container
+$ docker run -ti --name some-prestashop --network prestashop-net -e DB_SERVER=some-mysql -p 8080:80 -d prestashop/prestashop
 ```
 
-A new shop will be built, ready to be installed. You can then use it by reaching `http://localhost:8080`. The MySQL server can be reached with the URL `some-mysql:3306`.
+A new shop will be built, ready to be installed. 
+
+You can then use the shop it by reaching [http://localhost:8080](http://localhost:8080).
+
+The MySQL server can be reached:
+- from the host using port 3307 (example: `$ mysql -uroot -padmin -h localhost --port 3307`)
+- from a container in the network using the URL `some-mysql:3306`.
+
+For example, when you reach the "database configuration" install step, the installer will ask for the "server database address": input `some-mysql:3306`.
+
+<hr>
+
 However, if you want to customize the container execution, here are many available options:
 
 * **PS_DEV_MODE**: The constant `_PS_MODE_DEV_` will be set at `true` *(default value: 0)*
@@ -91,17 +106,19 @@ The documentation (in English by default) is available at the following addresse
 
 ## Troubleshooting
 
-#### Cannot connect to mysql from host
+#### Cannot connect to mysql from host - authentication plugin cannot be loaded
 
 ```
 ERROR 2059 (HY000): Authentication plugin 'caching_sha2_password' cannot be loaded: ...
 ```
 
-If your `mysql` image uses mysql8, the authentication plugin changed from `mysql_native_password` to `caching_sha2_password`. You can bypass this by forcing the old authentication plugin: 
+If your `mysql` image uses MySQL 8, the authentication plugin changed from `mysql_native_password` to `caching_sha2_password`. You can bypass this by forcing the old authentication plugin: 
 
+```bash
+$ docker run -ti --p 3307:3306 --network prestashop-net --name some-mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql --default-authentication-plugin=mysql_native_password
 ```
-$ docker run -ti --name some-mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql --default-authentication-plugin=mysql_native_password
-```
+
+#### Cannot connect to mysql from host - cannot use socket
 
 ```
 ERROR 1045 (28000): Access denied for user '...'@'...' (using password: YES)
@@ -109,6 +126,30 @@ ERROR 1045 (28000): Access denied for user '...'@'...' (using password: YES)
 
 For some usecases, you might need to force using TCP instead of sockets:
 
+```bash
+$ mysql -u root -padmin -h localhost --port 3307 --protocol=tcp
 ```
-$ mysql -u root -p --protocol=tcp
+
+#### During the installation, prestashop cannot connect to mysql - bad charset
+
 ```
+Server sent charset (255) unknown to the client. Please, report to the developers
+```
+
+MySQL 8 changed the default charset to utfmb4. But some clients do not know this charset. This requires to modify the mysql configuration file.
+
+If you are using a `mysql` container, you need to :
+- modify mysql configuration file `/etc/mysql/my/cnf` and add:
+```
+[client]
+default-character-set=utf8
+
+[mysql]
+default-character-set=utf8
+
+
+[mysqld]
+collation-server = utf8_unicode_ci
+character-set-server = utf8
+```
+- restart mysql container
