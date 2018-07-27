@@ -88,3 +88,27 @@ The documentation (in English by default) is available at the following addresse
 * [PrestaShop 1.6](http://doc.prestashop.com/display/PS16)
 * [PrestaShop 1.5](http://doc.prestashop.com/display/PS15)
 * [PrestaShop 1.4](http://doc.prestashop.com/display/PS14)
+
+## Troubleshooting
+
+#### Cannot connect to mysql from host
+
+```
+ERROR 2059 (HY000): Authentication plugin 'caching_sha2_password' cannot be loaded: ...
+```
+
+If your `mysql` image uses mysql8, the authentication plugin changed from `mysql_native_password` to `caching_sha2_password`. You can bypass this by forcing the old authentication plugin: 
+
+```
+$ docker run -ti --name some-mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql --default-authentication-plugin=mysql_native_password
+```
+
+```
+ERROR 1045 (28000): Access denied for user '...'@'...' (using password: YES)
+```
+
+For some usecases, you might need to force using TCP instead of sockets:
+
+```
+$ mysql -u root -p --protocol=tcp
+```
