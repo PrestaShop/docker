@@ -69,6 +69,10 @@ if [ ! -f ./config/settings.inc.php  ]; then
 			--db_password=$DB_PASSWD --prefix="$DB_PREFIX" --firstname="John" --lastname="Doe" \
 			--password=$ADMIN_PASSWD --email="$ADMIN_MAIL" --language=$PS_LANGUAGE --country=$PS_COUNTRY \
 			--newsletter=0 --send_email=0
+
+		if [ $? -ne 0 ]; then
+			echo 'warning: PrestaShop installation failed.'
+		fi
 	fi
 else
     echo "\n* Pretashop Core already installed...";
