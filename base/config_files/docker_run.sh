@@ -10,7 +10,7 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	echo "\n* Reapplying PrestaShop files for enabled volumes ...";
 
 	# init if empty
-	cp -n -R /tmp/data-ps/prestashop/* /var/www/html
+	cp -n -R -p /tmp/data-ps/prestashop/* /var/www/html
 
 	if [ $PS_DEV_MODE -ne 0 ]; then
 		echo "\n* Enabling DEV mode ...";
