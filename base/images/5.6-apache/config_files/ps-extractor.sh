@@ -10,7 +10,8 @@ if [[ -n "$folder" ]]; then
         rm -rf $folder/prestashop.zip
     fi
 
-    cp -n -R $folder/prestashop/* /var/www/html
+    chown www-data:www-data -R $folder/prestashop/
+    cp -n -R -p $folder/prestashop/* /var/www/html
 else
     echo "Missing folder to move"
 fi
