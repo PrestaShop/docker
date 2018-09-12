@@ -10,7 +10,7 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	echo "\n* Reapplying PrestaShop files for enabled volumes ...";
 
 	# init if empty
-	cp -n -R /tmp/data-ps/prestashop/* /var/www/html
+	cp -n -R -p /tmp/data-ps/prestashop/* /var/www/html
 
 	if [ $PS_DEV_MODE -ne 0 ]; then
 		echo "\n* Enabling DEV mode ...";
@@ -64,13 +64,16 @@ if [ ! -f ./config/settings.inc.php  ]; then
 			export PS_DOMAIN=$(hostname -i)
 		fi
 
-		php /var/www/html/$PS_FOLDER_INSTALL/index_cli.php --domain="$PS_DOMAIN" --db_server=$DB_SERVER:$DB_PORT --db_name="$DB_NAME" --db_user=$DB_USER \
+		runuser -g www-data -u www-data -- php /var/www/html/$PS_FOLDER_INSTALL/index_cli.php \
+		  --domain="$PS_DOMAIN" --db_server=$DB_SERVER:$DB_PORT --db_name="$DB_NAME" --db_user=$DB_USER \
 			--db_password=$DB_PASSWD --prefix="$DB_PREFIX" --firstname="John" --lastname="Doe" \
 			--password=$ADMIN_PASSWD --email="$ADMIN_MAIL" --language=$PS_LANGUAGE --country=$PS_COUNTRY \
 			--newsletter=0 --send_email=0
-	fi
 
-	chown www-data:www-data -R /var/www/html/
+		if [ $? -ne 0 ]; then
+			echo 'warning: PrestaShop installation failed.'
+		fi
+	fi
 else
     echo "\n* Pretashop Core already installed...";
 fi
