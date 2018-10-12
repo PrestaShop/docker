@@ -8,17 +8,26 @@ generate_image()
 
     if [ "$php_version_default" = "$php_version" ]; then
         folder="$version";
+    elif [ $version = "nightly" ]; then
+        folder="${version}-$php_version";
     else
         folder="${version:0:3}-$php_version";
     fi
 
     mkdir -p images/$folder/
 
-    sed  '
-            s/{PS_VERSION}/'"$version"'/;
-            s/{PHP_VERSION}/'"$php_version"'/;
-            s/{PS_URL}/'"https:\/\/www.prestashop.com\/download\/old\/prestashop_$version.zip"'/
-        ' Dockerfile.model > images/$folder/Dockerfile
+    if [ $version = "nightly" ]; then
+        sed  '
+                s/{PS_VERSION}/'"$version"'/;
+                s/{PHP_VERSION}/'"$php_version"'/
+            ' Dockerfile-nightly.model > images/$folder/Dockerfile
+    else
+        sed  '
+                s/{PS_VERSION}/'"$version"'/;
+                s/{PHP_VERSION}/'"$php_version"'/;
+                s/{PS_URL}/'"https:\/\/www.prestashop.com\/download\/old\/prestashop_$version.zip"'/
+            ' Dockerfile.model > images/$folder/Dockerfile
+    fi
 }
 
 if [ -z "$1" ]; then
@@ -38,7 +47,7 @@ done <$ps_versions_file
 for php_version in "5.5-apache" "5.6-apache" "7.0-apache" "7.1-apache" "7.2-apache" "5.5-fpm" "5.6-fpm" "7.0-fpm" "7.1-fpm" "7.2-fpm"
 do
 
-    for major_version in "15" "16" "17"
+    for major_version in "15" "16" "17" "nightly"
     do
         version=$(grep "." versions$major_version.txt | tail -1)
         generate_image
