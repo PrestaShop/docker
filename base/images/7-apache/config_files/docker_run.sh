@@ -12,15 +12,7 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	# init if empty
 	cp -n -R -p /tmp/data-ps/prestashop/* /var/www/html
 
-	if [ $PS_DEV_MODE -ne 0 ]; then
-		echo "\n* Enabling DEV mode ...";
-		sed -ie "s/define('_PS_MODE_DEV_', false);/define('_PS_MODE_DEV_',\ true);/g" /var/www/html/config/defines.inc.php
-	fi
-
-	if [ $PS_HOST_MODE -ne 0 ]; then
-		echo "\n* Enabling HOST mode ...";
-		echo "define('_PS_HOST_MODE_', true);" >> /var/www/html/config/defines.inc.php
-	fi
+	cp -n /tmp/defines_custom.inc.php /var/www/html/config/defines_custom.inc.php
 
 	if [ $PS_FOLDER_INSTALL != "install" ]; then
 		echo "\n* Renaming install folder as $PS_FOLDER_INSTALL ...";
