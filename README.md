@@ -69,7 +69,8 @@ For example, when you reach the "database configuration" install step, the insta
 However, if you want to customize the container execution, here are many available options:
 
 * **PS_DEV_MODE**: The constant `_PS_MODE_DEV_` will be set at `true` *(default value: 0)*
-* **PS_HOST_MODE**: The constant `_PS_HOST_MODE_` will be set at `true`. Usefull to simulate a PrestaShop Cloud environment. *(default value: 0)*
+* **PS_HOST_MODE**: The constant `_PS_HOST_MODE_` will be set at `true`. Useful to simulate a PrestaShop Cloud environment. *(default value: 0)*
+* **PS_DEMO_MODE**: The constant `_PS_DEMO_MODE_` will be set at `true`. Use it to create a demonstration shop. *(default value: 0)*
 * **DB_SERVER**: If set, the external MySQL database will be used instead of the volatile internal one *(default value: localhost)*
 * **DB_USER**: Override default MySQL user *(default value: root)*
 * **DB_PASSWD**: Override default MySQL password *(default value: admin)*

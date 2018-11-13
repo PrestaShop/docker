@@ -16,6 +16,7 @@ PS_INSTALL_AUTO=0 \
 PS_ERASE_DB=0 \
 PS_DEV_MODE=0 \
 PS_HOST_MODE=0 \
+PS_DEMO_MODE=0 \
 PS_HANDLE_DYNAMIC_DOMAIN=0 \
 PS_FOLDER_ADMIN=admin \
 PS_FOLDER_INSTALL=install
@@ -46,6 +47,9 @@ COPY config_files/ps-extractor.sh config_files/docker_run.sh /tmp/
 
 # If handle dynamic domain
 COPY config_files/docker_updt_ps_domains.php /tmp/
+
+# PHP env for dev / demo modes
+COPY config_files/defines_custom.inc.php /tmp/
 
 # Apache configuration
 RUN if [ -x "$(command -v apache2-foreground)" ]; then a2enmod rewrite; fi
