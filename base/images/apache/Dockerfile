@@ -29,7 +29,6 @@ RUN apt-get update \
 		libfreetype6-dev \
 		libxml2-dev \
 		libicu-dev \
-		libzip-dev \
 		mysql-client \
 		wget \
 		unzip \
@@ -51,6 +50,7 @@ COPY config_files/docker_updt_ps_domains.php /tmp/
 
 # PHP env for dev / demo modes
 COPY config_files/defines_custom.inc.php /tmp/
+RUN chown www-data:www-data /tmp/defines_custom.inc.php
 
 # Apache configuration
 RUN if [ -x "$(command -v apache2-foreground)" ]; then a2enmod rewrite; fi
