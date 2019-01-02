@@ -29,6 +29,7 @@ RUN apt-get update \
 		libfreetype6-dev \
 		libxml2-dev \
 		libicu-dev \
+		libzip-dev \
 		mysql-client \
 		wget \
 		unzip \
