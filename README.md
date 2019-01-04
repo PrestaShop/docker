@@ -81,6 +81,7 @@ However, if you want to customize the container execution, here are many availab
 * **PS_DOMAIN**: When installing automatically your shop, you can tell the shop how it will be reached. For advanced users only *(no default value)*
 * **PS_LANGUAGE**: Change the default language installed with PrestaShop *(default value: en)*
 * **PS_COUNTRY**: Change the default country installed with PrestaShop *(default value: GB)*
+* **PS_ALL_LANGUAGES**: Install all the existing languages for the current version. *(default value: 0)*
 * **PS_FOLDER_ADMIN**: Change the name of the `admin` folder *(default value: admin. But will be automatically changed later)*
 * **PS_FOLDER_INSTALL**: Change the name of the `install` folder *(default value: install. But must be changed anyway later)*
 
