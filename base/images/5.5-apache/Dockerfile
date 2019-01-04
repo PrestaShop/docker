@@ -12,6 +12,7 @@ ADMIN_MAIL=demo@prestashop.com \
 ADMIN_PASSWD=prestashop_demo \
 PS_LANGUAGE=en \
 PS_COUNTRY=GB \
+PS_ALL_LANGUAGES=0 \
 PS_INSTALL_AUTO=0 \
 PS_ERASE_DB=0 \
 PS_DEV_MODE=0 \
