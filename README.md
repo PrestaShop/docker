@@ -84,6 +84,7 @@ However, if you want to customize the container execution, here are many availab
 * **PS_ALL_LANGUAGES**: Install all the existing languages for the current version. *(default value: 0)*
 * **PS_FOLDER_ADMIN**: Change the name of the `admin` folder *(default value: admin. But will be automatically changed later)*
 * **PS_FOLDER_INSTALL**: Change the name of the `install` folder *(default value: install. But must be changed anyway later)*
+* **PS_ENABLE_SSL**: Enable SSL at PrestaShop installation. *(default value: 0)*
 
 By default, we use the employee existing on the [PrestaShop demo](http://demo.prestashop.com). But you can change it with the following parameters:
 
