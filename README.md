@@ -89,7 +89,7 @@ However, if you want to customize the container execution, here are many availab
 By default, we use the employee existing on the [PrestaShop demo](http://demo.prestashop.com). But you can change it with the following parameters:
 
 * **ADMIN_MAIL**: Override default admin email *(default value: demo@prestashop.com)*
-* **ADMIN_PASSWD**: Override default admin password *(default value: prestashop_demo)*
+* **ADMIN_PASSWD**: Override default admin password *(default value: Prestashop_1_Demo)*
 
 If your IP / port (or domain) change between two executions of your container, you will need to modify this option:
 
