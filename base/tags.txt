@@ -1,5 +1,4 @@
 5-apache
-5.5-apache
 5.6-apache
 7-apache
 7.0-apache
@@ -7,7 +6,6 @@
 7.2-apache
 apache
 5-fpm
-5.5-fpm
 5.6-fpm
 7-fpm
 7.0-fpm
