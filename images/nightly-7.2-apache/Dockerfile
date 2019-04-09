@@ -1,6 +1,6 @@
 FROM google/cloud-sdk:latest as nightly-storage
 
-RUN gsutil cp `gsutil ls gs://prestashop-core-nightly/ | grep .zip | tail -1` /tmp/prestashop.zip
+RUN gsutil cp `gsutil ls gs://prestashop-core-nightly/ | grep -E 'develop.+\.zip$' | tail -1` /tmp/prestashop.zip
 
 
 FROM prestashop/base:7.2-apache
