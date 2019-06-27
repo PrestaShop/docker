@@ -1,10 +1,14 @@
+FROM google/cloud-sdk:latest as nightly-storage
+
+RUN gsutil cp `gsutil ls gs://prestashop-core-nightly/ | grep -E 'develop.+\.zip$' | tail -1` /tmp/prestashop.zip
+
+
 FROM prestashop/base:5.6-apache
 LABEL maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"
 
-ENV PS_VERSION 1.6.1.24
+ENV PS_VERSION nightly
 
-# Get PrestaShop
-ADD https://www.prestashop.com/download/old/prestashop_1.6.1.24.zip /tmp/prestashop.zip
+COPY --from=nightly-storage /tmp/prestashop.zip /tmp/prestashop.zip
 
 # Extract
 RUN mkdir -p /tmp/data-ps \

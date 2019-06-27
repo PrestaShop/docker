@@ -6,9 +6,7 @@ generate_image()
 {
     echo "Generate Dockerfile for PrestaShop $version - PHP $php_version"
 
-    if [ "$php_version_default" = "$php_version" ]; then
-        folder="$version";
-    elif [ $version = "nightly" ]; then
+    if [ $version = "nightly" ]; then
         folder="${version}-$php_version";
     else
         folder="${version:0:3}-$php_version";

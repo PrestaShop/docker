@@ -1,10 +1,10 @@
 FROM prestashop/base:5.6-apache
 LABEL maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"
 
-ENV PS_VERSION 1.7.3.1
+ENV PS_VERSION 1.7.5.2
 
 # Get PrestaShop
-ADD https://www.prestashop.com/download/old/prestashop_1.7.3.1.zip /tmp/prestashop.zip
+ADD https://www.prestashop.com/download/old/prestashop_1.7.5.2.zip /tmp/prestashop.zip
 
 # Extract
 RUN mkdir -p /tmp/data-ps \
