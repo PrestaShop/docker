@@ -114,9 +114,9 @@ When using Docker for Mac, Prestashop cannot be reached from the host browser (g
 
 Docker for Mac has an issue with bridging networking and consequently cannot reach the container on its internal IP address. After installation, the browser on the host machine will be redirected from `http://localhost:8080` to `http://<internal_prestashop_container_ip>:8080` which fails.
 
-You need to set the `PS_DOMAIN` and `PS_SHOP_URL` variables to `localhost:8080` for it to work correctly when browsing from the host computer. The command looks something like this:
+You need to set the `PS_DOMAIN` variable to `localhost:8080` for it to work correctly when browsing from the host computer. The command looks something like this:
 ```
-$ docker run -ti --name some-prestashop --network prestashop-net -e DB_SERVER=some-mysql -e PS_DOMAIN=localhost:8080 -e PS_SHOP_URL=localhost:8080 -p 8080:80 -d prestashop/prestashop
+$ docker run -ti --name some-prestashop --network prestashop-net -e DB_SERVER=some-mysql -e PS_DOMAIN=localhost:8080 -p 8080:80 -d prestashop/prestashop
 ```
 
 #### Cannot connect to mysql from host - authentication plugin cannot be loaded
