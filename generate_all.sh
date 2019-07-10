@@ -6,7 +6,10 @@ generate_image()
 {
     echo "Generate Dockerfile for PrestaShop $version - PHP $php_version"
 
-    if [ $version = "nightly" ]; then
+    if [ "${php_version}x" = "x" ]; then
+        folder="${version}";
+        php_version=$php_version_default
+    elif [ $version = "nightly" ]; then
         folder="${version}-$php_version";
     else
         folder="${version:0:3}-$php_version";
@@ -35,9 +38,9 @@ else
 fi
 
 # Generate images for all PrestaShop versions from 1.4 on PHP 5.6
-php_version=$php_version_default
 echo "Reading versions in $ps_versions_file ..."
 while read version; do
+    php_version=""
     generate_image
 done <$ps_versions_file
 
