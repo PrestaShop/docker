@@ -32,7 +32,7 @@ RUN apt-get update \
 		libxml2-dev \
 		libicu-dev \
 		libzip-dev \
-		mysql-client \
+		default-mysql-client \
 		wget \
 		unzip \
     && rm -rf /var/lib/apt/lists/* \
