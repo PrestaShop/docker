@@ -35,7 +35,7 @@ PrestaShop is a free and open-source e-commerce web application, committed to pr
 
 > [www.prestashop.com](https://www.prestashop.com)
 
-![PrestaShop's back office dashboard](http://www.prestashop.com/images/banners/general/ps161-screenshot-github.png "PrestaShop's back office dashboard")
+![PrestaShop's back office dashboard](https://user-images.githubusercontent.com/1009343/61462749-8fb19f00-a949-11e9-801f-70ab0a84192d.png "PrestaShop's back office dashboard")
 
 ## How to run this image
 
