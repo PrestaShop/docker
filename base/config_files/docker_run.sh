@@ -59,12 +59,12 @@ if [ ! -f ./config/settings.inc.php  ]; then
 			if [ $DB_PASSWD = "" ]; then
                         	echo "\n* Dropping existing database $DB_NAME..."
 				mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
-				echo "\n* Creating database $DN_NAME..."
+				echo "\n* Creating database $DB_NAME..."
 				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME -p$DB_PASSWD --force;
 			else
 				echo "\n* Dropping existing database $DB_NAME..."
 				mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
-				echo "\n* Creating database $DN_NAME..."
+				echo "\n* Creating database $DB_NAME..."
 				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force;
 			fi
 		fi
