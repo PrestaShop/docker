@@ -7,7 +7,11 @@ if [ "$DB_SERVER" = "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
 	exit 1
 fi
 
-if [ ! -f ./config/settings.inc.php  ]; then
+if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
+
+        echo "\n* Setting up install lock file..."
+        touch ./install.lock
+
 	echo "\n* Reapplying PrestaShop files for enabled volumes ...";
 
 	# init if empty
@@ -94,6 +98,20 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	else
 		echo "\n* No post-install script found, let's continue..."
 	fi
+
+        rm ./install.lock
+
+elif [ ! -f ./config/settings.inc.php ] && [ -f ./install.lock ]; then
+
+        echo "\n* Another setup is currently running..."
+        sleep 10
+        exit 42
+
+elif [ -f ./config/settings.inc.php ] && [ -f ./install.lock ]; then
+
+        echo "\n* Shop seems setup but remaining install lock still present..." 
+        sleep 10
+        exit 42
 
 else
 	echo "\n* Pretashop Core already installed...";
