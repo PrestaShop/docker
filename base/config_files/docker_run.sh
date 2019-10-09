@@ -7,7 +7,11 @@ if [ "$DB_SERVER" = "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
 	exit 1
 fi
 
-if [ ! -f ./config/settings.inc.php  ]; then
+if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
+
+	echo "\n* Setting up install lock file..."
+	touch ./install.lock
+
 	echo "\n* Reapplying PrestaShop files for enabled volumes ...";
 
 	# init if empty
@@ -57,7 +61,7 @@ if [ ! -f ./config/settings.inc.php  ]; then
 		if [ $PS_ERASE_DB = 1 ]; then
 			echo "\n* Drop & recreate mysql database...";
 			if [ $DB_PASSWD = "" ]; then
-                        	echo "\n* Dropping existing database $DB_NAME..."
+				echo "\n* Dropping existing database $DB_NAME..."
 				mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
 				echo "\n* Creating database $DB_NAME..."
 				mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME -p$DB_PASSWD --force;
@@ -94,6 +98,21 @@ if [ ! -f ./config/settings.inc.php  ]; then
 	else
 		echo "\n* No post-install script found, let's continue..."
 	fi
+
+	echo "\n* Setup completed, removing lock file..."
+	rm ./install.lock
+
+elif [ ! -f ./config/settings.inc.php ] && [ -f ./install.lock ]; then
+
+	echo "\n* Another setup is currently running..."
+	sleep 10
+	exit 42
+
+elif [ -f ./config/settings.inc.php ] && [ -f ./install.lock ]; then
+
+	echo "\n* Shop seems setup but remaining install lock still present..."
+	sleep 10
+	exit 42
 
 else
 	echo "\n* Pretashop Core already installed...";
