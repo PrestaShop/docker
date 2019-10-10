@@ -14,10 +14,14 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
 
     echo "\n* Reapplying PrestaShop files for enabled volumes ...";
 
-    # init if empty
-    cp -n -R -p /tmp/data-ps/prestashop/* /var/www/html
+    if [ -d /tmp/data-ps ]; then
+        # init if empty
+        cp -n -R -p /tmp/data-ps/prestashop/* /var/www/html
+    fi
 
-    cp -n -p /tmp/defines_custom.inc.php /var/www/html/config/defines_custom.inc.php
+    if [ -f /tmp/defines_custom.inc.php ]; then
+        cp -n -p /tmp/defines_custom.inc.php /var/www/html/config/defines_custom.inc.php
+    fi
 
     if [ -d /tmp/pre-install-scripts/ ]; then
         echo "\n* Running pre-install script(s)..."
@@ -29,12 +33,12 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
         echo "\n* No pre-install script found, let's continue..."
     fi
 
-    if [ $PS_FOLDER_INSTALL != "install" ]; then
+    if [ $PS_FOLDER_INSTALL != "install" && -d /var/www/html/install ]; then
         echo "\n* Renaming install folder as $PS_FOLDER_INSTALL ...";
         mv /var/www/html/install /var/www/html/$PS_FOLDER_INSTALL/
     fi
 
-    if [ $PS_FOLDER_ADMIN != "admin" ]; then
+    if [ $PS_FOLDER_ADMIN != "admin"  && -d /var/www/html/admin ]; then
         echo "\n* Renaming admin folder as $PS_FOLDER_ADMIN ...";
         mv /var/www/html/admin /var/www/html/$PS_FOLDER_ADMIN/
     fi
