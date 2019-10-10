@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pushd $(cd "$( dirname "$0" )" && pwd)
+
 generate_image()
 {
     echo "Generate Dockerfile for PHP $version"
@@ -34,3 +36,5 @@ echo "Reading tags in $ps_versions_file ..."
 while read version; do
     generate_image
 done <$ps_versions_file
+
+popd
