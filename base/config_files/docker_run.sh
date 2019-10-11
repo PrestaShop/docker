@@ -33,12 +33,12 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
         echo "\n* No pre-install script found, let's continue..."
     fi
 
-    if [ $PS_FOLDER_INSTALL != "install" && -d /var/www/html/install ]; then
+    if [ $PS_FOLDER_INSTALL != "install" ] && [ -d /var/www/html/install ]; then
         echo "\n* Renaming install folder as $PS_FOLDER_INSTALL ...";
         mv /var/www/html/install /var/www/html/$PS_FOLDER_INSTALL/
     fi
 
-    if [ $PS_FOLDER_ADMIN != "admin"  && -d /var/www/html/admin ]; then
+    if [ $PS_FOLDER_ADMIN != "admin" ] && [ -d /var/www/html/admin ]; then
         echo "\n* Renaming admin folder as $PS_FOLDER_ADMIN ...";
         mv /var/www/html/admin /var/www/html/$PS_FOLDER_ADMIN/
     fi
