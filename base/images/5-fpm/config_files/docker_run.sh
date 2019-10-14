@@ -62,19 +62,9 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
     fi
 
     if [ $PS_INSTALL_AUTO = 1 ]; then
-        RET=1
-        while [ $RET -ne 0 ]; do
-            echo "\n* Checking if $DB_SERVER is available..."
-            mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
-            RET=$?
-
-            if [ $RET -ne 0 ]; then
-                    echo "\n* Waiting for confirmation of MySQL service startup";
-                sleep 5
-            fi
-        done
 
         echo "\n* Installing PrestaShop, this may take a while ...";
+
         if [ $PS_ERASE_DB = 1 ]; then
             echo "\n* Drop & recreate mysql database...";
             if [ $DB_PASSWD = "" ]; then
