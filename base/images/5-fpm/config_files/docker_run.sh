@@ -5,6 +5,19 @@ if [ "$DB_SERVER" = "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
     echo >&2 'error: You requested automatic PrestaShop installation but MySQL server address is not provided '
     echo >&2 '  You need to specify DB_SERVER in order to proceed'
     exit 1
+elif [ "$DB_SERVER" != "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
+    RET=1
+    while [ $RET -ne 0 ]; do
+        echo "\n* Checking if $DB_SERVER is available..."
+        mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
+        RET=$?
+
+        if [ $RET -ne 0 ]; then
+            echo "\n* Waiting for confirmation of MySQL service startup";
+            sleep 5
+        fi
+    done
+        echo "\n* DB server $DB_SERVER is available, let's continue !"
 fi
 
 if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
@@ -49,19 +62,9 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
     fi
 
     if [ $PS_INSTALL_AUTO = 1 ]; then
-        RET=1
-        while [ $RET -ne 0 ]; do
-            echo "\n* Checking if $DB_SERVER is available..."
-            mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
-            RET=$?
-
-            if [ $RET -ne 0 ]; then
-                    echo "\n* Waiting for confirmation of MySQL service startup";
-                sleep 5
-            fi
-        done
 
         echo "\n* Installing PrestaShop, this may take a while ...";
+
         if [ $PS_ERASE_DB = 1 ]; then
             echo "\n* Drop & recreate mysql database...";
             if [ $DB_PASSWD = "" ]; then
