@@ -125,6 +125,11 @@ else
     echo "\n* Pretashop Core already installed...";
 fi
 
+if [ $PS_DEMO_MODE -ne 0 ]; then
+    echo "\n* Enabling DEMO mode ...";
+    sed -ie "s/define('_PS_MODE_DEMO_', false);/define('_PS_MODE_DEMO_',\ true);/g" /var/www/html/config/defines.inc.php
+fi
+
 echo "\n* Almost ! Starting web server now\n";
 
 if [ -d /tmp/init-scripts/ ]; then
