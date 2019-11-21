@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 
 if [ "$DB_SERVER" = "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
     echo >&2 'error: You requested automatic PrestaShop installation but MySQL server address is not provided '
@@ -19,6 +18,9 @@ elif [ "$DB_SERVER" != "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
     done
         echo "\n* DB server $DB_SERVER is available, let's continue !"
 fi
+
+# From now, stop at error
+set -e
 
 if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
 
