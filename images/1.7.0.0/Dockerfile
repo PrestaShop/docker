@@ -1,5 +1,5 @@
 FROM prestashop/base:5.6-apache
-LABEL maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"
+LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_VERSION 1.7.0.0
 
