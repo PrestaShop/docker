@@ -4,7 +4,7 @@ RUN gsutil cp `gsutil ls gs://prestashop-core-nightly/ | grep -E 'develop.+\.zip
 
 
 FROM prestashop/base:7.1-fpm
-LABEL maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"
+LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_VERSION nightly
 

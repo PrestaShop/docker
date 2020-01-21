@@ -1,5 +1,5 @@
 FROM php:7.0-apache
-LABEL maintainer="Thomas Nabord <thomas.nabord@prestashop.com>"
+LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_DOMAIN="<to be defined>" \
 DB_SERVER="<to be defined>" \
