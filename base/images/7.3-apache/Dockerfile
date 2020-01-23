@@ -1,4 +1,4 @@
-FROM php:apache
+FROM php:7.3-apache
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_DOMAIN="<to be defined>" \

@@ -45,13 +45,21 @@ while read version; do
 done <$ps_versions_file
 
 # Generate images for each major version of PrestaShop on different PHP environment
-for php_version in "5.6-apache" "7.0-apache" "7.1-apache" "7.2-apache" "5.6-fpm" "7.0-fpm" "7.1-fpm" "7.2-fpm"
+for php_version in "5.6-apache" "7.0-apache" "7.1-apache" "5.6-fpm" "7.0-fpm" "7.1-fpm"
 do
-
-    for major_version in "15" "16" "17" "nightly"
+    for major_version in "15" "16"
     do
         version=$(grep "." versions$major_version.txt | tail -1)
         generate_image
     done
+done
 
+# Generate images for each major version of PrestaShop on different PHP environment
+for php_version in "7.1-apache" "7.2-apache" "7.3-apache" "7.1-fpm" "7.2-fpm" "7.3-fpm"
+do
+    for major_version in "17" "nightly"
+    do
+        version=$(grep "." versions$major_version.txt | tail -1)
+        generate_image
+    done
 done
