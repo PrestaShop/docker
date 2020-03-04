@@ -32,8 +32,8 @@ RUN apt-get update \
 		libxml2-dev \
 		libicu-dev \
 		libzip-dev \
-		libonig-dev \
 		default-mysql-client \
+		libonig-dev \
 		wget \
 		unzip \
     && rm -rf /var/lib/apt/lists/* \

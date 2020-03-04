@@ -1,4 +1,4 @@
-FROM php:5-fpm
+FROM php:7.3-fpm
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_DOMAIN="<to be defined>" \
@@ -36,7 +36,7 @@ RUN apt-get update \
 		wget \
 		unzip \
     && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip
 
 RUN docker-php-source extract \
