@@ -33,6 +33,7 @@ RUN apt-get update \
 		libicu-dev \
 		libzip-dev \
 		default-mysql-client \
+		libonig-dev \
 		wget \
 		unzip \
     && rm -rf /var/lib/apt/lists/* \
