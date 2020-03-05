@@ -3,7 +3,7 @@ FROM google/cloud-sdk:latest as nightly-storage
 RUN gsutil cp `gsutil ls gs://prestashop-core-nightly/ | grep -E 'develop.+\.zip$' | tail -1` /tmp/prestashop.zip
 
 
-FROM prestashop/base:5.6-apache
+FROM prestashop/base:7.3-apache
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_VERSION nightly
