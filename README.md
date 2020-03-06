@@ -10,19 +10,22 @@
 * `1.5`
 * `1.4`
 * `nightly` (Latest but unstable release from git)
+* `beta`
 
 ### Other PHP versions
 By default, our images are running with PHP 5.6. But each major version can be launched with another PHP version if you want to.
 * Apache
-  * PHP 5.6: `1.5-5.6-apache`, `1.6-5.6-apache`, `1.7-5.6-apache`, `nightly`
-  * PHP 7.0: `1.5-7.0-apache`, `1.6-7.0-apache`, `1.7-7.0-apache`, `nightly-7.0-apache`
+  * PHP 5.6: `1.5-5.6-apache`, `1.6-5.6-apache`
+  * PHP 7.0: `1.5-7.0-apache`, `1.6-7.0-apache`
   * PHP 7.1: `1.5-7.1-apache`, `1.6-7.1-apache`, `1.7-7.1-apache`, `nightly-7.1-apache`
   * PHP 7.2: `1.5-7.2-apache`, `1.6-7.2-apache`, `1.7-7.2-apache`, `nightly-7.2-apache`
+  * PHP 7.3: `1.7-7.3-apache`, `nightly-7.3-apache`, `nightly`
 * FPM
-  * PHP 5.6: `1.5-5.6-fpm`, `1.6-5.6-fpm`, `1.7-5.6-fpm`, `nightly-5.6-fpm`
-  * PHP 7.0: `1.5-7.0-fpm`, `1.6-7.0-fpm`, `1.7-7.0-fpm`, `nightly-7.0-fpm`
+  * PHP 5.6: `1.5-5.6-fpm`, `1.6-5.6-fpm`
+  * PHP 7.0: `1.5-7.0-fpm`, `1.6-7.0-fpm`
   * PHP 7.1: `1.5-7.1-fpm`, `1.6-7.1-fpm`, `1.7-7.1-fpm`, `nightly-7.1-fpm`
   * PHP 7.2: `1.5-7.2-fpm`, `1.6-7.2-fpm`, `1.7-7.2-fpm`, `nightly-7.2-fpm`
+  * PHP 7.3: `1.7-7.3-fpm`, `nightly-7.3-fpm`
 
 You can use tags for this. For example:
 ```
