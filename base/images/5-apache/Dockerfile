@@ -36,7 +36,7 @@ RUN apt-get update \
 		wget \
 		unzip \
     && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip
 
 RUN docker-php-source extract \
