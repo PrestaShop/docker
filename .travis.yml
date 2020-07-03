@@ -8,7 +8,7 @@ env:
     BASE=5.6-apache
   - VERSION=1.6.1.24
     BASE=7.0-apache
-  - VERSION=1.7.6.5
+  - VERSION=1.7.6.6
     BASE=apache
 
   - VERSION=1.5-7.0-apache
@@ -22,7 +22,7 @@ env:
     BASE=7.1-fpm
   - VERSION=1.5-7.2-fpm
     BASE=7.2-fpm
-  - VERSION=1.7.6.5
+  - VERSION=1.7.6.6
     BASE=fpm
 
   - VERSION=nightly-7.3-apache
