@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 from errno import EEXIST
-from os import path, mkdir
+from os import path, makedirs
 from string import Template
 from versions import VERSIONS
+
+CONTAINERS = ('fpm', 'apache')
 
 class Generator:
     def __init__(self):
@@ -12,22 +14,24 @@ class Generator:
         self.template = Template(open('./Dockerfile.model').read())
         self.nightly_template = Template(open('./Dockerfile-nightly.model').read())
 
-    def generate_image(self, ps_version, folder, container_version):
-        print(
-            'Generate Dockerfile for PrestaShop {} - PHP {}'.format(
-                ps_version,
-                container_version
-            )
-        )
-
+    def create_directory(self, directory_path):
         try:
-            mkdir(path.join(self.directory_path, folder), 0o755)
+            makedirs(directory_path, 0o755, exist_ok=True)
         except OSError as e:
             if e.errno != EEXIST:
                 raise
             pass
 
-        file_path = path.join(self.directory_path, folder, 'Dockerfile')
+    def generate_image(self, ps_version, container_version):
+        directory_path = path.join(
+            self.directory_path,
+            ps_version,
+            container_version
+        )
+
+        self.create_directory(directory_path)
+
+        file_path = path.join(directory_path, 'Dockerfile')
         template = self.nightly_template if ps_version == 'nightly' else self.template
 
         with open(file_path, 'w+') as f:
@@ -43,9 +47,21 @@ class Generator:
 
     def generate_all(self, versions):
         for ps_version, php_versions in versions.items():
+            print(
+                'Generate Dockerfile for PrestaShop {}'.format(
+                    ps_version,
+                )
+            )
             for php_version in php_versions:
-                self.generate_image(ps_version, ps_version, '{}'.format(php_version))
-                # self.generate_image(ps_version, '{}'.format(php_version))
+                for container in CONTAINERS:
+                    container_version = '{}-{}'.format(php_version, container)
+                    print(
+                        "\tContainer - {}".format(
+                            container_version
+                        )
+                    )
+
+                    self.generate_image(ps_version, container_version)
 
 
 if __name__ == '__main__':
