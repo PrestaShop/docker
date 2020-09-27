@@ -72,3 +72,27 @@ class GeneratorTestCase(TestCase):
             )
             self.assertIn('PS_VERSION: nightly', content)
             self.assertIn('CONTAINER_VERSION: 7.2-alpine', content)
+
+    def test_generate_all(self):
+        files = (
+            '/tmp/images/7.0/7.3-apache/Dockerfile',
+            '/tmp/images/7.0/7.3-fpm/Dockerfile',
+            '/tmp/images/7.0/7.2-apache/Dockerfile',
+            '/tmp/images/7.0/7.2-fpm/Dockerfile',
+            '/tmp/images/8.0/7.1-apache/Dockerfile',
+            '/tmp/images/8.0/7.1-fpm/Dockerfile',
+            '/tmp/images/8.0/5.6-apache/Dockerfile',
+            '/tmp/images/8.0/5.6-fpm/Dockerfile',
+        )
+        for f in files:
+            self.assertFalse(path.exists(f))
+
+        self.generator.generate_all(
+            {
+                '7.0': ('7.2', '7.3'),
+                '8.0': ('7.1', '5.6'),
+            }
+        )
+
+        for f in files:
+            self.assertTrue(path.exists(f), msg='{} doesn''t exists'.format(f))

@@ -2,8 +2,7 @@ extracts/*
 dist
 *.egg-info
 .eggs
-build/*
-!build/.keep
+cover
 .coverage
 
 *.pyc
