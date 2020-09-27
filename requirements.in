@@ -1,0 +1,4 @@
+pip-tools
+pyfakefs
+flake8
+nose
