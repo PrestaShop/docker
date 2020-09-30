@@ -8,7 +8,12 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='PrestaShop Docker manager.')
-    parser.add_argument('cmd', nargs='?', default=None, choices=['generate', 'tag'])
+    parser.add_argument(
+        'cmd',
+        nargs='?',
+        default=None,
+        choices=['generate', 'tag']
+    )
     args = parser.parse_args()
 
     if args.cmd is None:
