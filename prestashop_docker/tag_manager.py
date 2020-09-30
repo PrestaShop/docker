@@ -1,4 +1,7 @@
-class TagManager:
+from .runner import Runner
+
+
+class TagManager(Runner):
     def __init__(self):
         pass
 
