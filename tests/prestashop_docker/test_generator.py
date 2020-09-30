@@ -1,5 +1,5 @@
 from pyfakefs.fake_filesystem_unittest import TestCase
-from generator import Generator
+from prestashop_docker.generator import Generator
 from os import path
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+m#!/usr/bin/env python
 
 from versions import VERSIONS
 from generator import Generator
