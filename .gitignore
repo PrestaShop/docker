@@ -6,3 +6,4 @@ cover
 .coverage
 
 *.pyc
+cache.sqlite

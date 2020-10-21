@@ -3,3 +3,4 @@ pyfakefs
 flake8
 nose
 coverage
+docker
