@@ -39,8 +39,28 @@ class TagManager():
 
             self.stream_parser.display(log)
 
-    def push(self):
-        pass
+    def push(self, version=None):
+        versions = {}
+        if version is None:
+            versions = self.get_versions()
+        else:
+            versions = self.parse_version(version)
+        for version in versions.keys():
+            print(
+                'Pushing {}'.format(version)
+            )
+
+            if self.exists(version):
+                continue
+
+            log = self.docker_client.api.push(
+                repository='prestashop/prestashop',
+                tag=version,
+                decode=True,
+                stream=True
+            )
+
+            self.stream_parser.display(log)
 
     def exists(self, version):
         '''
