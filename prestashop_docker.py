@@ -35,19 +35,21 @@ def get_tag_parser(subparser):
 
     exist_parser = tag_subparser.add_parser(
         'exists',
-        help='Add workspace'
+        help='Check if tag exists on Docker Hub'
     )
     exist_parser.add_argument('version', type=str, help='Version name')
 
     build_parser = tag_subparser.add_parser(
         'build',
-        help='Add workspace'
+        help='Build container and create docker tag'
     )
     build_parser.add_argument('version', type=str, help='Version name', nargs='?')
-    tag_subparser.add_parser(
-        'list',
-        help='Show registered workspace'
+
+    push_parser = tag_subparser.add_parser(
+        'push',
+        help='Push docker tag'
     )
+    push_parser.add_argument('version', type=str, help='Version name', nargs='?')
 
     return tag_parser
 
@@ -76,7 +78,6 @@ def main():
             DockerApi(args.no_cache, args.debug),
         )
         if args.tag_subcommand is None:
-            print(dir(parser))
             tag_parser.print_help()
         else:
             if args.tag_subcommand == 'exists':
@@ -86,6 +87,8 @@ def main():
                     exit(1)
             elif args.tag_subcommand == 'build':
                 tag_manager.build(args.version)
+            elif args.tag_subcommand == 'push':
+                tag_manager.push(args.version)
     else:
         parser.print_help()
 
