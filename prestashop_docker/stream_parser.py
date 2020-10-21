@@ -1,8 +1,10 @@
 class StreamParser:
-    def __init__(self):
-        pass
-
     def display(self, logs):
+        '''
+        Display in stdout depending on the Stream Generator
+        It also considers when the stream is targeting a line, to reproduce
+        what there are in the original docker binary.
+        '''
         lines = {}
         previous_len = 0
         for log in logs:

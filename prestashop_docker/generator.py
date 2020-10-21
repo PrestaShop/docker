@@ -8,6 +8,15 @@ class Generator:
     NIGHTLY = 'nightly'
 
     def __init__(self, directory_path, template, nightly_template):
+        """Constructor
+
+        @param directory_path: Directory path
+        @type directory_path: str
+        @param template: Base template
+        @type template: str
+        @param nightly_template: Nightly template
+        @type nightly_template: str
+        """
         self.download_url = 'https://www.prestashop.com/download/old/' \
             'prestashop_{}.zip'
         self.directory_path = directory_path
@@ -15,6 +24,11 @@ class Generator:
         self.nightly_template = Template(nightly_template)
 
     def create_directory(self, directory_path):
+        """Try to create a directory if it's possible
+
+        @param directory_path: Directory path
+        @type directory_path: str
+        """
         try:
             makedirs(directory_path, 0o755, exist_ok=True)
         except OSError as e:
@@ -23,6 +37,13 @@ class Generator:
             pass
 
     def generate_image(self, ps_version, container_version):
+        """Generate Dockerfile image
+
+        @param ps_version: PrestaShop version
+        @type ps_version: str
+        @param container_version: Container version
+        @type container_version: str
+        """
         directory_path = path.join(
             self.directory_path,
             ps_version,
@@ -48,6 +69,11 @@ class Generator:
             )
 
     def generate_all(self, versions):
+        """Generate all Docker files from a dict
+
+        @param versions: Versions
+        @type versions: dict
+        """
         for ps_version, php_versions in versions.items():
             print(
                 'Generate Dockerfile for PrestaShop {}'.format(

@@ -17,11 +17,10 @@ class DockerApi():
     def __init__(self, no_cache, debug):
         """Constructor
 
-        :param no_cache: Disable cache
-        :type no_cache: bool
-        :param debug: Is debug mode enabled
-        :type debug: bool
-
+        @param no_cache: Disable cache
+        @type no_cache: bool
+        @param debug: Is debug mode enabled
+        @type debug: bool
         """
         self.sleep_time = 3
         self.url = 'https://hub.docker.com/v2/repositories/prestashop/prestashop'
@@ -34,8 +33,8 @@ class DockerApi():
     def get_tags(self):
         """Generate return tags
 
-        :returns: The json content
-        :rtype: dict
+        @return: The json content
+        @rtype: dict
 
         """
         logger.debug(
@@ -51,10 +50,9 @@ class DockerApi():
     def execute(self, request_url):
         """Execute url
 
-        :param request_url: The url to execute
-        :returns: The HTTP Response
-        :rtype: dict
-
+        @param request_url: The url to execute
+        @return: The HTTP Response
+        @rtype: dict
         """
         logger.debug(
             'Execute URL: ' + request_url
