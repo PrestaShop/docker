@@ -26,6 +26,9 @@ class TagManager():
                 'Building {}'.format(version)
             )
 
+            if self.exists(version):
+                continue
+
             log = self.docker_client.api.build(
                 path=str(version_path),
                 tag='prestashop/prestashop:' + version,

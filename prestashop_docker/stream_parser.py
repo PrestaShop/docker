@@ -8,7 +8,12 @@ class StreamParser:
         for log in logs:
             if 'stream' in log:
                 print(log['stream'])
+                # reset lines
+                lines = {}
             if 'status' in log:
+                if 'id' not in log:
+                    log['id'] = '0'
+
                 if 'progress' in log:
                     lines[log['id']] = log['status'] + ' ' + log['progress']
                 else:
