@@ -103,7 +103,7 @@ class TagManager():
 
     def get_versions(self):
         '''
-        Test if a version is already on Docker Hub
+        Return list of versions based on the images directory
 
         @return: Return list of versions
         @rtype: dict
