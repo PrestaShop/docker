@@ -1,10 +1,10 @@
 from errno import EEXIST
 from os import path, makedirs
 from string import Template
+from . import CONTAINERS
 
 
 class Generator:
-    CONTAINERS = ('fpm', 'apache')
     NIGHTLY = 'nightly'
 
     def __init__(self, directory_path, template, nightly_template):
@@ -81,7 +81,7 @@ class Generator:
                 )
             )
             for php_version in php_versions:
-                for container in self.CONTAINERS:
+                for container in CONTAINERS:
                     container_version = '{}-{}'.format(php_version, container)
                     print(
                         "\tContainer - {}".format(

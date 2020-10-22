@@ -22,7 +22,7 @@ class DockerApi():
         @param debug: Is debug mode enabled
         @type debug: bool
         """
-        self.sleep_time = 3
+        self.sleep_time = 1
         self.url = 'https://hub.docker.com/v2/repositories/prestashop/prestashop'
         self.no_cache = no_cache
         self.is_debug = debug
@@ -74,7 +74,7 @@ class DockerApi():
             return self.execute(request_url)
         else:
             DockerApi.retries = 0
-            # Data not in cache, we must wait because of GitHub API rate limits
+            # Data not in cache
             if not hasattr(resp, 'from_cache') or not resp.from_cache:
                 time.sleep(self.sleep_time)
 

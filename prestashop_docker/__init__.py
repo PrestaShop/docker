@@ -1,0 +1,4 @@
+CONTAINERS = (
+    'fpm',
+    'apache',
+)
