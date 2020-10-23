@@ -1,5 +1,5 @@
-class StreamParser:
-    def display(self, logs):
+class Stream:
+    def output(self, logs):
         '''
         Display in stdout depending on the Stream Generator
         It also considers when the stream is targeting a line, to reproduce

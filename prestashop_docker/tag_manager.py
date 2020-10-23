@@ -1,5 +1,5 @@
 import logging
-from .stream_parser import StreamParser
+from .stream import Stream
 from versions import VERSIONS
 from pathlib import Path
 from . import CONTAINERS
@@ -22,7 +22,7 @@ class TagManager():
         self.directory_path = Path(directory_path)
         self.docker_api = docker_api
         self.docker_client = docker_client
-        self.stream_parser = StreamParser()
+        self.stream = Stream()
 
     def build(self, version=None):
         '''
@@ -53,7 +53,7 @@ class TagManager():
                 decode=True
             )
 
-            self.stream_parser.display(log)
+            self.stream.output(log)
 
     def push(self, version=None):
         '''
@@ -82,7 +82,7 @@ class TagManager():
                 stream=True
             )
 
-            self.stream_parser.display(log)
+            self.stream.display(log)
 
     def exists(self, version):
         '''
