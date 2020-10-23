@@ -138,6 +138,12 @@ class VersionManager:
         return aliases
 
     def get_ps_versions_aliases(self):
+        '''
+        Get list of PrestaShop aliases associated with their real version
+
+        @return: List of aliases
+        @rtype: dict
+        '''
         aliases = {}
         previous_ps_version = None
         for ps_version in VERSIONS.keys():
