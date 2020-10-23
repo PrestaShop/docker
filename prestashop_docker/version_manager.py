@@ -120,7 +120,8 @@ class VersionManager:
         aliases_ps_version = self.get_ps_versions_aliases()
 
         aliases = {}
-        for alias_ps_version, ps_version in aliases_ps_version.items():
+        for alias_version, ps_version_data in aliases_ps_version.items():
+            ps_version = ps_version_data['value']
             previous_php_version = None
             for php_version in VERSIONS[ps_version]:
                 current_php_version = semver.VersionInfo.parse(php_version + '.0')
@@ -129,11 +130,11 @@ class VersionManager:
                     alias_php_version = php_version
                     previous_php_version = current_php_version
 
-                aliases[alias_ps_version + '-' + php_version] = self.create_version(ps_version, php_version, PREFERED_CONTAINER)
+                aliases[alias_version + '-' + php_version] = self.create_version(ps_version, php_version, PREFERED_CONTAINER)
 
-            aliases[alias_ps_version] = self.create_version(ps_version, alias_php_version, PREFERED_CONTAINER)
+            aliases[alias_version] = self.create_version(ps_version, alias_php_version, PREFERED_CONTAINER)
             for container_version in CONTAINERS:
-                aliases[alias_ps_version + '-' + container_version] = self.create_version(ps_version, alias_php_version, container_version)
+                aliases[alias_version + '-' + container_version] = self.create_version(ps_version, alias_php_version, container_version)
 
         return aliases
 
@@ -145,21 +146,30 @@ class VersionManager:
         @rtype: dict
         '''
         aliases = {}
-        previous_ps_version = None
+        previous_version = {}
         for ps_version in VERSIONS.keys():
-            alias_ps_version = None
             if len(ps_version.split('.')) < 4:
-                alias_ps_version = ps_version
-            else:
-                # PrestaShop versions are in format 1.MAJOR.MINOR.PATCH
-                splitted_version = ps_version.split('.', 1)
-                current_ps_version = semver.VersionInfo.parse(splitted_version[1])
-                if previous_ps_version is None or previous_ps_version < current_ps_version:
-                    previous_ps_version = current_ps_version
-                    alias_ps_version = splitted_version[0] + '.' + str(current_ps_version.major)
+                aliases[ps_version] = {
+                    'value': ps_version
+                }
+                continue
 
-            if alias_ps_version is not None:
-                aliases[alias_ps_version] = ps_version
+            # PrestaShop versions are in format 1.MAJOR.MINOR.PATCH
+            splitted_version = ps_version.split('.', 1)
+            current_version = semver.VersionInfo.parse(splitted_version[1])
+            version_name = splitted_version[0] + '.' + str(current_version.major)
+            if version_name not in previous_version or aliases[version_name]['version'] < current_version:
+                aliases[version_name] = {
+                    'version': current_version,
+                    'value': ps_version
+                }
+
+            version_with_major_name = splitted_version[0] + '.' + str(current_version.major) + '.' + str(current_version.minor)
+            if version_with_major_name not in aliases or aliases[version_with_major_name]['version'] < current_version:
+                aliases[version_with_major_name] = {
+                    'version': current_version,
+                    'value': ps_version
+                }
 
         return aliases
 

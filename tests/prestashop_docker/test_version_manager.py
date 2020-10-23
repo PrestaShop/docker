@@ -107,17 +107,27 @@ class VersionManagerTestCase(TestCase):
     def test_get_aliases(self):
         self.assertEqual(
             {
-                '1.7': '1.7.6.8-7.2-apache',
-                '1.7-apache': '1.7.6.8-7.2-apache',
-                '1.7-fpm': '1.7.6.8-7.2-fpm',
                 '1.7-5.6': '1.7.6.8-5.6-apache',
                 '1.7-7.1': '1.7.6.8-7.1-apache',
                 '1.7-7.2': '1.7.6.8-7.2-apache',
-                'nightly': 'nightly-7.1-apache',
-                'nightly-apache': 'nightly-7.1-apache',
-                'nightly-fpm': 'nightly-7.1-fpm',
+                '1.7': '1.7.6.8-7.2-apache',
+                '1.7-fpm': '1.7.6.8-7.2-fpm',
+                '1.7-apache': '1.7.6.8-7.2-apache',
+                '1.7.5-5.6': '1.7.5.1-5.6-apache',
+                '1.7.5-5.4': '1.7.5.1-5.4-apache',
+                '1.7.5': '1.7.5.1-5.6-apache',
+                '1.7.5-fpm': '1.7.5.1-5.6-fpm',
+                '1.7.5-apache': '1.7.5.1-5.6-apache',
+                '1.7.6-5.6': '1.7.6.8-5.6-apache',
+                '1.7.6-7.1': '1.7.6.8-7.1-apache',
+                '1.7.6-7.2': '1.7.6.8-7.2-apache',
+                '1.7.6': '1.7.6.8-7.2-apache',
+                '1.7.6-fpm': '1.7.6.8-7.2-fpm',
+                '1.7.6-apache': '1.7.6.8-7.2-apache',
                 'nightly-7.1': 'nightly-7.1-apache',
-
+                'nightly': 'nightly-7.1-apache',
+                'nightly-fpm': 'nightly-7.1-fpm',
+                'nightly-apache': 'nightly-7.1-apache'
             },
             self.version_manager.get_aliases(),
         )
