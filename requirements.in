@@ -4,3 +4,5 @@ flake8
 nose
 coverage
 docker
+requests
+semver

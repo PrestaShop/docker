@@ -1,7 +1,9 @@
 from versions import VERSIONS
 from . import CONTAINERS
+from . import PREFERED_CONTAINER
 from pathlib import Path
 import logging
+import semver
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +42,7 @@ class VersionManager:
         versions = {}
         for php_version in php_versions:
             for container_version in CONTAINERS:
-                versions[ps_version + '-' + php_version + '-' + container_version] = str(self.directory_path / ps_version / (php_version + '-' + container_version))
+                versions[self.create_version(ps_version, php_version, container_version)] = str(self.directory_path / ps_version / (php_version + '-' + container_version))
         return versions
 
     def parse_version(self, version):
@@ -74,7 +76,7 @@ class VersionManager:
             for container in containers:
                 container_path = ps_version_path / (php_version + '-' + container)
                 if container_path.exists():
-                    result[data['ps_version'] + '-' + php_version + '-' + container] = str(container_path)
+                    result[self.create_version(data['ps_version'], php_version, container)] = str(container_path)
 
         return result
 
@@ -106,3 +108,47 @@ class VersionManager:
                     }
         finally:
             return result
+
+    def get_aliases(self):
+        '''
+        Build aliases from VERSIONS constants
+
+        @return: All aliases associated to their image name
+        @rtype: dict
+        '''
+        aliases = {}
+        previous_ps_version = None
+        for ps_version, php_versions in VERSIONS.items():
+
+            if len(ps_version.split('.')) != 4:
+                alias_version = ps_version
+            else:
+                splitted_version = ps_version.split('.', 1)
+                current_ps_version = semver.VersionInfo.parse(splitted_version[1])
+                if previous_ps_version is None or previous_ps_version < current_ps_version:
+                    previous_ps_version = current_ps_version
+                    alias_version = splitted_version[0] + '.' + str(current_ps_version.major)
+
+            if alias_version not in aliases:
+                aliases[alias_version] = None
+
+            previous_php_version = None
+            for php_version in php_versions:
+                current_php_version = semver.VersionInfo.parse(php_version + '.0')
+                if previous_php_version is None or previous_php_version < current_php_version:
+                    previous_php_version = current_php_version
+                    aliases[alias_version] = self.create_version(ps_version, php_version, PREFERED_CONTAINER)
+
+        return aliases
+
+    def create_version(self, ps_version, php_version, container_version):
+        '''
+        Create version string
+        @param ps_version: PrestaShop version
+        @type ps_version: str
+        @param php_version: PHP version
+        @type php_version: str
+        @param container_version: Container version
+        @type container_version: str
+        '''
+        return ps_version + '-' + php_version + '-' + container_version

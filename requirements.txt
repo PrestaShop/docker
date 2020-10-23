@@ -18,7 +18,8 @@ pip-tools==5.3.1          # via -r requirements.in
 pycodestyle==2.6.0        # via flake8
 pyfakefs==4.1.0           # via -r requirements.in
 pyflakes==2.2.0           # via flake8
-requests==2.24.0          # via docker
+requests==2.24.0          # via -r requirements.in, docker
+semver==2.13.0            # via -r requirements.in
 six==1.15.0               # via docker, pip-tools, websocket-client
 urllib3==1.25.11          # via requests
 websocket-client==0.57.0  # via docker

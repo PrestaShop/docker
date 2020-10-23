@@ -1,7 +1,6 @@
 from pyfakefs.fake_filesystem_unittest import TestCase
 from prestashop_docker.version_manager import VersionManager
 from unittest.mock import patch
-from unittest.mock import MagicMock
 
 
 class VersionManagerTestCase(TestCase):
@@ -101,4 +100,14 @@ class VersionManagerTestCase(TestCase):
                 'nightly-7.1-fpm': '/tmp/images/nightly/7.1-fpm'
             },
             self.version_manager.get_versions(),
+        )
+
+    @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
+    def test_get_aliases(self):
+        self.assertEqual(
+            {
+                '1.7': '1.7.6.8-7.1-apache',
+                'nightly': 'nightly-7.1-apache',
+            },
+            self.version_manager.get_aliases(),
         )
