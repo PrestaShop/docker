@@ -99,7 +99,32 @@ class VersionManagerTestCase(TestCase):
     def test_get_versions(self):
         print(self.version_manager.get_versions())
         self.assertEqual(
-            {'1.7.5.0-5.6-fpm': '/tmp/images/1.7.5.0/5.6-fpm', '1.7.5.0-5.6-apache': '/tmp/images/1.7.5.0/5.6-apache', '1.7.5.0-5.4-fpm': '/tmp/images/1.7.5.0/5.4-fpm', '1.7.5.0-5.4-apache': '/tmp/images/1.7.5.0/5.4-apache', '1.7.5.1-5.6-fpm': '/tmp/images/1.7.5.1/5.6-fpm', '1.7.5.1-5.6-apache': '/tmp/images/1.7.5.1/5.6-apache', '1.7.5.1-5.4-fpm': '/tmp/images/1.7.5.1/5.4-fpm', '1.7.5.1-5.4-apache': '/tmp/images/1.7.5.1/5.4-apache', '1.7.6.4-5.6-fpm': '/tmp/images/1.7.6.4/5.6-fpm', '1.7.6.4-5.6-apache': '/tmp/images/1.7.6.4/5.6-apache', '1.7.6.4-7.1-fpm': '/tmp/images/1.7.6.4/7.1-fpm', '1.7.6.4-7.1-apache': '/tmp/images/1.7.6.4/7.1-apache', '1.7.6.5-5.6-fpm': '/tmp/images/1.7.6.5/5.6-fpm', '1.7.6.5-5.6-apache': '/tmp/images/1.7.6.5/5.6-apache', '1.7.6.5-7.1-fpm': '/tmp/images/1.7.6.5/7.1-fpm', '1.7.6.5-7.1-apache': '/tmp/images/1.7.6.5/7.1-apache', '1.7.6.8-5.6-fpm': '/tmp/images/1.7.6.8/5.6-fpm', '1.7.6.8-5.6-apache': '/tmp/images/1.7.6.8/5.6-apache', '1.7.6.8-7.1-fpm': '/tmp/images/1.7.6.8/7.1-fpm', '1.7.6.8-7.1-apache': '/tmp/images/1.7.6.8/7.1-apache', '1.7.6.8-7.2-fpm': '/tmp/images/1.7.6.8/7.2-fpm', '1.7.6.8-7.2-apache': '/tmp/images/1.7.6.8/7.2-apache', 'nightly-7.1-fpm': '/tmp/images/nightly/7.1-fpm', 'nightly-7.1-apache': '/tmp/images/nightly/7.1-apache'},
+            {
+                '1.7.5.0-5.6-fpm': '/tmp/images/1.7.5.0/5.6-fpm',
+                '1.7.5.0-5.6-apache': '/tmp/images/1.7.5.0/5.6-apache',
+                '1.7.5.0-5.4-fpm': '/tmp/images/1.7.5.0/5.4-fpm',
+                '1.7.5.0-5.4-apache': '/tmp/images/1.7.5.0/5.4-apache',
+                '1.7.5.1-5.6-fpm': '/tmp/images/1.7.5.1/5.6-fpm',
+                '1.7.5.1-5.6-apache': '/tmp/images/1.7.5.1/5.6-apache',
+                '1.7.5.1-5.4-fpm': '/tmp/images/1.7.5.1/5.4-fpm',
+                '1.7.5.1-5.4-apache': '/tmp/images/1.7.5.1/5.4-apache',
+                '1.7.6.4-5.6-fpm': '/tmp/images/1.7.6.4/5.6-fpm',
+                '1.7.6.4-5.6-apache': '/tmp/images/1.7.6.4/5.6-apache',
+                '1.7.6.4-7.1-fpm': '/tmp/images/1.7.6.4/7.1-fpm',
+                '1.7.6.4-7.1-apache': '/tmp/images/1.7.6.4/7.1-apache',
+                '1.7.6.5-5.6-fpm': '/tmp/images/1.7.6.5/5.6-fpm',
+                '1.7.6.5-5.6-apache': '/tmp/images/1.7.6.5/5.6-apache',
+                '1.7.6.5-7.1-fpm': '/tmp/images/1.7.6.5/7.1-fpm',
+                '1.7.6.5-7.1-apache': '/tmp/images/1.7.6.5/7.1-apache',
+                '1.7.6.8-5.6-fpm': '/tmp/images/1.7.6.8/5.6-fpm',
+                '1.7.6.8-5.6-apache': '/tmp/images/1.7.6.8/5.6-apache',
+                '1.7.6.8-7.1-fpm': '/tmp/images/1.7.6.8/7.1-fpm',
+                '1.7.6.8-7.1-apache': '/tmp/images/1.7.6.8/7.1-apache',
+                '1.7.6.8-7.2-fpm': '/tmp/images/1.7.6.8/7.2-fpm',
+                '1.7.6.8-7.2-apache': '/tmp/images/1.7.6.8/7.2-apache',
+                'nightly-7.1-fpm': '/tmp/images/nightly/7.1-fpm',
+                'nightly-7.1-apache': '/tmp/images/nightly/7.1-apache'
+            },
             self.version_manager.get_versions(),
         )
 
