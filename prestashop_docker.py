@@ -5,6 +5,7 @@ from versions import VERSIONS
 from prestashop_docker.generator import Generator
 from prestashop_docker.tag_manager import TagManager
 from prestashop_docker.docker_api import DockerApi
+from prestashop_docker.version_manager import VersionManager
 from os import path
 import argparse
 import logging
@@ -75,9 +76,9 @@ def main():
         generator.generate_all(VERSIONS)
     elif args.subcommand == 'tag':
         tag_manager = TagManager(
-            path.join(path.dirname(path.realpath(__file__)), 'images'),
             DockerApi(args.no_cache, args.debug),
             docker.from_env(),
+            VersionManager(path.join(path.dirname(path.realpath(__file__)), 'images'))
         )
         if args.tag_subcommand is None:
             tag_parser.print_help()
