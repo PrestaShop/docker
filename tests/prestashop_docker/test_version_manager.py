@@ -21,13 +21,20 @@ class VersionManagerTestCase(TestCase):
             '/tmp/images'
         )
 
-    all_versions = {'1.7.6.8': ('5.6', '7.1'), 'nightly': ('7.1',)}
+    all_versions = {
+        '1.7.5.1': ('5.6', '5.4'),
+        '1.7.5.0': ('5.6', '5.4'),
+        '1.7.6.4': ('5.6', '7.1'),
+        '1.7.6.5': ('5.6', '7.1'),
+        '1.7.6.8': ('5.6', '7.1', '7.2'),
+        'nightly': ('7.1',)
+    }
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_get_version_from_string_with_ps_version(self):
         result = self.version_manager.get_version_from_string('1.7.6.8')
         self.assertEqual(
-            {'ps_version': '1.7.6.8', 'php_versions': ('5.6', '7.1'), 'container_version': None},
+            {'ps_version': '1.7.6.8', 'php_versions': ('5.6', '7.1', '7.2'), 'container_version': None},
             result
         )
 
@@ -90,15 +97,9 @@ class VersionManagerTestCase(TestCase):
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_get_versions(self):
+        print(self.version_manager.get_versions())
         self.assertEqual(
-            {
-                '1.7.6.8-5.6-apache': '/tmp/images/1.7.6.8/5.6-apache',
-                '1.7.6.8-5.6-fpm': '/tmp/images/1.7.6.8/5.6-fpm',
-                '1.7.6.8-7.1-apache': '/tmp/images/1.7.6.8/7.1-apache',
-                '1.7.6.8-7.1-fpm': '/tmp/images/1.7.6.8/7.1-fpm',
-                'nightly-7.1-apache': '/tmp/images/nightly/7.1-apache',
-                'nightly-7.1-fpm': '/tmp/images/nightly/7.1-fpm'
-            },
+            {'1.7.5.0-5.6-fpm': '/tmp/images/1.7.5.0/5.6-fpm', '1.7.5.0-5.6-apache': '/tmp/images/1.7.5.0/5.6-apache', '1.7.5.0-5.4-fpm': '/tmp/images/1.7.5.0/5.4-fpm', '1.7.5.0-5.4-apache': '/tmp/images/1.7.5.0/5.4-apache', '1.7.5.1-5.6-fpm': '/tmp/images/1.7.5.1/5.6-fpm', '1.7.5.1-5.6-apache': '/tmp/images/1.7.5.1/5.6-apache', '1.7.5.1-5.4-fpm': '/tmp/images/1.7.5.1/5.4-fpm', '1.7.5.1-5.4-apache': '/tmp/images/1.7.5.1/5.4-apache', '1.7.6.4-5.6-fpm': '/tmp/images/1.7.6.4/5.6-fpm', '1.7.6.4-5.6-apache': '/tmp/images/1.7.6.4/5.6-apache', '1.7.6.4-7.1-fpm': '/tmp/images/1.7.6.4/7.1-fpm', '1.7.6.4-7.1-apache': '/tmp/images/1.7.6.4/7.1-apache', '1.7.6.5-5.6-fpm': '/tmp/images/1.7.6.5/5.6-fpm', '1.7.6.5-5.6-apache': '/tmp/images/1.7.6.5/5.6-apache', '1.7.6.5-7.1-fpm': '/tmp/images/1.7.6.5/7.1-fpm', '1.7.6.5-7.1-apache': '/tmp/images/1.7.6.5/7.1-apache', '1.7.6.8-5.6-fpm': '/tmp/images/1.7.6.8/5.6-fpm', '1.7.6.8-5.6-apache': '/tmp/images/1.7.6.8/5.6-apache', '1.7.6.8-7.1-fpm': '/tmp/images/1.7.6.8/7.1-fpm', '1.7.6.8-7.1-apache': '/tmp/images/1.7.6.8/7.1-apache', '1.7.6.8-7.2-fpm': '/tmp/images/1.7.6.8/7.2-fpm', '1.7.6.8-7.2-apache': '/tmp/images/1.7.6.8/7.2-apache', 'nightly-7.1-fpm': '/tmp/images/nightly/7.1-fpm', 'nightly-7.1-apache': '/tmp/images/nightly/7.1-apache'},
             self.version_manager.get_versions(),
         )
 
@@ -106,11 +107,12 @@ class VersionManagerTestCase(TestCase):
     def test_get_aliases(self):
         self.assertEqual(
             {
-                '1.7': '1.7.6.8-7.1-apache',
-                '1.7-apache': '1.7.6.8-7.1-apache',
-                '1.7-fpm': '1.7.6.8-7.1-fpm',
+                '1.7': '1.7.6.8-7.2-apache',
+                '1.7-apache': '1.7.6.8-7.2-apache',
+                '1.7-fpm': '1.7.6.8-7.2-fpm',
                 '1.7-5.6': '1.7.6.8-5.6-apache',
                 '1.7-7.1': '1.7.6.8-7.1-apache',
+                '1.7-7.2': '1.7.6.8-7.2-apache',
                 'nightly': 'nightly-7.1-apache',
                 'nightly-apache': 'nightly-7.1-apache',
                 'nightly-fpm': 'nightly-7.1-fpm',
