@@ -134,10 +134,13 @@ class VersionManager:
 
             previous_php_version = None
             for php_version in php_versions:
+                aliases[alias_version + '-' + php_version] = self.create_version(ps_version, php_version, PREFERED_CONTAINER)
                 current_php_version = semver.VersionInfo.parse(php_version + '.0')
                 if previous_php_version is None or previous_php_version < current_php_version:
                     previous_php_version = current_php_version
                     aliases[alias_version] = self.create_version(ps_version, php_version, PREFERED_CONTAINER)
+                    for container_version in CONTAINERS:
+                        aliases[alias_version + '-' + container_version] = self.create_version(ps_version, php_version, container_version)
 
         return aliases
 
