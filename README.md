@@ -78,7 +78,7 @@ If your IP / port (or domain) change between two executions of your container, y
 
 ## License
 
-View [license information](https://www.prestashop.com/en/osl-license) for the software contained in this image.
+View [license information](https://github.com/PrestaShop/PrestaShop/blob/develop/LICENSE.md) for the software contained in this image.
 
 ## Documentation
 
