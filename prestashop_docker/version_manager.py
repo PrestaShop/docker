@@ -3,6 +3,7 @@ from . import CONTAINERS
 from . import PREFERED_CONTAINER
 from pathlib import Path
 import logging
+import re
 import semver
 
 logger = logging.getLogger(__name__)
@@ -90,24 +91,39 @@ class VersionManager:
                  or ('PS_VERSION', 'PHP_VERSION', 'CONTAINER_TYPE')
         @rtype: tuple
         '''
-        result = None
-        data = version.split('-')
-        try:
-            if len(data) == 1:
-                result = {
-                    'ps_version': data[0],
-                    'php_versions': VERSIONS[data[0]],
-                    'container_version': None
-                }
-            else:
-                if data[1] in VERSIONS[data[0]]:
-                    result = {
-                        'ps_version': data[0],
-                        'php_versions': (data[1],),
-                        'container_version': data[2] if len(data) > 2 else None,
-                    }
-        finally:
-            return result
+        matches = self.parse_version_from_string(version)
+        if not matches:
+            return None
+
+        ps_version = matches.group('version')
+        if matches.group('php'):
+            php_versions = (matches.group('php'),)
+        else:
+            if ps_version not in VERSIONS:
+                return None
+
+            php_versions = VERSIONS[ps_version]
+
+        container_version = None
+        if matches.group('container'):
+            container_version = matches.group('container')
+
+        return {
+            'ps_version': ps_version,
+            'php_versions': php_versions,
+            'container_version': container_version
+        }
+
+    def parse_version_from_string(self, version):
+        '''
+        Parse version from string based on a regex
+        @param version: The version you want to parse
+        @type version: str
+        @return: Return None if no position in the string matches the pattern otherwise a Match object.
+        @rtpe: None|Match
+        '''
+        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
+        return re.search(regex, version)
 
     def get_aliases(self):
         '''
@@ -157,6 +173,10 @@ class VersionManager:
             # PrestaShop versions are in format 1.MAJOR.MINOR.PATCH
             splitted_version = ps_version.split('.', 1)
             current_version = semver.VersionInfo.parse(splitted_version[1])
+            # Ignore prerelease versions
+            if current_version.prerelease:
+                continue
+
             version_name = splitted_version[0] + '.' + str(current_version.major)
             if version_name not in previous_version or aliases[version_name]['version'] < current_version:
                 aliases[version_name] = {

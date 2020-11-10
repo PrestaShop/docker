@@ -27,6 +27,7 @@ class VersionManagerTestCase(TestCase):
         '1.7.6.4': ('5.6', '7.1'),
         '1.7.6.5': ('5.6', '7.1'),
         '1.7.6.8': ('5.6', '7.1', '7.2'),
+        '1.7.7.0-rc.1': ('7.1', '7.2', '7.3'),
         'nightly': ('7.1',)
     }
 
@@ -56,6 +57,30 @@ class VersionManagerTestCase(TestCase):
         result = self.version_manager.get_version_from_string('1.7.6.8-5.6-fpm')
         self.assertEqual(
             {'ps_version': '1.7.6.8', 'php_versions': ('5.6',), 'container_version': 'fpm'},
+            result
+        )
+
+    @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
+    def test_get_version_from_string_with_pre_release_and_without_container_version_and_type(self):
+        result = self.version_manager.get_version_from_string('1.7.7.0-rc.1')
+        self.assertEqual(
+            {'ps_version': '1.7.7.0-rc.1', 'php_versions': ('7.1', '7.2', '7.3'), 'container_version': None},
+            result
+        )
+
+    @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
+    def test_get_version_from_string_with_pre_release_and_php_version_and_without_container_version(self):
+        result = self.version_manager.get_version_from_string('1.7.7.0-rc.1-7.3')
+        self.assertEqual(
+            {'ps_version': '1.7.7.0-rc.1', 'php_versions': ('7.3',), 'container_version': None},
+            result
+        )
+
+    @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
+    def test_get_version_from_string_with_pre_release_and_php_version_and_with_container_version(self):
+        result = self.version_manager.get_version_from_string('1.7.7.0-rc.1-7.3-apache')
+        self.assertEqual(
+            {'ps_version': '1.7.7.0-rc.1', 'php_versions': ('7.3',), 'container_version': 'apache'},
             result
         )
 
@@ -122,9 +147,17 @@ class VersionManagerTestCase(TestCase):
                 '1.7.6.8-7.1-apache': '/tmp/images/1.7.6.8/7.1-apache',
                 '1.7.6.8-7.2-fpm': '/tmp/images/1.7.6.8/7.2-fpm',
                 '1.7.6.8-7.2-apache': '/tmp/images/1.7.6.8/7.2-apache',
+                '1.7.7.0-rc.1-7.1-fpm': '/tmp/images/1.7.7.0-rc.1/7.1-fpm',
+                '1.7.7.0-rc.1-7.1-apache': '/tmp/images/1.7.7.0-rc.1/7.1-apache',
+                '1.7.7.0-rc.1-7.2-fpm': '/tmp/images/1.7.7.0-rc.1/7.2-fpm',
+                '1.7.7.0-rc.1-7.2-apache': '/tmp/images/1.7.7.0-rc.1/7.2-apache',
+                '1.7.7.0-rc.1-7.3-fpm': '/tmp/images/1.7.7.0-rc.1/7.3-fpm',
+                '1.7.7.0-rc.1-7.3-apache': '/tmp/images/1.7.7.0-rc.1/7.3-apache',
                 'nightly-7.1-fpm': '/tmp/images/nightly/7.1-fpm',
                 'nightly-7.1-apache': '/tmp/images/nightly/7.1-apache'
+
             },
+
             self.version_manager.get_versions(),
         )
 
