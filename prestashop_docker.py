@@ -56,10 +56,20 @@ def get_tag_parser(subparser):
     return tag_parser
 
 
+def get_generate_parser(subparser):
+    generate_parser = subparser.add_parser(
+        'generate',
+        help='Generate Dockerfile'
+    )
+
+    return generate_parser
+
+
 def main():
     parser = get_parser()
     subparser = get_subparser(parser)
     tag_parser = get_tag_parser(subparser)
+    get_generate_parser(subparser)
 
     args = parser.parse_args()
 
