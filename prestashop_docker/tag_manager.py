@@ -46,7 +46,7 @@ class TagManager():
                 decode=True
             )
 
-            self.stream.output(log)
+            self.stream.display(log)
 
     def push(self, version=None):
         '''

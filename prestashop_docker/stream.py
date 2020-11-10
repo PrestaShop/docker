@@ -1,5 +1,5 @@
 class Stream:
-    def output(self, logs):
+    def display(self, logs):
         '''
         Display in stdout depending on the Stream Generator
         It also considers when the stream is targeting a line, to reproduce
@@ -28,3 +28,5 @@ class Stream:
                     print('\033[K', end='')
                     print(line, end='\n')
                 print(end='\r')
+
+        print('')
