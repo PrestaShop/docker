@@ -146,11 +146,23 @@ class VersionManager:
                     alias_php_version = php_version
                     previous_php_version = current_php_version
 
-                aliases[alias_version + '-' + php_version] = self.create_version(ps_version, php_version, PREFERED_CONTAINER)
+                created_version = self.create_version(ps_version, php_version, PREFERED_CONTAINER)
+                if created_version not in aliases:
+                    aliases[created_version] = []
 
-            aliases[alias_version] = self.create_version(ps_version, alias_php_version, PREFERED_CONTAINER)
+                aliases[created_version].append(alias_version + '-' + php_version)
+
+            created_version = self.create_version(ps_version, alias_php_version, PREFERED_CONTAINER)
+            if created_version not in aliases:
+                aliases[created_version] = []
+
+            aliases[created_version].append(alias_version)
             for container_version in CONTAINERS:
-                aliases[alias_version + '-' + container_version] = self.create_version(ps_version, alias_php_version, container_version)
+                created_version = self.create_version(ps_version, alias_php_version, container_version)
+                if created_version not in aliases:
+                    aliases[created_version] = []
+
+                aliases[created_version].append(alias_version + '-' + container_version)
 
         return aliases
 

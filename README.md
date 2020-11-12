@@ -6,14 +6,9 @@
 
 ### Image by PrestaShop version
 * `1.7`, `latest`
-* `1.6`
-* `1.5`
-* `1.4`
 * `nightly` (Latest but unstable release from git)
-* `beta`
 
 ### Other PHP versions
-By default, our images are running with PHP 5.6. But each major version can be launched with another PHP version if you want to.
 * Apache
   * PHP 5.6: `1.5-5.6-apache`, `1.6-5.6-apache`
   * PHP 7.0: `1.5-7.0-apache`, `1.6-7.0-apache`

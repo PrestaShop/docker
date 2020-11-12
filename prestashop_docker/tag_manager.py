@@ -45,8 +45,19 @@ class TagManager():
                 nocache=True,
                 decode=True
             )
-
             self.stream.display(log)
+
+            aliases = self.version_manager.get_aliases()
+            if version in aliases:
+                for alias in aliases[version]:
+                    print(
+                        'Create tag {}'.format(alias)
+                    )
+                    self.docker_client.api.tag(
+                        'prestashop/prestashop:' + version,
+                        'prestashop/prestashop',
+                        alias
+                    )
 
     def push(self, version=None):
         '''
