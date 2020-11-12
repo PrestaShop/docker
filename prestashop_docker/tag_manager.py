@@ -129,3 +129,17 @@ class TagManager():
             return self.version_manager.get_versions()
 
         return self.version_manager.parse_version(version)
+
+    def get_aliases(self, version):
+        '''
+        Get all aliases
+
+        @param version: Version
+        @type version: str
+        '''
+        versions = self.get_versions(version)
+        aliases = self.version_manager.get_aliases()
+        for version in versions:
+            if version in aliases:
+                print('Aliases for {}'.format(version))
+                [print("\t{}".format(alias)) for alias in aliases[version]]

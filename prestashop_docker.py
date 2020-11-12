@@ -49,9 +49,15 @@ def get_tag_parser(subparser):
 
     push_parser = tag_subparser.add_parser(
         'push',
-        help='Push docker tag'
+        help='Push docker tags'
     )
     push_parser.add_argument('version', type=str, help='Version name', nargs='?')
+
+    aliases_parser = tag_subparser.add_parser(
+        'aliases',
+        help='Get aliases'
+    )
+    aliases_parser.add_argument('version', type=str, help='Version name', nargs='?')
 
     return tag_parser
 
@@ -102,6 +108,8 @@ def main():
                 tag_manager.build(args.version)
             elif args.tag_subcommand == 'push':
                 tag_manager.push(args.version)
+            elif args.tag_subcommand == 'aliases':
+                tag_manager.get_aliases(args.version)
     else:
         parser.print_help()
 
