@@ -5,4 +5,5 @@ nose
 coverage
 docker
 requests
+requests_cache
 semver
