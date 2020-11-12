@@ -85,6 +85,20 @@ class TagManager():
 
             self.stream.display(log)
 
+            aliases = self.version_manager.get_aliases()
+            if version in aliases:
+                for alias in aliases[version]:
+                    print(
+                        'Pushing tag {}'.format(alias)
+                    )
+                    self.docker_client.api.push(
+                        'prestashop/prestashop',
+                        tag=alias,
+                        decode=True,
+                        stream=True
+                    )
+                    self.stream.display(log)
+
     def exists(self, version):
         '''
         Test if a version is already on Docker Hub
