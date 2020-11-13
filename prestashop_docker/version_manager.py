@@ -139,6 +139,7 @@ class VersionManager:
         for alias_version, ps_version_data in aliases_ps_version.items():
             ps_version = ps_version_data['value']
             previous_php_version = None
+            # Check PHP versions
             for php_version in VERSIONS[ps_version]:
                 current_php_version = semver.VersionInfo.parse(php_version + '.0')
 
@@ -152,11 +153,14 @@ class VersionManager:
 
                 aliases[created_version].append(alias_version + '-' + php_version)
 
+            # Check prefered container
             created_version = self.create_version(ps_version, alias_php_version, PREFERED_CONTAINER)
             if created_version not in aliases:
                 aliases[created_version] = []
 
             aliases[created_version].append(alias_version)
+
+            # Check containers
             for container_version in CONTAINERS:
                 created_version = self.create_version(ps_version, alias_php_version, container_version)
                 if created_version not in aliases:
@@ -187,6 +191,10 @@ class VersionManager:
             current_version = semver.VersionInfo.parse(splitted_version[1])
             # Ignore prerelease versions
             if current_version.prerelease:
+                aliases[ps_version] = {
+                    'version': current_version,
+                    'value': ps_version
+                }
                 continue
 
             version_name = splitted_version[0] + '.' + str(current_version.major)

@@ -165,6 +165,17 @@ class VersionManagerTestCase(TestCase):
     def test_get_aliases(self):
         self.assertEqual(
             {
+                '1.7.7.0-rc.1-7.3-fpm': ['1.7.7.0-rc.1-fpm'],
+                '1.7.7.0-rc.1-7.3-apache': ['1.7.7.0-rc.1', '1.7.7.0-rc.1-apache'],
+                '1.7.7.0-rc.1-7.1-apache': ['1.7.7.0-rc.1-7.1'],
+                '1.7.7.0-rc.1-7.2-apache': ['1.7.7.0-rc.1-7.2'],
+                '1.7.7.0-rc.1-7.3-fpm': ['1.7.7.0-rc.1-fpm'],
+                '1.7.7.0-rc.1-7.3-apache': [
+	            '1.7.7.0-rc.1-7.3',
+	            '1.7.7.0-rc.1',
+	            '1.7.7.0-rc.1-apache'
+                ],
+
                 '1.7.6.8-5.6-apache': ['1.7-5.6', '1.7.6-5.6'],
                 '1.7.6.8-7.1-apache': ['1.7-7.1', '1.7.6-7.1'],
                 '1.7.6.8-7.2-apache': [
