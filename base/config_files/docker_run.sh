@@ -91,6 +91,9 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
 
         if [ $? -ne 0 ]; then
             echo 'warning: PrestaShop installation failed.'
+        else
+            echo "\n* Removing install folder..."
+            rm -r /var/www/html/$PS_FOLDER_INSTALL/
         fi
     fi
 
