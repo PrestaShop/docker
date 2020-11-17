@@ -42,7 +42,7 @@ class TagManager():
                 path=str(version_path),
                 tag='prestashop/prestashop:' + version,
                 rm=True,
-                nocache=True,
+                nocache=False,
                 decode=True
             )
             self.stream.display(log)
@@ -91,8 +91,8 @@ class TagManager():
                     print(
                         'Pushing tag {}'.format(alias)
                     )
-                    self.docker_client.api.push(
-                        'prestashop/prestashop',
+                    log = self.docker_client.api.push(
+                        repository='prestashop/prestashop',
                         tag=alias,
                         decode=True,
                         stream=True

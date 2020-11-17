@@ -192,7 +192,6 @@ class VersionManager:
             # Ignore prerelease versions
             if current_version.prerelease:
                 aliases[ps_version] = {
-                    'version': current_version,
                     'value': ps_version
                 }
                 continue
@@ -210,6 +209,7 @@ class VersionManager:
                     'version': current_version,
                     'value': ps_version
                 }
+                aliases[ps_version] = aliases[version_name]
 
         return aliases
 
