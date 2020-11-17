@@ -163,7 +163,6 @@ class VersionManagerTestCase(TestCase):
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_get_aliases(self):
-        print(self.version_manager.get_aliases())
         self.assertEqual(
             {
                 '1.7.6.8-5.6-apache': ['1.7-5.6', '1.7.6-5.6', '1.7.6.8-5.6'],
@@ -172,6 +171,7 @@ class VersionManagerTestCase(TestCase):
                     '1.7-7.2',
                     '1.7',
                     '1.7-apache',
+                    'latest',
                     '1.7.6-7.2',
                     '1.7.6',
                     '1.7.6-apache',

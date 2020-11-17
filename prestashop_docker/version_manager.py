@@ -147,28 +147,25 @@ class VersionManager:
                     alias_php_version = php_version
                     previous_php_version = current_php_version
 
-                created_version = self.create_version(ps_version, php_version, PREFERED_CONTAINER)
-                if created_version not in aliases:
-                    aliases[created_version] = []
-
-                aliases[created_version].append(alias_version + '-' + php_version)
+                if alias_version != 'latest':
+                    self.append_to_aliases(aliases, ps_version, php_version, PREFERED_CONTAINER, alias_version + '-' + php_version)
 
             # Check prefered container
-            created_version = self.create_version(ps_version, alias_php_version, PREFERED_CONTAINER)
-            if created_version not in aliases:
-                aliases[created_version] = []
-
-            aliases[created_version].append(alias_version)
+            self.append_to_aliases(aliases, ps_version, alias_php_version, PREFERED_CONTAINER, alias_version)
 
             # Check containers
-            for container_version in CONTAINERS:
-                created_version = self.create_version(ps_version, alias_php_version, container_version)
-                if created_version not in aliases:
-                    aliases[created_version] = []
-
-                aliases[created_version].append(alias_version + '-' + container_version)
+            if alias_version != 'latest':
+                for container_version in CONTAINERS:
+                    self.append_to_aliases(aliases, ps_version, alias_php_version, container_version, alias_version + '-' + container_version)
 
         return aliases
+
+    def append_to_aliases(self, aliases, ps_version, php_version, container_version, alias_version):
+        created_version = self.create_version(ps_version, php_version, container_version)
+        if created_version not in aliases:
+            aliases[created_version] = []
+
+        aliases[created_version].append(alias_version)
 
     def get_ps_versions_aliases(self):
         '''
@@ -210,6 +207,7 @@ class VersionManager:
                     'value': ps_version
                 }
                 aliases[ps_version] = aliases[version_name]
+                aliases['latest'] = aliases[version_name]
 
         return aliases
 
