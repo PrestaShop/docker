@@ -92,10 +92,6 @@ If your IP / port (or domain) change between two executions of your container, y
 
 * **PS_HANDLE_DYNAMIC_DOMAIN**: Add specific configuration to handle dynamic domain *(default value: 0)*
 
-## License
-
-View [license information](https://www.prestashop.com/en/osl-license) for the software contained in this image.
-
 ## Documentation
 
 The documentation (in English by default) is available at the following addresses:
