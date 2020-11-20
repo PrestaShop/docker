@@ -1,1 +1,9 @@
 extracts/*
+dist
+*.egg-info
+.eggs
+cover
+.coverage
+
+*.pyc
+cache.sqlite

@@ -1,12 +1,12 @@
 FROM google/cloud-sdk:latest as nightly-storage
 
-RUN gsutil cp `gsutil ls gs://prestashop-core-nightly/ | grep -E 'develop.+\.zip$$' | tail -1` /tmp/prestashop.zip
+RUN gsutil cp `gsutil ls gs://prestashop-core-nightly/ | grep -E 'develop.+\.zip$' | tail -1` /tmp/prestashop.zip
 
 
-FROM prestashop/base:$container_version
+FROM prestashop/base:7.4-apache
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION $ps_version
+ENV PS_VERSION nightly
 
 COPY --from=nightly-storage /tmp/prestashop.zip /tmp/prestashop.zip
 

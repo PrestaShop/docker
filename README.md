@@ -4,32 +4,14 @@
 
 ## Supported tags
 
-### Image by PrestaShop version
-* `1.7`, `latest`
-* `1.6`
-* `1.5`
-* `1.4`
+### Images by PrestaShop version
+* `1.7`, `latest`, `1.7-apache`
+* `1.7-fpm`
 * `nightly` (Latest but unstable release from git)
-* `beta`
-
-### Other PHP versions
-By default, our images are running with PHP 5.6. But each major version can be launched with another PHP version if you want to.
-* Apache
-  * PHP 5.6: `1.5-5.6-apache`, `1.6-5.6-apache`
-  * PHP 7.0: `1.5-7.0-apache`, `1.6-7.0-apache`
-  * PHP 7.1: `1.5-7.1-apache`, `1.6-7.1-apache`, `1.7-7.1-apache`, `nightly-7.1-apache`
-  * PHP 7.2: `1.5-7.2-apache`, `1.6-7.2-apache`, `1.7-7.2-apache`, `nightly-7.2-apache`
-  * PHP 7.3: `1.7-7.3-apache`, `nightly-7.3-apache`, `nightly`
-* FPM
-  * PHP 5.6: `1.5-5.6-fpm`, `1.6-5.6-fpm`
-  * PHP 7.0: `1.5-7.0-fpm`, `1.6-7.0-fpm`
-  * PHP 7.1: `1.5-7.1-fpm`, `1.6-7.1-fpm`, `1.7-7.1-fpm`, `nightly-7.1-fpm`
-  * PHP 7.2: `1.5-7.2-fpm`, `1.6-7.2-fpm`, `1.7-7.2-fpm`, `nightly-7.2-fpm`
-  * PHP 7.3: `1.7-7.3-fpm`, `nightly-7.3-fpm`
 
 You can use tags for this. For example:
 ```
-$ docker run -ti --name my-docker-name -e PS_DEV_MODE=false -e PS_INSTALL_AUTO=0 -p 8080:80 -d prestashop/prestashop:1.7-7.0
+$ docker run -ti --name my-docker-name -e PS_DEV_MODE=false -e PS_INSTALL_AUTO=0 -p 8080:80 -d prestashop/prestashop:1.7
 ```
 
 ## What is PrestaShop
@@ -40,19 +22,20 @@ PrestaShop is a free and open-source e-commerce web application, committed to pr
 
 ![PrestaShop's back office dashboard](https://user-images.githubusercontent.com/1009343/61462749-8fb19f00-a949-11e9-801f-70ab0a84192d.png "PrestaShop's back office dashboard")
 
-## How to run this image
+## How to run these images
 
-This image is running with the latest Apache version in the [official PHP repository](https://registry.hub.docker.com/_/php/).
-For the database, you can use and link any SQL server related to MySQL. We advise MySQL 5.6 for PrestaShop 1.6 and MySQL 5.7 for Prestashop 1.7 . MySQL 8 can be used with additional configuration.
+These images are running with the latest version in the [official PHP repository](https://registry.hub.docker.com/_/php/).
+For the database, you can use and link any SQL server related to MySQL. 
 
 Currently if you do not have any MySQL server, the most simple way to run this container is:
+
 ```bash
 # create a network for containers to communicate
 $ docker network create prestashop-net
 # launch mysql 5.7 container
 $ docker run -ti --name some-mysql --network prestashop-net -e MYSQL_ROOT_PASSWORD=admin -p 3307:3306 -d mysql:5.7
 # launch prestashop container
-$ docker run -ti --name some-prestashop --network prestashop-net -e DB_SERVER=some-mysql -p 8080:80 -d prestashop/prestashop
+$ docker run -ti --name some-prestashop --network prestashop-net -e DB_SERVER=some-mysql -p 8080:80 -d prestashop/prestashop:latest
 ```
 
 A new shop will be built, ready to be installed.
@@ -97,18 +80,9 @@ If your IP / port (or domain) change between two executions of your container, y
 
 * **PS_HANDLE_DYNAMIC_DOMAIN**: Add specific configuration to handle dynamic domain *(default value: 0)*
 
-## License
-
-View [license information](https://github.com/PrestaShop/PrestaShop/blob/develop/LICENSE.md) for the software contained in this image.
-
 ## Documentation
 
-The documentation (in English by default) is available at the following addresses:
-
-* [PrestaShop 1.7](https://devdocs.prestashop.com/1.7/)
-* [PrestaShop 1.6](http://doc.prestashop.com/display/PS16)
-* [PrestaShop 1.5](http://doc.prestashop.com/display/PS15)
-* [PrestaShop 1.4](http://doc.prestashop.com/display/PS14)
+The documentation (in English by default) is available at the following addresses: [PrestaShop 1.7](http://doc.prestashop.com/display/PS17)
 
 ## Troubleshooting
 
@@ -170,3 +144,7 @@ collation-server = utf8_unicode_ci
 character-set-server = utf8
 ```
 - restart mysql container
+
+## How to use the builder script
+
+For more information, read [HOW-TO-USE.md](HOW-TO-USE.md) file
