@@ -123,7 +123,7 @@ elif [ -f ./config/settings.inc.php ] && [ -f ./install.lock ]; then
     exit 42
 
 else
-    echo "\n* Pretashop Core already installed...";
+    echo "\n* Prestashop Core already installed...";
 fi
 
 if [ $PS_DEMO_MODE -ne 0 ]; then
