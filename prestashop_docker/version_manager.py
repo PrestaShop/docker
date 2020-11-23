@@ -122,7 +122,7 @@ class VersionManager:
         @return: Return None if no position in the string matches the pattern otherwise a Match object.
         @rtpe: None|Match
         '''
-        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
+        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+|nightly)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
         return re.search(regex, version)
 
     def get_aliases(self):
