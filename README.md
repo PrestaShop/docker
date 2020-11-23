@@ -83,7 +83,9 @@ If your IP / port (or domain) change between two executions of your container, y
 
 ## Documentation
 
-The documentation (in English by default) is available at the following addresses: [PrestaShop 1.7](http://doc.prestashop.com/display/PS17)
+The user documentation (in English by default) is available [here](https://doc.prestashop.com/display/PS17).
+
+The developer documentation (English only) can be found [here](https://devdocs.prestashop.com/).
 
 ## Troubleshooting
 
