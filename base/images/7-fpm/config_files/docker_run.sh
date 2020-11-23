@@ -63,24 +63,20 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
         sed -ie "s/DirectoryIndex\ index.php\ index.html/DirectoryIndex\ docker_updt_ps_domains.php\ index.php\ index.html/g" $APACHE_CONFDIR/conf-available/docker-php.conf
     fi
 
+    if [ $PS_ERASE_DB = 1 ]; then
+        echo "\n* Drop mysql database...";
+        echo "\n* Dropping existing database $DB_NAME..."
+        mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
+    fi
+
+    if [ $PS_INSTALL_DB = 1 ]; then
+        echo "\n* Create mysql database...";
+        echo "\n* Creating database $DB_NAME..."
+        mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME -p$DB_PASSWD --force;
+    fi
+
     if [ $PS_INSTALL_AUTO = 1 ]; then
-
         echo "\n* Installing PrestaShop, this may take a while ...";
-
-        if [ $PS_ERASE_DB = 1 ]; then
-            echo "\n* Drop & recreate mysql database...";
-            if [ $DB_PASSWD = "" ]; then
-                echo "\n* Dropping existing database $DB_NAME..."
-                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
-                echo "\n* Creating database $DB_NAME..."
-                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME -p$DB_PASSWD --force;
-            else
-                echo "\n* Dropping existing database $DB_NAME..."
-                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
-                echo "\n* Creating database $DB_NAME..."
-                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force;
-            fi
-        fi
 
         if [ "$PS_DOMAIN" = "<to be defined>" ]; then
             export PS_DOMAIN=$(hostname -i)
@@ -95,6 +91,9 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
 
         if [ $? -ne 0 ]; then
             echo 'warning: PrestaShop installation failed.'
+        else
+            echo "\n* Removing install folder..."
+            rm -r /var/www/html/$PS_FOLDER_INSTALL/
         fi
     fi
 
@@ -124,7 +123,7 @@ elif [ -f ./config/settings.inc.php ] && [ -f ./install.lock ]; then
     exit 42
 
 else
-    echo "\n* Pretashop Core already installed...";
+    echo "\n* PrestaShop Core already installed...";
 fi
 
 if [ $PS_DEMO_MODE -ne 0 ]; then
