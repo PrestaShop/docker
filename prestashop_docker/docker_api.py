@@ -17,7 +17,7 @@ class DockerApi():
     def __init__(self, cache, debug):
         """Constructor
 
-        @param cache: Disable cache
+        @param cache: Enable cache
         @type cache: bool
         @param debug: Is debug mode enabled
         @type debug: bool
