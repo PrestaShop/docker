@@ -21,6 +21,10 @@ generate_image()
     fi
 
 
+    if [ -d images/$folder ]; then
+        return
+    fi
+
     mkdir -p images/$folder/
 
     sed '
