@@ -15,7 +15,7 @@ Display the help:
 
 ```bash
 $ ./prestashop_docker.py --help
-usage: prestashop_docker.py [-h] [--debug] [--no-cache] [subcommand] ...
+usage: prestashop_docker.py [-h] [--debug] [--cache] [subcommand] ...
 
 PrestaShop Docker manager.
 
@@ -27,7 +27,7 @@ positional arguments:
 optional arguments:
   -h, --help    show this help message and exit
   --debug       Use Debug
-  --no-cache    Disable cache
+  --cache    Disable cache
 ```
 
 ### Generate

@@ -13,8 +13,8 @@ import logging
 
 def get_parser():
     parser = argparse.ArgumentParser(description='PrestaShop Docker manager.')
-    parser.add_argument('--debug', action='store_const', const=True, help='Use Debug')
-    parser.add_argument('--no-cache', action='store_const', const=True, help='Disable cache')
+    parser.add_argument('--debug', action='store_const', const=True, help='Use Debug', default=False)
+    parser.add_argument('--cache', action='store_const', const=True, help='Enable cache', default=False)
 
     return parser
 
@@ -92,9 +92,10 @@ def main():
         generator.generate_all(VERSIONS)
     elif args.subcommand == 'tag':
         tag_manager = TagManager(
-            DockerApi(args.no_cache, args.debug),
+            DockerApi(args.cache, args.debug),
             docker.from_env(),
-            VersionManager(path.join(path.dirname(path.realpath(__file__)), 'images'))
+            VersionManager(path.join(path.dirname(path.realpath(__file__)), 'images')),
+            args.cache
         )
         if args.tag_subcommand is None:
             tag_parser.print_help()

@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 
 class TagManager():
-    def __init__(self, docker_api, docker_client, version_manager):
+    def __init__(self, docker_api, docker_client, version_manager, cache):
         '''
         Constructor
 
@@ -20,6 +20,7 @@ class TagManager():
         self.docker_client = docker_client
         self.stream = Stream()
         self.version_manager = version_manager
+        self.cache = cache
 
     def build(self, version=None):
         '''
@@ -39,7 +40,7 @@ class TagManager():
                 path=str(version_path),
                 tag='prestashop/prestashop:' + version,
                 rm=True,
-                nocache=True,
+                nocache=(not self.cache),
                 decode=True
             )
             self.stream.display(log)

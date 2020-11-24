@@ -14,20 +14,20 @@ ssl._create_default_https_context = ssl._create_unverified_context
 class DockerApi():
     retries = 0
 
-    def __init__(self, no_cache, debug):
+    def __init__(self, cache, debug):
         """Constructor
 
-        @param no_cache: Disable cache
-        @type no_cache: bool
+        @param cache: Disable cache
+        @type cache: bool
         @param debug: Is debug mode enabled
         @type debug: bool
         """
         self.sleep_time = 1
         self.url = 'https://hub.docker.com/v2/repositories/prestashop/prestashop'
-        self.no_cache = no_cache
+        self.cache = cache
         self.is_debug = debug
 
-        if not self.no_cache:
+        if self.cache:
             requests_cache.install_cache('cache')
 
     def get_tags(self):
