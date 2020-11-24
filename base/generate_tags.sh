@@ -21,6 +21,11 @@ generate_image()
     fi
 
 
+    if [ -d images/$folder ]; then
+        # Do not erase what we already defined in the directory
+        return
+    fi
+
     mkdir -p images/$folder/
 
     sed '
