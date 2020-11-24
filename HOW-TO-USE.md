@@ -27,7 +27,7 @@ positional arguments:
 optional arguments:
   -h, --help    show this help message and exit
   --debug       Use Debug
-  --cache    Disable cache
+  --cache    Enable cache
 ```
 
 ### Generate
