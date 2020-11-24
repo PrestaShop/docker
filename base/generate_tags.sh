@@ -22,6 +22,7 @@ generate_image()
 
 
     if [ -d images/$folder ]; then
+        # Do not erase what we already defined in the directory
         return
     fi
 
