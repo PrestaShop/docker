@@ -91,7 +91,7 @@ The developer documentation (English only) can be found [here](https://devdocs.p
 
 #### Prestashop cannot be reached from the host browser
 
-When using Docker for Mac, Prestashop cannot be reached from the host browser (gets redirected to "dockeripaddress:8080")
+When using Docker for Mac or Docker for Windows (throught WSL), Prestashop cannot be reached from the host browser (gets redirected to "dockeripaddress:8080")
 
 Docker for Mac has an issue with bridging networking and consequently cannot reach the container on its internal IP address. After installation, the browser on the host machine will be redirected from `http://localhost:8080` to `http://<internal_prestashop_container_ip>:8080` which fails.
 
