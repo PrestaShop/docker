@@ -1,5 +1,5 @@
 ---
-name: ci
+name: Publish containers
 
 on:
   push:
