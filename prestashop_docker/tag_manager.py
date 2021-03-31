@@ -25,6 +25,7 @@ class TagManager():
         self.stream = Stream(quiet)
         self.version_manager = version_manager
         self.cache = cache
+        self.tags = None
 
     def build(self, version=None):
         '''
@@ -39,6 +40,11 @@ class TagManager():
             print(
                 'Building {}'.format(version)
             )
+
+            if self.exists(version):
+                print('Image already exists')
+                # Do not build images that already exists on Docker Hub
+                continue
 
             log = self.docker_client.api.build(
                 path=str(version_path),
@@ -112,8 +118,10 @@ class TagManager():
         @rtype: dict
         '''
 
-        tags = self.docker_api.get_tags()
-        for tag in tags:
+        if self.tags is None:
+            self.tags = self.docker_api.get_tags()
+
+        for tag in self.tags:
             if tag['name'] == version:
                 return True
 
