@@ -1,4 +1,10 @@
 class Stream:
+    def __init__(self, quiet):
+        """
+        Set up quiet mode
+        """
+        self.quiet = quiet
+
     def display(self, logs):
         '''
         Display in stdout depending on the Stream Generator
@@ -8,6 +14,9 @@ class Stream:
         lines = {}
         previous_len = 0
         for log in logs:
+            if self.quiet:
+                continue
+
             if 'stream' in log:
                 print(log['stream'])
                 # reset lines

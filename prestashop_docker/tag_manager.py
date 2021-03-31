@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 
 class TagManager():
-    def __init__(self, docker_api, docker_client, version_manager, cache):
+    def __init__(self, docker_api, docker_client, version_manager, cache, quiet):
         '''
         Constructor
 
@@ -15,10 +15,14 @@ class TagManager():
         @type docker_client: docker
         @param version_manager: Version manager
         @type version_manager: VersionManager
+        @param cache: Use cache
+        @type cache: bool
+        @param quiet: Quiet mode
+        @type quiet: bool
         '''
         self.docker_api = docker_api
         self.docker_client = docker_client
-        self.stream = Stream()
+        self.stream = Stream(quiet)
         self.version_manager = version_manager
         self.cache = cache
 
@@ -43,6 +47,7 @@ class TagManager():
                 nocache=(not self.cache),
                 decode=True
             )
+
             self.stream.display(log)
 
             aliases = self.version_manager.get_aliases()
