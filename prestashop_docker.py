@@ -14,6 +14,7 @@ import logging
 def get_parser():
     parser = argparse.ArgumentParser(description='PrestaShop Docker manager.')
     parser.add_argument('--debug', action='store_const', const=True, help='Use Debug', default=False)
+    parser.add_argument('--quiet', action='store_const', const=True, help='Use Debug', default=False)
     parser.add_argument('--cache', action='store_const', const=True, help='Enable cache', default=False)
 
     return parser
@@ -95,7 +96,8 @@ def main():
             DockerApi(args.cache, args.debug),
             docker.from_env(),
             VersionManager(path.join(path.dirname(path.realpath(__file__)), 'images')),
-            args.cache
+            args.cache,
+            args.quiet
         )
         if args.tag_subcommand is None:
             tag_parser.print_help()

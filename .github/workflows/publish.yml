@@ -26,7 +26,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Build Docker images
-        run: ./prestashop_docker.py tag build
+        run: ./prestashop_docker.py --quiet tag build
 
       - name: Push Docker images
-        run: ./prestashop_docker.py tag push
+        run: ./prestashop_docker.py --quiet tag push
