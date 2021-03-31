@@ -6,7 +6,7 @@ on:
     branches: master
 
 jobs:
-  login:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
