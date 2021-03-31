@@ -47,12 +47,14 @@ def get_tag_parser(subparser):
         help='Build container and create docker tag'
     )
     build_parser.add_argument('version', type=str, help='Version name', nargs='?')
+    build_parser.add_argument('--force', action='store_const', const=True, help='Force build even if image already exists on Docker hub', default=False)
 
     push_parser = tag_subparser.add_parser(
         'push',
         help='Push docker tags'
     )
     push_parser.add_argument('version', type=str, help='Version name', nargs='?')
+    push_parser.add_argument('--force', action='store_const', const=True, help='Force build even if image already exists on Docker hub', default=False)
 
     aliases_parser = tag_subparser.add_parser(
         'aliases',
@@ -108,9 +110,9 @@ def main():
                 else:
                     exit(1)
             elif args.tag_subcommand == 'build':
-                tag_manager.build(args.version)
+                tag_manager.build(args.version, args.force)
             elif args.tag_subcommand == 'push':
-                tag_manager.push(args.version)
+                tag_manager.push(args.version, args.force)
             elif args.tag_subcommand == 'aliases':
                 tag_manager.get_aliases(args.version)
     else:

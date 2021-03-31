@@ -27,7 +27,7 @@ class TagManager():
         self.cache = cache
         self.tags = None
 
-    def build(self, version=None):
+    def build(self, version=None, force=False):
         '''
         Build version on the current machine
 
@@ -41,7 +41,7 @@ class TagManager():
                 'Building {}'.format(version)
             )
 
-            if self.exists(version):
+            if not force and self.exists(version):
                 print('Image already exists')
                 # Do not build images that already exists on Docker Hub
                 continue
@@ -68,7 +68,7 @@ class TagManager():
                         alias
                     )
 
-    def push(self, version=None):
+    def push(self, version=None, force=False):
         '''
         Push version on Docker Hub
 
@@ -82,7 +82,7 @@ class TagManager():
                 'Pushing {}'.format(version)
             )
 
-            if self.exists(version):
+            if not force and self.exists(version):
                 continue
 
             log = self.docker_client.api.push(
