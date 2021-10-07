@@ -1,4 +1,4 @@
-FROM php:7.1-fpm
+FROM php:8.0-apache
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_DOMAIN="<to be defined>" \
@@ -35,10 +35,12 @@ RUN apt-get update \
 		libzip-dev \
 		default-mysql-client \
 		wget \
-		unzip \
-    && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip
+        unzip \
+        libonig-dev
+
+RUN rm -rf /var/lib/apt/lists/*
+RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
+RUN docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip
 
 RUN docker-php-source extract \
   && if [ -d "/usr/src/php/ext/mysql" ]; then docker-php-ext-install mysql; fi \
