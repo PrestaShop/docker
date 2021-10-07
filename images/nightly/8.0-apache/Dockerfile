@@ -1,9 +1,9 @@
-FROM prestashop/base:$container_version
+FROM prestashop/base:8.0-apache
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION $ps_version
+ENV PS_VERSION nightly
 
-ENV PATH /root/google-cloud-sdk/bin/:$$PATH
+ENV PATH /root/google-cloud-sdk/bin/:$PATH
 
 RUN apt update
 RUN apt -y install \
