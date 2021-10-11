@@ -1,4 +1,5 @@
 import logging
+import subprocess
 from .stream import Stream
 
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ class TagManager():
         self.cache = cache
         self.tags = None
 
-    def build(self, version=None, force=False):
+    def build(self, version=None, force=False, multi_arch=False):
         '''
         Build version on the current machine
 
@@ -44,6 +45,10 @@ class TagManager():
             if not force and self.exists(version):
                 print('Image already exists')
                 # Do not build images that already exists on Docker Hub
+                continue
+
+            if multi_arch is True:
+                self.build_multi_arch(version, version_path)
                 continue
 
             log = self.docker_client.api.build(
@@ -67,6 +72,45 @@ class TagManager():
                         'prestashop/prestashop',
                         alias
                     )
+
+    def build_multi_arch(self, version, version_path):
+        '''
+        Build and push multi-arch images on Docker Hub
+
+        @param version: version you want to build
+        @type version: str
+        @param version_path: Path of the Dockerfile
+        @type version: str
+        '''
+        tags = ['-t', 'prestashop/prestashop:' + version]
+        aliases = self.version_manager.get_aliases()
+        if version in aliases:
+            for alias in aliases[version]:
+                tags.extend(['-t', 'prestashop/prestashop:' + alias])
+
+        try:
+            command = ['docker', 'buildx', 'inspect', 'multiarch']
+            subprocess.check_output(
+                command,
+                stderr=subprocess.STDOUT
+            )
+        except subprocess.CalledProcessError:
+            command = ['docker', 'buildx', 'create', '--name', 'multiarch', '--use']
+            subprocess.run(
+                command,
+                stdout=subprocess.PIPE if self.stream.quiet else None,
+                stderr=subprocess.STDOUT
+            )
+
+        command = ['docker', 'buildx', 'build', '--platform', 'linux/amd64,linux/arm64', '--push']
+        command.extend(tags)
+        command.append(version_path)
+
+        subprocess.run(
+            command,
+            stdout=subprocess.PIPE if self.stream.quiet else None,
+            stderr=subprocess.STDOUT
+        )
 
     def push(self, version=None, force=False):
         '''

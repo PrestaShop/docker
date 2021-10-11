@@ -48,6 +48,7 @@ def get_tag_parser(subparser):
     )
     build_parser.add_argument('version', type=str, help='Version name', nargs='?')
     build_parser.add_argument('--force', action='store_const', const=True, help='Force build even if image already exists on Docker hub', default=False)
+    build_parser.add_argument('--multi-arch', action='store_const', const=True, help='Build and push multi-arch images on Docker hub', default=False)
 
     push_parser = tag_subparser.add_parser(
         'push',
@@ -110,7 +111,7 @@ def main():
                 else:
                     exit(1)
             elif args.tag_subcommand == 'build':
-                tag_manager.build(args.version, args.force)
+                tag_manager.build(args.version, args.force, args.multi_arch)
             elif args.tag_subcommand == 'push':
                 tag_manager.push(args.version, args.force)
             elif args.tag_subcommand == 'aliases':
