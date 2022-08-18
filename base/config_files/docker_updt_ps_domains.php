@@ -48,6 +48,12 @@ if (version_compare(_PS_VERSION_, '1.5', '>=') && $domain != $old_domain && !Sho
 		// Then, we update the configuration table
 		Configuration::updateValue('PS_SHOP_DOMAIN', $domain);
 		Configuration::updateValue('PS_SHOP_DOMAIN_SSL', $domain);
+
+		// Finally, update all the files that depend on the domain name
+		Tools::generateHtaccess();
+		Tools::generateRobotsFile();
+		Tools::clearSmartyCache();
+		Media::clearCache();
 	}
 }
 
