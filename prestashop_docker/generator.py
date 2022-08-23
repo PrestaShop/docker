@@ -1,6 +1,7 @@
 from errno import EEXIST
 from os import path, makedirs
 from string import Template
+from packaging import version
 from . import CONTAINERS
 
 
@@ -19,6 +20,7 @@ class Generator:
         """
         self.download_url = 'https://www.prestashop.com/download/old/' \
             'prestashop_{}.zip'
+        self.download_url_github = 'https://github.com/PrestaShop/PrestaShop/releases/download/{}/prestashop_{}.zip'
         self.directory_path = directory_path
         self.template = Template(template)
         self.nightly_template = Template(nightly_template)
@@ -58,12 +60,18 @@ class Generator:
         ) else self.template
 
         with open(file_path, 'w+') as f:
+            # We use 1.7.9 as the comparison base because it will never exist and it will always be higher than the latest 1.7.8,
+            # however we can't use 8.0 as the base because 8.0.0-beta is lower than 8.0 and we need beta versions of 8 to use the new url
+            if version.parse(ps_version) > version.parse('1.7.9'):
+                ps_url = self.download_url_github.format(ps_version, ps_version)
+            else:
+                ps_url = self.download_url.format(ps_version)
             f.write(
                 template.substitute(
                     {
                         'ps_version': ps_version,
                         'container_version': container_version,
-                        'ps_url': self.download_url.format(ps_version)
+                        'ps_url': ps_url
                     }
                 )
             )

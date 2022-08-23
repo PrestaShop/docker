@@ -37,6 +37,25 @@ class GeneratorTestCase(TestCase):
         self.assertTrue(path.exists('/tmp/images/test'))
 
     def test_generate_image(self):
+        dockerfile = '/tmp/images/1.7.8/7.4-alpine/Dockerfile'
+        self.assertFalse(path.exists(dockerfile))
+        self.generator.generate_image(
+            '1.7.8',
+            '7.4-alpine'
+        )
+        self.assertTrue(path.exists(dockerfile))
+
+        with open(dockerfile) as f:
+            content = f.read()
+            self.assertIn(
+                'PS_URL: https://www.prestashop.com/download/old/'
+                'prestashop_1.7.8.zip',
+                content
+            )
+            self.assertIn('PS_VERSION: 1.7.8', content)
+            self.assertIn('CONTAINER_VERSION: 7.4-alpine', content)
+
+    def test_generate_image_80(self):
         dockerfile = '/tmp/images/8.0/7.4-alpine/Dockerfile'
         self.assertFalse(path.exists(dockerfile))
         self.generator.generate_image(
@@ -48,7 +67,7 @@ class GeneratorTestCase(TestCase):
         with open(dockerfile) as f:
             content = f.read()
             self.assertIn(
-                'PS_URL: https://www.prestashop.com/download/old/'
+                'PS_URL: https://github.com/PrestaShop/PrestaShop/releases/download/8.0/'
                 'prestashop_8.0.zip',
                 content
             )
