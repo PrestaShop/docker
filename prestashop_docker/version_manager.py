@@ -177,15 +177,20 @@ class VersionManager:
         aliases = {}
         previous_version = {}
         for ps_version in VERSIONS.keys():
-            if len(ps_version.split('.')) < 4:
+            full_splitted_version = ps_version.split('.')
+            if len(full_splitted_version) < 3 or int(full_splitted_version[0]) < 8 and len(full_splitted_version) < 4:
                 aliases[ps_version] = {
                     'value': ps_version
                 }
                 continue
 
-            # PrestaShop versions are in format 1.MAJOR.MINOR.PATCH
+            # PrestaShop versions before 8 are in format 1.MAJOR.MINOR.PATCH
+            # Starting version 8, format is MAJOR.MINOR.PATCH
             splitted_version = ps_version.split('.', 1)
-            current_version = semver.VersionInfo.parse(splitted_version[1])
+            if int(splitted_version[0]) >= 8:
+                current_version = semver.VersionInfo.parse(ps_version)
+            else:
+                current_version = semver.VersionInfo.parse(splitted_version[1])
             # Ignore prerelease versions
             if current_version.prerelease:
                 aliases[ps_version] = {
@@ -193,14 +198,20 @@ class VersionManager:
                 }
                 continue
 
-            version_name = splitted_version[0] + '.' + str(current_version.major)
+            if int(splitted_version[0]) >= 8:
+                version_name = str(current_version.major)
+            else:
+                version_name = splitted_version[0] + '.' + str(current_version.major)
             if version_name not in previous_version or aliases[version_name]['version'] < current_version:
                 aliases[version_name] = {
                     'version': current_version,
                     'value': ps_version
                 }
 
-            version_with_major_name = splitted_version[0] + '.' + str(current_version.major) + '.' + str(current_version.minor)
+            if int(splitted_version[0]) >= 8:
+                version_with_major_name = str(current_version.major) + '.' + str(current_version.minor)
+            else:
+                version_with_major_name = splitted_version[0] + '.' + str(current_version.major) + '.' + str(current_version.minor)
             if version_with_major_name not in aliases or aliases[version_with_major_name]['version'] < current_version:
                 aliases[version_with_major_name] = {
                     'version': current_version,
