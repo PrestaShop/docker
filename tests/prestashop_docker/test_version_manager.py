@@ -12,6 +12,14 @@ class VersionManagerTestCase(TestCase):
         self.fs.create_dir('/tmp/images/1.7.6.8/5.6-apache')
         self.fs.create_dir('/tmp/images/1.7.6.8/7.1-fpm')
         self.fs.create_dir('/tmp/images/1.7.6.8/7.1-apache')
+        self.fs.create_dir('/tmp/images/8.0.0/7.2-apache')
+        self.fs.create_dir('/tmp/images/8.0.0/7.2-fpm')
+        self.fs.create_dir('/tmp/images/8.0.0/8.0-apache')
+        self.fs.create_dir('/tmp/images/8.0.0/8.0-fpm')
+        self.fs.create_dir('/tmp/images/8.1.0/7.2-apache')
+        self.fs.create_dir('/tmp/images/8.1.0/7.2-fpm')
+        self.fs.create_dir('/tmp/images/8.1.3/7.2-apache')
+        self.fs.create_dir('/tmp/images/8.1.3/7.2-fpm')
         self.fs.create_dir('/tmp/images/nightly/7.1-fpm')
         self.fs.create_dir('/tmp/images/nightly/7.1-apache')
         self.version_manager = self.create_instance()
@@ -28,6 +36,10 @@ class VersionManagerTestCase(TestCase):
         '1.7.6.5': ('5.6', '7.1'),
         '1.7.6.8': ('5.6', '7.1', '7.2'),
         '1.7.7.0-rc.1': ('7.1', '7.2', '7.3'),
+        '8.0.0': ('7.2', '7.3', '7.4', '8.0', '8.1'),
+        '8.0.0-rc.1': ('7.2', '7.3', '7.4', '8.0', '8.1'),
+        '8.1.0': ('7.2', '7.3', '7.4', '8.0', '8.1'),
+        '8.1.3': ('7.2', '7.3', '7.4', '8.0', '8.1'),
         'nightly': ('7.1',)
     }
 
@@ -38,10 +50,17 @@ class VersionManagerTestCase(TestCase):
             {'ps_version': '1.7.6.8', 'php_versions': ('5.6', '7.1', '7.2'), 'container_version': None},
             result
         )
+        result = self.version_manager.get_version_from_string('8.0.0')
+        self.assertEqual(
+            {'ps_version': '8.0.0', 'php_versions': ('7.2', '7.3', '7.4', '8.0', '8.1'), 'container_version': None},
+            result
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_get_version_from_string_with_invalid_version(self):
         result = self.version_manager.get_version_from_string('1.7.6.42')
+        self.assertIsNone(result)
+        result = self.version_manager.get_version_from_string('8.0.42')
         self.assertIsNone(result)
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
@@ -49,6 +68,11 @@ class VersionManagerTestCase(TestCase):
         result = self.version_manager.get_version_from_string('1.7.6.8-5.6')
         self.assertEqual(
             {'ps_version': '1.7.6.8', 'php_versions': ('5.6',), 'container_version': None},
+            result
+        )
+        result = self.version_manager.get_version_from_string('8.0.0-7.2')
+        self.assertEqual(
+            {'ps_version': '8.0.0', 'php_versions': ('7.2',), 'container_version': None},
             result
         )
 
@@ -59,12 +83,22 @@ class VersionManagerTestCase(TestCase):
             {'ps_version': '1.7.6.8', 'php_versions': ('5.6',), 'container_version': 'fpm'},
             result
         )
+        result = self.version_manager.get_version_from_string('8.0.0-7.2-fpm')
+        self.assertEqual(
+            {'ps_version': '8.0.0', 'php_versions': ('7.2',), 'container_version': 'fpm'},
+            result
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_get_version_from_string_with_pre_release_and_without_container_version_and_type(self):
         result = self.version_manager.get_version_from_string('1.7.7.0-rc.1')
         self.assertEqual(
             {'ps_version': '1.7.7.0-rc.1', 'php_versions': ('7.1', '7.2', '7.3'), 'container_version': None},
+            result
+        )
+        result = self.version_manager.get_version_from_string('8.0.0-rc.1')
+        self.assertEqual(
+            {'ps_version': '8.0.0-rc.1', 'php_versions': ('7.2', '7.3', '7.4', '8.0', '8.1'), 'container_version': None},
             result
         )
 
@@ -75,12 +109,22 @@ class VersionManagerTestCase(TestCase):
             {'ps_version': '1.7.7.0-rc.1', 'php_versions': ('7.3',), 'container_version': None},
             result
         )
+        result = self.version_manager.get_version_from_string('8.0.0-rc.1-7.3')
+        self.assertEqual(
+            {'ps_version': '8.0.0-rc.1', 'php_versions': ('7.3',), 'container_version': None},
+            result
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_get_version_from_string_with_pre_release_and_php_version_and_with_container_version(self):
         result = self.version_manager.get_version_from_string('1.7.7.0-rc.1-7.3-apache')
         self.assertEqual(
             {'ps_version': '1.7.7.0-rc.1', 'php_versions': ('7.3',), 'container_version': 'apache'},
+            result
+        )
+        result = self.version_manager.get_version_from_string('8.0.0-rc.1-7.3-apache')
+        self.assertEqual(
+            {'ps_version': '8.0.0-rc.1', 'php_versions': ('7.3',), 'container_version': 'apache'},
             result
         )
 
@@ -100,6 +144,15 @@ class VersionManagerTestCase(TestCase):
             },
             self.version_manager.parse_version('1.7.6.8')
         )
+        self.assertEqual(
+            {
+                '8.0.0-7.2-apache': '/tmp/images/8.0.0/7.2-apache',
+                '8.0.0-7.2-fpm': '/tmp/images/8.0.0/7.2-fpm',
+                '8.0.0-8.0-apache': '/tmp/images/8.0.0/8.0-apache',
+                '8.0.0-8.0-fpm': '/tmp/images/8.0.0/8.0-fpm'
+            },
+            self.version_manager.parse_version('8.0.0')
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_parse_version_with_valid_version_and_php_version(self):
@@ -110,6 +163,13 @@ class VersionManagerTestCase(TestCase):
             },
             self.version_manager.parse_version('1.7.6.8-5.6')
         )
+        self.assertEqual(
+            {
+                '8.1.0-7.2-apache': '/tmp/images/8.1.0/7.2-apache',
+                '8.1.0-7.2-fpm': '/tmp/images/8.1.0/7.2-fpm',
+            },
+            self.version_manager.parse_version('8.1.0-7.2')
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_parse_version_with_valid_version_php_version_and_container(self):
@@ -118,6 +178,12 @@ class VersionManagerTestCase(TestCase):
                 '1.7.6.8-5.6-apache': '/tmp/images/1.7.6.8/5.6-apache',
             },
             self.version_manager.parse_version('1.7.6.8-5.6-apache')
+        )
+        self.assertEqual(
+            {
+                '8.1.3-7.2-apache': '/tmp/images/8.1.3/7.2-apache',
+            },
+            self.version_manager.parse_version('8.1.3-7.2-apache')
         )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
@@ -153,6 +219,47 @@ class VersionManagerTestCase(TestCase):
                 '1.7.7.0-rc.1-7.2-apache': '/tmp/images/1.7.7.0-rc.1/7.2-apache',
                 '1.7.7.0-rc.1-7.3-fpm': '/tmp/images/1.7.7.0-rc.1/7.3-fpm',
                 '1.7.7.0-rc.1-7.3-apache': '/tmp/images/1.7.7.0-rc.1/7.3-apache',
+                '8.0.0-7.2-fpm': '/tmp/images/8.0.0/7.2-fpm',
+                '8.0.0-7.2-apache': '/tmp/images/8.0.0/7.2-apache',
+                '8.0.0-7.3-fpm': '/tmp/images/8.0.0/7.3-fpm',
+                '8.0.0-7.3-apache': '/tmp/images/8.0.0/7.3-apache',
+                '8.0.0-7.4-fpm': '/tmp/images/8.0.0/7.4-fpm',
+                '8.0.0-7.4-apache': '/tmp/images/8.0.0/7.4-apache',
+                '8.0.0-8.0-fpm': '/tmp/images/8.0.0/8.0-fpm',
+                '8.0.0-8.0-apache': '/tmp/images/8.0.0/8.0-apache',
+                '8.0.0-8.1-fpm': '/tmp/images/8.0.0/8.1-fpm',
+                '8.0.0-8.1-apache': '/tmp/images/8.0.0/8.1-apache',
+                '8.0.0-rc.1-7.2-fpm': '/tmp/images/8.0.0-rc.1/7.2-fpm',
+                '8.0.0-rc.1-7.2-apache': '/tmp/images/8.0.0-rc.1/7.2-apache',
+                '8.0.0-rc.1-7.3-fpm': '/tmp/images/8.0.0-rc.1/7.3-fpm',
+                '8.0.0-rc.1-7.3-apache': '/tmp/images/8.0.0-rc.1/7.3-apache',
+                '8.0.0-rc.1-7.4-fpm': '/tmp/images/8.0.0-rc.1/7.4-fpm',
+                '8.0.0-rc.1-7.4-apache': '/tmp/images/8.0.0-rc.1/7.4-apache',
+                '8.0.0-rc.1-8.0-fpm': '/tmp/images/8.0.0-rc.1/8.0-fpm',
+                '8.0.0-rc.1-8.0-apache': '/tmp/images/8.0.0-rc.1/8.0-apache',
+                '8.0.0-rc.1-8.1-fpm': '/tmp/images/8.0.0-rc.1/8.1-fpm',
+                '8.0.0-rc.1-8.1-apache': '/tmp/images/8.0.0-rc.1/8.1-apache',
+                '8.1.0-7.2-fpm': '/tmp/images/8.1.0/7.2-fpm',
+                '8.1.0-7.2-apache': '/tmp/images/8.1.0/7.2-apache',
+                '8.1.0-7.3-fpm': '/tmp/images/8.1.0/7.3-fpm',
+                '8.1.0-7.3-apache': '/tmp/images/8.1.0/7.3-apache',
+                '8.1.0-7.4-fpm': '/tmp/images/8.1.0/7.4-fpm',
+                '8.1.0-7.4-apache': '/tmp/images/8.1.0/7.4-apache',
+                '8.1.0-8.0-fpm': '/tmp/images/8.1.0/8.0-fpm',
+                '8.1.0-8.0-apache': '/tmp/images/8.1.0/8.0-apache',
+                '8.1.0-8.1-fpm': '/tmp/images/8.1.0/8.1-fpm',
+                '8.1.0-8.1-apache': '/tmp/images/8.1.0/8.1-apache',
+                '8.1.0-7.2-fpm': '/tmp/images/8.1.0/7.2-fpm',
+                '8.1.3-7.2-fpm': '/tmp/images/8.1.3/7.2-fpm',
+                '8.1.3-7.2-apache': '/tmp/images/8.1.3/7.2-apache',
+                '8.1.3-7.3-fpm': '/tmp/images/8.1.3/7.3-fpm',
+                '8.1.3-7.3-apache': '/tmp/images/8.1.3/7.3-apache',
+                '8.1.3-7.4-fpm': '/tmp/images/8.1.3/7.4-fpm',
+                '8.1.3-7.4-apache': '/tmp/images/8.1.3/7.4-apache',
+                '8.1.3-8.0-fpm': '/tmp/images/8.1.3/8.0-fpm',
+                '8.1.3-8.0-apache': '/tmp/images/8.1.3/8.0-apache',
+                '8.1.3-8.1-fpm': '/tmp/images/8.1.3/8.1-fpm',
+                '8.1.3-8.1-apache': '/tmp/images/8.1.3/8.1-apache',
                 'nightly-7.1-fpm': '/tmp/images/nightly/7.1-fpm',
                 'nightly-7.1-apache': '/tmp/images/nightly/7.1-apache'
 
@@ -171,7 +278,6 @@ class VersionManagerTestCase(TestCase):
                     '1.7-7.2',
                     '1.7',
                     '1.7-apache',
-                    'latest',
                     '1.7.6-7.2',
                     '1.7.6',
                     '1.7.6-apache',
@@ -204,6 +310,52 @@ class VersionManagerTestCase(TestCase):
                     '1.7.7.0-rc.1-apache',
                 ],
                 '1.7.7.0-rc.1-7.3-fpm': ['1.7.7.0-rc.1-fpm'],
+                '8.0.0-7.2-apache': ['8.0-7.2', '8.0.0-7.2'],
+                '8.0.0-7.3-apache': ['8.0-7.3', '8.0.0-7.3'],
+                '8.0.0-7.4-apache': ['8.0-7.4', '8.0.0-7.4'],
+                '8.0.0-8.0-apache': ['8.0-8.0', '8.0.0-8.0'],
+                '8.0.0-8.1-apache': [
+                    '8.0-8.1',
+                    '8.0',
+                    '8.0-apache',
+                    '8.0.0-8.1',
+                    '8.0.0',
+                    '8.0.0-apache'
+                ],
+                '8.0.0-8.1-fpm': ['8.0-fpm', '8.0.0-fpm'],
+                '8.0.0-rc.1-7.2-apache': ['8.0.0-rc.1-7.2'],
+                '8.0.0-rc.1-7.3-apache': ['8.0.0-rc.1-7.3'],
+                '8.0.0-rc.1-7.4-apache': ['8.0.0-rc.1-7.4'],
+                '8.0.0-rc.1-8.0-apache': ['8.0.0-rc.1-8.0'],
+                '8.0.0-rc.1-8.1-apache': [
+                    '8.0.0-rc.1-8.1',
+                    '8.0.0-rc.1',
+                    '8.0.0-rc.1-apache'
+                ],
+                '8.0.0-rc.1-8.1-fpm': ['8.0.0-rc.1-fpm'],
+                '8.1.0-7.2-apache': ['8.1.0-7.2'],
+                '8.1.0-7.3-apache': ['8.1.0-7.3'],
+                '8.1.0-7.4-apache': ['8.1.0-7.4'],
+                '8.1.0-8.0-apache': ['8.1.0-8.0'],
+                '8.1.0-8.1-apache': ['8.1.0-8.1', '8.1.0', '8.1.0-apache'],
+                '8.1.0-8.1-fpm': ['8.1.0-fpm'],
+                '8.1.3-7.2-apache': ['8-7.2', '8.1-7.2', '8.1.3-7.2'],
+                '8.1.3-7.3-apache': ['8-7.3', '8.1-7.3', '8.1.3-7.3'],
+                '8.1.3-7.4-apache': ['8-7.4', '8.1-7.4', '8.1.3-7.4'],
+                '8.1.3-8.0-apache': ['8-8.0', '8.1-8.0', '8.1.3-8.0'],
+                '8.1.3-8.1-apache': [
+                    'latest',
+                    '8-8.1',
+                    '8',
+                    '8-apache',
+                    '8.1-8.1',
+                    '8.1',
+                    '8.1-apache',
+                    '8.1.3-8.1',
+                    '8.1.3',
+                    '8.1.3-apache',
+                ],
+                '8.1.3-8.1-fpm': ['8-fpm', '8.1-fpm', '8.1.3-fpm'],
                 'nightly-7.1-apache': ['nightly-7.1', 'nightly', 'nightly-apache'],
                 'nightly-7.1-fpm': ['nightly-fpm'],
             },
