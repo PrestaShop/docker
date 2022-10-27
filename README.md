@@ -7,7 +7,7 @@
 
 ### Images by PrestaShop version
 * `8`, `latest`, `8-apache`
-* `8.0-fpm`
+* `8-fpm`
 * `nightly` (Latest but unstable release from git)
 
 You can use tags for this. For example:
