@@ -6,7 +6,7 @@
 ## Supported tags
 
 ### Images by PrestaShop version
-* `8.0`, `latest`, `8.0-apache`
+* `8`, `latest`, `8-apache`
 * `8.0-fpm`
 * `nightly` (Latest but unstable release from git)
 
