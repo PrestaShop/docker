@@ -6,20 +6,20 @@
 ## Supported tags
 
 ### Images by PrestaShop version
-* `1.7`, `latest`, `1.7-apache`
-* `1.7-fpm`
+* `8.0`, `latest`, `8.0-apache`
+* `8.0-fpm`
 * `nightly` (Latest but unstable release from git)
 
 You can use tags for this. For example:
 ```
-$ docker run -ti --name my-docker-name -e PS_DEV_MODE=false -e PS_INSTALL_AUTO=0 -p 8080:80 -d prestashop/prestashop:1.7
+$ docker run -ti --name my-docker-name -e PS_DEV_MODE=false -e PS_INSTALL_AUTO=0 -p 8080:80 -d prestashop/prestashop:8.0
 ```
 
 ## What is PrestaShop
 
 PrestaShop is a free and open-source e-commerce web application, committed to providing the best shopping cart experience for both merchants and customers. It is written in PHP, is highly customizable, supports all the major payment services, is translated in many languages and localized for many countries, has a fully responsive design (both front and back office), etc. See all the available features.
 
-> [www.prestashop.com](https://www.prestashop.com)
+> [www.prestashop-project.org](https://www.prestashop-project.org/)
 
 ![PrestaShop's back office dashboard](https://user-images.githubusercontent.com/1009343/61462749-8fb19f00-a949-11e9-801f-70ab0a84192d.png "PrestaShop's back office dashboard")
 
