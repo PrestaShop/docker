@@ -2,7 +2,7 @@
 
 cd $(cd "$( dirname "$0" )" && pwd)
 
-if [ -z "$1" ] || [ "$1" == "-f" ]; then
+if [ -z "$1" ] || [ "$1" == "-p" ]; then
     PS_VERSIONS_FILE="tags.txt";
 else
     PS_VERSIONS_FILE="$1";
