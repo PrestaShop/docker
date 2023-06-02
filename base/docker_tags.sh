@@ -10,7 +10,7 @@ fi
 
 while getopts ":p" option; do
    case $option in
-      f)
+      p)
          PUSH=true
          ;;
    esac
