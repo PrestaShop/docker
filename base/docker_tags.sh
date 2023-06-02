@@ -16,22 +16,29 @@ while getopts ":p" option; do
    esac
 done
 
+docker_tag_exists() {
+    curl --silent -f -lSL https://hub.docker.com/v2/repositories/$1/tags/$2 > /dev/null
+}
+
 docker_image()
 {
-    echo "Docker build & tag : prestashop/base:$version"
-    
-    id=$(echo $(docker build --quiet=true images/${version} 2>/dev/null) | awk '{print $NF}')
-    echo $id;
-    docker tag $id prestashop/base:${version}
+    if docker_tag_exists prestashop/base ${version}; then
+        echo "Docker Image already pushed : prestashop/base:$version"
+    else 
+        echo "Docker build & tag : prestashop/base:$version"
+        id=$(echo $(docker build --quiet=true images/${version} 2>/dev/null) | awk '{print $NF}')
+        echo $id;
+        docker tag $id prestashop/base:${version}
 
 
-    if [ -z "$PUSH" ]; then
-        # Do not push
-        return
+        if [ -z "$PUSH" ]; then
+            # Do not push
+            return
+        fi
+        echo "Docker Push : prestashop/base:$version"
+
+        docker push prestashop/base:${version}
     fi
-    echo "Docker Push : prestashop/base:$version"
-
-    docker push prestashop/base:${version}
 }
 
 
