@@ -60,7 +60,7 @@ class Generator:
         ) else self.template
 
         with open(file_path, 'w+') as f:
-            # We use 1.7.9 as the comparison base because it will never exist and it will always be higher than the latest 1.7.8,
+            # We use 1.7.8.8 as the comparison base because the 1.7.8.9 is not hosted on the .com anymore but until 1.7.8.8 it still works,
             # however we can't use 8.0 as the base because 8.0.0-beta is lower than 8.0 and we need beta versions of 8 to use the new url
             if version.parse(ps_version) > version.parse('1.7.8.8'):
                 ps_url = self.download_url_github.format(ps_version, ps_version)
