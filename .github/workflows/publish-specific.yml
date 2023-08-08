@@ -1,0 +1,36 @@
+---
+name: Publish specific version
+
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: PrestaShop Version to publish
+        type: string
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build Docker images
+        run: ./prestashop_docker.py --quiet tag build ${{ inputs.version }}
+
+      - name: Push Docker images
+        run: ./prestashop_docker.py --quiet tag push ${{ inputs.version }}
