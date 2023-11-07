@@ -5,6 +5,7 @@
 8.0-apache
 8.1-apache
 8.2-apache
+8.3-apache
 7.1-fpm
 7.2-fpm
 7.3-fpm
@@ -12,3 +13,4 @@
 8.0-fpm
 8.1-fpm
 8.2-fpm
+8.3-fpm
