@@ -11,7 +11,7 @@ if [[ -n "$folder" ]]; then
     fi
 
     chown www-data:www-data -R $folder/prestashop/
-    cp -n -R -p $folder/prestashop/* /var/www/html
+    cp -n -R -T -p $folder/prestashop/ /var/www/html
 else
     echo "Missing folder to move"
 fi
