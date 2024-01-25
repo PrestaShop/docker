@@ -31,7 +31,7 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
 
     if [ -d /tmp/data-ps ]; then
         # init if empty
-        cp -n -R -p /tmp/data-ps/prestashop/* /var/www/html
+        cp -n -R -T -p /tmp/data-ps/prestashop/ /var/www/html
     fi
 
     if [ -f /tmp/defines_custom.inc.php ]; then
