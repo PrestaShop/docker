@@ -8,10 +8,14 @@ else
     PS_VERSIONS_FILE="$1";
 fi
 
-while getopts ":p" option; do
+FORCE=false
+while getopts ":fp" option; do
    case $option in
       p)
          PUSH=true
+         ;;
+      f)
+         FORCE=true
          ;;
    esac
 done
@@ -22,8 +26,9 @@ docker_tag_exists() {
 
 docker_image()
 {
-    if docker_tag_exists prestashop/base ${version}; then
+    if ! $FORCE && docker_tag_exists prestashop/base ${version}; then
         echo "Docker Image already pushed : prestashop/base:$version"
+        return
     else 
         echo "Docker build & tag : prestashop/base:$version"
         id=$(echo $(docker build --quiet=true images/${version} 2>/dev/null) | awk '{print $NF}')
