@@ -11,6 +11,7 @@ if [[ -n "$folder" ]]; then
     fi
 
     chown www-data:www-data -R $folder/prestashop/
+    # Copy all files (included .env files)
     cp -n -R -T -p $folder/prestashop/ /var/www/html
 else
     echo "Missing folder to move"

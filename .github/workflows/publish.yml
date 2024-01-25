@@ -37,6 +37,13 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            base:
+              - 'base/**'
+
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
@@ -52,8 +59,13 @@ jobs:
         working-directory: base
 
       - name: Base Images > Docker Build & Push
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.changes.outputs.base != 'true'  }}
         run: ./docker_tags.sh -p
+        working-directory: base
+
+      - name: Base Images > Docker Build & Push
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.changes.outputs.base == 'true' }}
+        run: ./docker_tags.sh -p -f
         working-directory: base
 
       - name: Install dependencies
