@@ -1,14 +1,27 @@
 ---
 name: Publish containers
 
-on: 
+on:
   push:
     branches:
       - master
 
 jobs:
+  publish_base:
+    name: Publish Base images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Base Images > Generate Tags
+        run: ./generate_tags.sh
+        working-directory: base
+
+      - name: Base Images > Docker Build & Push
+        run: ./docker_tags.sh -p
+        working-directory: base
+
   get_versions:
     name: Get PrestaShop versions to build
+    needs: publish_base
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,20 +54,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-
-      - name: Base Images > Generate Tags
-        run: ./generate_tags.sh
-        working-directory: base
-
-      - name: Base Images > Docker Build Tags
-        run: ./docker_tags.sh
-        if: ${{ github.event_name == 'pull_request' }}
-        working-directory: base
-
-      - name: Base Images > Docker Build & Push
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-        run: ./docker_tags.sh -p
-        working-directory: base
 
       - name: Install dependencies
         run: pip install -r requirements.txt
