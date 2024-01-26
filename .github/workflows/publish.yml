@@ -7,10 +7,10 @@ on:
       - master
 
 jobs:
-  get_versions:
-    name: Get PrestaShop versions to build
+  publish_base:
     runs-on: ubuntu-latest
     steps:
+      # Fetch versions to work for images
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
@@ -18,21 +18,13 @@ jobs:
           python-version: 3.8
       - id: set-versions
         run: echo "::set-output name=versions::$(./get_json_versions.py)"
-    outputs:
-      versions: ${{ steps.set-versions.outputs.versions }}
 
-  publish_base:
-    runs-on: ubuntu-latest
-    needs: get_versions
-    steps:
+      # Push image base
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - uses: actions/checkout@v2
-
       ## Check if there are modifications in the base/ directory
       ## and store it in the variable `steps.changes.outputs.base`
       ## The variable is built like: steps.{#id}.outputs.{#filter}
@@ -61,6 +53,8 @@ jobs:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.changes.outputs.base == 'true' }}
         run: ./docker_tags.sh -p -f
         working-directory: base
+    outputs:
+      versions: ${{ steps.set-versions.outputs.versions }}
 
   publish_images:
     runs-on: ubuntu-latest
