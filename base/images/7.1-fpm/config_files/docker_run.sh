@@ -29,9 +29,12 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
 
     echo "\n* Reapplying PrestaShop files for enabled volumes ...";
 
-    if [ -d /tmp/data-ps ]; then
+    if [ -d /tmp/data-ps/prestashop ]; then
         # init if empty
+        echo "\n* Copying files from tmp directory ...";
         cp -n -R -T -p /tmp/data-ps/prestashop/ /var/www/html
+    else
+        echo "\n* No files to copy from tmp directory ...";
     fi
 
     if [ -f /tmp/defines_custom.inc.php ]; then
