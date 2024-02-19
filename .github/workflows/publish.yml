@@ -79,7 +79,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Build Docker images
-        run: ./prestashop_docker.py --quiet tag build ${{ matrix.ps-version }}
+        run: ./prestashop_docker.py --quiet tag build ${{ matrix.ps-version }} --force
 
       - name: Push Docker images
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
