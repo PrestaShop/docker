@@ -1,7 +1,7 @@
 ---
 name: Publish containers
 
-on: 
+on:
   push:
     branches:
       - master
@@ -83,4 +83,4 @@ jobs:
 
       - name: Push Docker images
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-        run: ./prestashop_docker.py --quiet tag push ${{ matrix.ps-version }}
+        run: ./prestashop_docker.py --quiet tag push ${{ matrix.ps-version }} --force
