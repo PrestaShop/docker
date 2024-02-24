@@ -34,12 +34,20 @@ RUN apt-get update \
         libxml2-dev \
         libicu-dev \
         libzip-dev \
+        zlib1g-dev \
+        libssl-dev \
+        libmemcached-dev \
         default-mysql-client \
         wget \
         unzip \
-        libonig-dev
+        libonig-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+    pecl install igbinary; \
+    pecl install -D 'with-php-config="/usr/local/bin/php-config" with-libmemcached-dir="no"  with-zlib-dir="no" enable-memcached-msgpack="no" enable-memcached-json="no"  with-system-fastlz="no" enable-memcached-igbinary="yes" enable-memcached-protocol="no" enable-memcached-sasl="yes" enable-memcached-session="yes"' memcached; \
+    docker-php-ext-enable igbinary memcached;
+
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ --with-webp=/usr/include
 RUN docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip bcmath
 
