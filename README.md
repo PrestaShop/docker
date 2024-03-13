@@ -11,8 +11,8 @@
 * `nightly` (Latest but unstable release from git)
 
 You can use tags for this. For example:
-```
-$ docker run -ti --name my-docker-name -e PS_DEV_MODE=false -e PS_INSTALL_AUTO=0 -p 8080:80 -d prestashop/prestashop:8.0
+```bash
+docker run -ti --name my-docker-name -e PS_DEV_MODE=false -e PS_INSTALL_AUTO=0 -p 8080:80 -d prestashop/prestashop:8.0
 ```
 
 ## What is PrestaShop
@@ -32,11 +32,11 @@ Currently if you do not have any MySQL server, the most simple way to run this c
 
 ```bash
 # create a network for containers to communicate
-$ docker network create prestashop-net
+docker network create prestashop-net
 # launch mysql 5.7 container
-$ docker run -ti --name some-mysql --network prestashop-net -e MYSQL_ROOT_PASSWORD=admin -p 3307:3306 -d mysql:5.7
+docker run -ti --name some-mysql --network prestashop-net -e MYSQL_ROOT_PASSWORD=admin -p 3307:3306 -d mysql:5.7
 # launch prestashop container
-$ docker run -ti --name some-prestashop --network prestashop-net -e DB_SERVER=some-mysql -p 8080:80 -d prestashop/prestashop:latest
+docker run -ti --name some-prestashop --network prestashop-net -e DB_SERVER=some-mysql -p 8080:80 -d prestashop/prestashop:latest
 ```
 
 A new shop will be built, ready to be installed.
@@ -97,8 +97,8 @@ When using Docker for Mac or Docker for Windows (throught WSL), Prestashop canno
 Docker for Mac has an issue with bridging networking and consequently cannot reach the container on its internal IP address. After installation, the browser on the host machine will be redirected from `http://localhost:8080` to `http://<internal_prestashop_container_ip>:8080` which fails.
 
 You need to set the `PS_DOMAIN` variable to `localhost:8080` for it to work correctly when browsing from the host computer. The command looks something like this:
-```
-$ docker run -ti --name some-prestashop --network prestashop-net -e DB_SERVER=some-mysql -e PS_DOMAIN=localhost:8080 -p 8080:80 -d prestashop/prestashop
+```bash
+docker run -ti --name some-prestashop --network prestashop-net -e DB_SERVER=some-mysql -e PS_DOMAIN=localhost:8080 -p 8080:80 -d prestashop/prestashop
 ```
 
 #### Cannot connect to mysql from host - authentication plugin cannot be loaded
@@ -110,7 +110,7 @@ ERROR 2059 (HY000): Authentication plugin 'caching_sha2_password' cannot be load
 If your `mysql` image uses MySQL 8, the authentication plugin changed from `mysql_native_password` to `caching_sha2_password`. You can bypass this by forcing the old authentication plugin: 
 
 ```bash
-$ docker run -ti -p 3307:3306 --network prestashop-net --name some-mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql --default-authentication-plugin=mysql_native_password
+docker run -ti -p 3307:3306 --network prestashop-net --name some-mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql --default-authentication-plugin=mysql_native_password
 ```
 
 #### Cannot connect to mysql from host - cannot use socket
@@ -122,7 +122,7 @@ ERROR 1045 (28000): Access denied for user '...'@'...' (using password: YES)
 For some usecases, you might need to force using TCP instead of sockets:
 
 ```bash
-$ mysql -u root -padmin -h localhost --port 3307 --protocol=tcp
+mysql -u root -padmin -h localhost --port 3307 --protocol=tcp
 ```
 
 #### During the installation, prestashop cannot connect to mysql - bad charset
