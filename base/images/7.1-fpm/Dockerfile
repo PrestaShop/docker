@@ -40,7 +40,8 @@ RUN apt-get update \
         libonig-dev
 
 RUN rm -rf /var/lib/apt/lists/*
-RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ --with-webp=/usr/include
+# PHP < 7.4 have an old syntax to install GD. See https://github.com/docker-library/php/issues/912
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include
 RUN docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip bcmath
 
 RUN docker-php-source extract \
