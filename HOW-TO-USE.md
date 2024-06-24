@@ -6,7 +6,7 @@ It requires Python 3.6+.
 ## Installation
 
 ```bash
-$ pip install -r requirements.txt
+$ pip install -r requirements.txt --break-system-packages
 ```
 
 ## Usage
@@ -60,3 +60,13 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
 ```
+
+## Using docker compose
+
+To generate the new base files, you need to update the `versions.py` file, add a section ith your new version along with the associated PHP versions, then run
+
+```php
+docker compose up generate
+```
+
+This will create new folders for the new version you just added.
