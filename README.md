@@ -151,4 +151,4 @@ character-set-server = utf8
 
 ## How to use the builder script
 
-For more information, read [HOW-TO-USE.md](HOW-TO-USE.md) file
+For more information, read [HOW-TO-USE.md](https://github.com/PrestaShop/docker/blob/master/HOW-TO-USE.md) file
