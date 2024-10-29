@@ -24,11 +24,20 @@ class GeneratorTestCase(TestCase):
             CONTAINER_VERSION: $container_version
             '''
         )
+        self.fs.create_file(
+            'Dockerfile-branch.model',
+            contents='''
+            CONTAINER_VERSION: $container_version
+            RUN apt -y install git
+            RUN git clone -b $ps_version https://github.com/PrestaShop/PrestaShop.git /tmp/data-ps
+            '''
+        )
 
         self.generator = Generator(
             '/tmp/images',
             open('Dockerfile.model').read(),
-            open('Dockerfile-nightly.model').read()
+            open('Dockerfile-nightly.model').read(),
+            open('Dockerfile-branch.model').read()
         )
 
     def test_create_directory(self):
@@ -91,6 +100,26 @@ class GeneratorTestCase(TestCase):
             )
             self.assertIn('PS_VERSION: nightly', content)
             self.assertIn('CONTAINER_VERSION: 7.2-alpine', content)
+
+    def test_generate_branch_image(self):
+        dockerfile = '/tmp/images/9.0.x/8.1-alpine/Dockerfile'
+        self.assertFalse(path.exists(dockerfile))
+        self.generator.generate_image(
+            '9.0.x',
+            '8.1-alpine'
+        )
+        self.assertTrue(path.exists(dockerfile))
+
+        with open(dockerfile) as f:
+            content = f.read()
+            self.assertNotIn(
+                'PS_URL',
+                content
+            )
+            self.assertNotIn('PS_VERSION', content)
+            self.assertIn('CONTAINER_VERSION: 8.1-alpine', content)
+            self.assertIn('RUN apt -y install git', content)
+            self.assertIn('RUN git clone -b 9.0.x https://github.com/PrestaShop/PrestaShop.git /tmp/data-ps', content)
 
     def test_generate_all(self):
         files = (
