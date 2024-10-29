@@ -1,0 +1,9 @@
+FROM prestashop/base:$container_version
+LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
+
+RUN apt update
+RUN apt -y install git
+
+RUN git clone -b $ps_version https://github.com/PrestaShop/PrestaShop.git /tmp/data-ps
+
+CMD ["/tmp/docker_run.sh"]
