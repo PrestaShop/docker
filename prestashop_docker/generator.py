@@ -8,7 +8,7 @@ from . import CONTAINERS
 class Generator:
     NIGHTLY = 'nightly'
 
-    def __init__(self, directory_path, template, nightly_template):
+    def __init__(self, directory_path, template, nightly_template, branch_template):
         """Constructor
 
         @param directory_path: Directory path
@@ -17,6 +17,8 @@ class Generator:
         @type template: str
         @param nightly_template: Nightly template
         @type nightly_template: str
+        @param branch_template: Branch template
+        @type branch_template: str
         """
         self.download_url = 'https://www.prestashop.com/download/old/' \
             'prestashop_{}.zip'
@@ -24,6 +26,7 @@ class Generator:
         self.directory_path = directory_path
         self.template = Template(template)
         self.nightly_template = Template(nightly_template)
+        self.branch_template = Template(branch_template)
 
     def create_directory(self, directory_path):
         """Try to create a directory if it's possible
@@ -57,6 +60,8 @@ class Generator:
         file_path = path.join(directory_path, 'Dockerfile')
         template = self.nightly_template if (
             ps_version == self.NIGHTLY
+        ) else self.branch_template if (
+            ps_version.endswith('.x')
         ) else self.template
 
         with open(file_path, 'w+') as f:

@@ -90,7 +90,8 @@ def main():
         generator = Generator(
             path.join(path.dirname(path.realpath(__file__)), 'images'),
             open('./Dockerfile.model').read(),
-            open('./Dockerfile-nightly.model').read()
+            open('./Dockerfile-nightly.model').read(),
+            open('./Dockerfile-branch.model').read()
         )
         generator.generate_all(VERSIONS)
     elif args.subcommand == 'tag':
