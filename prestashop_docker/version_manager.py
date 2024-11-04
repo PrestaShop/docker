@@ -83,12 +83,12 @@ class VersionManager:
 
     def get_version_from_string(self, version):
         '''
-        Split version to find PrestaShop version, PHP version and container type
+        Split version to find PrestaShop version, branch version, PHP version and container type
 
         @param version: The version you want
         @type version: str
-        @return: A tuple containing ('PS_VERSION', (PHP_VERSIONS), 'CONTAINER_TYPE')
-                 or ('PS_VERSION', 'PHP_VERSION', 'CONTAINER_TYPE')
+        @return: A tuple containing ('PS_VERSION', 'BRANCH_VERSION', (PHP_VERSIONS), 'CONTAINER_TYPE')
+                 or ('PS_VERSION', 'BRANCH_VERSION', 'PHP_VERSION', 'CONTAINER_TYPE')
         @rtype: tuple
         '''
         matches = self.parse_version_from_string(version)
@@ -108,11 +108,82 @@ class VersionManager:
         if matches.group('container'):
             container_version = matches.group('container')
 
+        split_version = self.split_prestashop_version(ps_version)
+        if split_version is None:
+            branch_version = 'develop'
+        elif split_version['patch'] == 'x':
+            # ps_version actually already contains the branch
+            branch_version = ps_version
+            # We need to transform the branch into the next patch version
+            patch_index = ps_version.rindex('.')
+            last_patch = self.get_last_patch_from_version(ps_version)
+            if last_patch is None:
+                last_patch = '0'
+            else:
+                last_patch = str(int(last_patch) + 1)
+            ps_version = ps_version[:patch_index + 1] + last_patch
+        else:
+            # Transform the last patch version into an x to get the branch, we ignore any -rc that may be present
+            real_version = split_version['version']
+            patch_index = real_version.rindex('.')
+            branch_version = real_version[:patch_index + 1] + 'x'
+
         return {
             'ps_version': ps_version,
+            'branch_version': branch_version,
             'php_versions': php_versions,
             'container_version': container_version
         }
+
+    def get_last_patch_from_version(self, version):
+        '''
+        Get last patch version for the specified version based on the VERSIONS list
+        @param version: The version you need the match from
+        @type version: str
+        @return: Return None if no patch is found otherwise an int with the patch.
+        @rtpe: None|int
+        '''
+        split_version = self.split_prestashop_version(version)
+        if (split_version is None):
+            return None
+
+        lastPatch = None
+        for ps_version, php_versions in VERSIONS.items():
+            split_ps_version = self.split_prestashop_version(ps_version)
+            if split_ps_version is None:
+                continue
+            if (split_ps_version['major'] != split_version['major'] or split_ps_version['minor'] != split_version['minor']):
+                continue
+            if split_ps_version['patch'] == 'x':
+                continue
+            if (lastPatch is None or int(split_ps_version['patch']) > int(lastPatch)):
+                lastPatch = split_ps_version['patch']
+        return lastPatch
+
+    def split_prestashop_version(self, version):
+        '''
+        Split the version into major minor patch object, it is a custom-tailed alternative to semver.VersionInfo.parse
+        that can handle our development branches like 1.7.8.x, 8.0.x, ...
+        @param version: The version you need to split
+        @type version: str
+        @return: Return None if no patch is found otherwise an int with the patch.
+        @rtpe: None|tuple
+        '''
+        regex = r"^(?P<major>(1.)?[0-9]+)\.(?P<minor>[0-9]+)\.(?P<patch>[0-9x]+)(?P<prerelease>-(alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?"
+        matches = re.search(regex, version)
+
+        if (matches and matches.group() and matches.group('major') and matches.group('major') and matches.group('major')):
+            # Remove the initial matched -
+            prerelease = matches.group('prerelease')[1:] if matches.group('prerelease') else None
+
+            return {
+                'version': matches.group('major') + '.' + matches.group('minor') + '.' + matches.group('patch'),
+                'major': matches.group('major'),
+                'minor': matches.group('minor'),
+                'patch': matches.group('patch'),
+                'prerelease': prerelease,
+            }
+        return None
 
     def parse_version_from_string(self, version):
         '''
@@ -122,7 +193,7 @@ class VersionManager:
         @return: Return None if no position in the string matches the pattern otherwise a Match object.
         @rtpe: None|Match
         '''
-        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+|nightly)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
+        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+|nightly|x)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
         return re.search(regex, version)
 
     def get_aliases(self):
@@ -150,7 +221,7 @@ class VersionManager:
                 if alias_version != 'latest':
                     self.append_to_aliases(aliases, ps_version, php_version, PREFERED_CONTAINER, alias_version + '-' + php_version)
 
-            # Check prefered container
+            # Check preferred container
             self.append_to_aliases(aliases, ps_version, alias_php_version, PREFERED_CONTAINER, alias_version)
 
             # Check containers
@@ -179,6 +250,14 @@ class VersionManager:
         for ps_version in VERSIONS.keys():
             full_splitted_version = ps_version.split('.')
             if len(full_splitted_version) < 3 or int(full_splitted_version[0]) < 8 and len(full_splitted_version) < 4:
+                aliases[ps_version] = {
+                    'value': ps_version
+                }
+                continue
+
+            # Ignore branch versions
+            split_version = self.split_prestashop_version(ps_version)
+            if split_version['patch'] == 'x':
                 aliases[ps_version] = {
                     'value': ps_version
                 }
