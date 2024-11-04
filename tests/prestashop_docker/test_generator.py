@@ -29,7 +29,7 @@ class GeneratorTestCase(TestCase):
             contents='''
             CONTAINER_VERSION: $container_version
             RUN apt -y install git
-            RUN git clone -b $ps_version https://github.com/PrestaShop/PrestaShop.git /tmp/data-ps
+            RUN git clone -b $branch_version https://github.com/PrestaShop/PrestaShop.git /tmp/data-ps
             '''
         )
 
@@ -46,10 +46,10 @@ class GeneratorTestCase(TestCase):
         self.assertTrue(path.exists('/tmp/images/test'))
 
     def test_generate_image(self):
-        dockerfile = '/tmp/images/1.7.8/7.4-alpine/Dockerfile'
+        dockerfile = '/tmp/images/1.7.8.0/7.4-alpine/Dockerfile'
         self.assertFalse(path.exists(dockerfile))
         self.generator.generate_image(
-            '1.7.8',
+            '1.7.8.0',
             '7.4-alpine'
         )
         self.assertTrue(path.exists(dockerfile))
@@ -58,17 +58,17 @@ class GeneratorTestCase(TestCase):
             content = f.read()
             self.assertIn(
                 'PS_URL: https://www.prestashop.com/download/old/'
-                'prestashop_1.7.8.zip',
+                'prestashop_1.7.8.0.zip',
                 content
             )
-            self.assertIn('PS_VERSION: 1.7.8', content)
+            self.assertIn('PS_VERSION: 1.7.8.0', content)
             self.assertIn('CONTAINER_VERSION: 7.4-alpine', content)
 
-    def test_generate_image_80(self):
-        dockerfile = '/tmp/images/8.0/7.4-alpine/Dockerfile'
+    def test_generate_image_1788(self):
+        dockerfile = '/tmp/images/1.7.8.8/7.4-alpine/Dockerfile'
         self.assertFalse(path.exists(dockerfile))
         self.generator.generate_image(
-            '8.0',
+            '1.7.8.8',
             '7.4-alpine'
         )
         self.assertTrue(path.exists(dockerfile))
@@ -76,11 +76,49 @@ class GeneratorTestCase(TestCase):
         with open(dockerfile) as f:
             content = f.read()
             self.assertIn(
-                'PS_URL: https://github.com/PrestaShop/PrestaShop/releases/download/8.0/'
-                'prestashop_8.0.zip',
+                'PS_URL: https://www.prestashop.com/download/old/'
+                'prestashop_1.7.8.8.zip',
                 content
             )
-            self.assertIn('PS_VERSION: 8.0', content)
+            self.assertIn('PS_VERSION: 1.7.8.8', content)
+            self.assertIn('CONTAINER_VERSION: 7.4-alpine', content)
+
+    def test_generate_image_1789(self):
+        dockerfile = '/tmp/images/1.7.8.9/7.4-alpine/Dockerfile'
+        self.assertFalse(path.exists(dockerfile))
+        self.generator.generate_image(
+            '1.7.8.9',
+            '7.4-alpine'
+        )
+        self.assertTrue(path.exists(dockerfile))
+
+        with open(dockerfile) as f:
+            content = f.read()
+            self.assertIn(
+                'PS_URL: https://github.com/PrestaShop/PrestaShop/releases/download/1.7.8.9/'
+                'prestashop_1.7.8.9.zip',
+                content
+            )
+            self.assertIn('PS_VERSION: 1.7.8.9', content)
+            self.assertIn('CONTAINER_VERSION: 7.4-alpine', content)
+
+    def test_generate_image_80(self):
+        dockerfile = '/tmp/images/8.0.0/7.4-alpine/Dockerfile'
+        self.assertFalse(path.exists(dockerfile))
+        self.generator.generate_image(
+            '8.0.0',
+            '7.4-alpine'
+        )
+        self.assertTrue(path.exists(dockerfile))
+
+        with open(dockerfile) as f:
+            content = f.read()
+            self.assertIn(
+                'PS_URL: https://github.com/PrestaShop/PrestaShop/releases/download/8.0.0/'
+                'prestashop_8.0.0.zip',
+                content
+            )
+            self.assertIn('PS_VERSION: 8.0.0', content)
             self.assertIn('CONTAINER_VERSION: 7.4-alpine', content)
 
     def test_generate_nightly_image(self):
@@ -116,29 +154,42 @@ class GeneratorTestCase(TestCase):
                 'PS_URL',
                 content
             )
-            self.assertNotIn('PS_VERSION', content)
             self.assertIn('CONTAINER_VERSION: 8.1-alpine', content)
             self.assertIn('RUN apt -y install git', content)
             self.assertIn('RUN git clone -b 9.0.x https://github.com/PrestaShop/PrestaShop.git /tmp/data-ps', content)
 
     def test_generate_all(self):
         files = (
-            '/tmp/images/7.0/7.3-apache/Dockerfile',
-            '/tmp/images/7.0/7.3-fpm/Dockerfile',
-            '/tmp/images/7.0/7.2-apache/Dockerfile',
-            '/tmp/images/7.0/7.2-fpm/Dockerfile',
-            '/tmp/images/8.0/7.1-apache/Dockerfile',
-            '/tmp/images/8.0/7.1-fpm/Dockerfile',
-            '/tmp/images/8.0/5.6-apache/Dockerfile',
-            '/tmp/images/8.0/5.6-fpm/Dockerfile',
+            '/tmp/images/1.7.8.8/7.3-apache/Dockerfile',
+            '/tmp/images/1.7.8.8/7.3-fpm/Dockerfile',
+            '/tmp/images/1.7.8.8/7.2-apache/Dockerfile',
+            '/tmp/images/1.7.8.8/7.2-fpm/Dockerfile',
+            '/tmp/images/8.0.0/7.2-apache/Dockerfile',
+            '/tmp/images/8.0.0/7.2-fpm/Dockerfile',
+            '/tmp/images/8.0.0/8.1-apache/Dockerfile',
+            '/tmp/images/8.0.0/8.1-fpm/Dockerfile',
+            '/tmp/images/9.0.x/8.1-apache/Dockerfile',
+            '/tmp/images/9.0.x/8.1-fpm/Dockerfile',
+            '/tmp/images/9.0.x/8.2-apache/Dockerfile',
+            '/tmp/images/9.0.x/8.2-fpm/Dockerfile',
+            '/tmp/images/9.0.x/8.3-apache/Dockerfile',
+            '/tmp/images/9.0.x/8.3-fpm/Dockerfile',
+            '/tmp/images/nightly/8.1-apache/Dockerfile',
+            '/tmp/images/nightly/8.1-fpm/Dockerfile',
+            '/tmp/images/nightly/8.2-apache/Dockerfile',
+            '/tmp/images/nightly/8.2-fpm/Dockerfile',
+            '/tmp/images/nightly/8.3-apache/Dockerfile',
+            '/tmp/images/nightly/8.3-fpm/Dockerfile',
         )
         for f in files:
             self.assertFalse(path.exists(f))
 
         self.generator.generate_all(
             {
-                '7.0': ('7.2', '7.3'),
-                '8.0': ('7.1', '5.6'),
+                '1.7.8.8': ('7.2', '7.3'),
+                '8.0.0': ('7.2', '8.1'),
+                '9.0.x': ('8.1', '8.2', '8.3'),
+                'nightly': ('8.1', '8.2', '8.3'),
             }
         )
 

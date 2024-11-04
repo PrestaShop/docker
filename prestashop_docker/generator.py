@@ -3,6 +3,7 @@ from os import path, makedirs
 from string import Template
 from packaging import version
 from . import CONTAINERS
+from prestashop_docker.version_manager import VersionManager
 
 
 class Generator:
@@ -27,6 +28,7 @@ class Generator:
         self.template = Template(template)
         self.nightly_template = Template(nightly_template)
         self.branch_template = Template(branch_template)
+        self.version_manager = VersionManager(directory_path)
 
     def create_directory(self, directory_path):
         """Try to create a directory if it's possible
@@ -58,16 +60,27 @@ class Generator:
         self.create_directory(directory_path)
 
         file_path = path.join(directory_path, 'Dockerfile')
+        parsed_version = self.version_manager.get_version_from_string(ps_version)
+        split_version = self.version_manager.split_prestashop_version(ps_version)
+
         template = self.nightly_template if (
             ps_version == self.NIGHTLY
         ) else self.branch_template if (
-            ps_version.endswith('.x')
+            split_version is not None and split_version['patch'] == 'x'
         ) else self.template
 
+        # Get valid PS version (for branch versions it returns to future next patch)
+        ps_version = parsed_version['ps_version']
+        branch_version = parsed_version['branch_version']
+
         with open(file_path, 'w+') as f:
-            # We use 1.7.8.8 as the comparison base because the 1.7.8.9 is not hosted on the .com anymore but until 1.7.8.8 it still works,
-            # however we can't use 8.0 as the base because 8.0.0-beta is lower than 8.0 and we need beta versions of 8 to use the new url
-            if version.parse(ps_version) > version.parse('1.7.8.8'):
+            use_github_url = True
+            # We use 1.7.8.8 as the comparison base because the 1.7.8.9 is not hosted on the .com anymore but until 1.7.8.8,
+            # it still works so the .com url is used
+            if split_version is not None and split_version['major'] == '1.7' and version.parse(ps_version) <= version.parse('1.7.8.8'):
+                use_github_url = False
+
+            if use_github_url:
                 ps_url = self.download_url_github.format(ps_version, ps_version)
             else:
                 ps_url = self.download_url.format(ps_version)
@@ -75,6 +88,7 @@ class Generator:
                 template.substitute(
                     {
                         'ps_version': ps_version,
+                        'branch_version': branch_version,
                         'container_version': container_version,
                         'ps_url': ps_url
                     }
