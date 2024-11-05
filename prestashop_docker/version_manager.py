@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class VersionManager:
+    NIGHTLY = 'nightly'
+
     def __init__(self, directory_path):
         '''
         Constructor
@@ -62,24 +64,28 @@ class VersionManager:
         @rtype: dict
         '''
 
-        # Initial PS version(can also be a branch like 9.0.x)
-        split_version = self.split_prestashop_version(version)
-        if split_version is None or not (self.directory_path / split_version['version']).exists():
-            raise ValueError('{} is not a valid version'.format(version))
-
         data = self.get_version_from_string(version)
+        if data is not None and data['ps_version'] == self.NIGHTLY:
+            ps_version = self.NIGHTLY
+        else:
+            # Initial PS version(can also be a branch like 9.0.x)
+            split_version = self.split_prestashop_version(version)
+            if split_version is None or not (self.directory_path / split_version['version']).exists():
+                raise ValueError('{} is not a valid version'.format(version))
+            ps_version = split_version['version']
+
         if data is None or data['container_version'] is None:
             containers = ('fpm', 'apache',)
         else:
             containers = (data['container_version'],)
 
-        ps_version_path = self.directory_path / split_version['version']
+        ps_version_path = self.directory_path / ps_version
         result = {}
         for php_version in data['php_versions']:
             for container in containers:
                 container_path = ps_version_path / (php_version + '-' + container)
                 if container_path.exists():
-                    result[self.create_version(split_version['version'], php_version, container)] = str(container_path)
+                    result[self.create_version(ps_version, php_version, container)] = str(container_path)
 
         return result
 
