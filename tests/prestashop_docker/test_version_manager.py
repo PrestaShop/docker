@@ -31,6 +31,10 @@ class VersionManagerTestCase(TestCase):
         self.fs.create_dir('/tmp/images/9.0.x/8.3-apache')
         self.fs.create_dir('/tmp/images/nightly/7.1-fpm')
         self.fs.create_dir('/tmp/images/nightly/7.1-apache')
+        self.fs.create_dir('/tmp/images/nightly/7.2-fpm')
+        self.fs.create_dir('/tmp/images/nightly/7.2-apache')
+        self.fs.create_dir('/tmp/images/nightly/7.3-fpm')
+        self.fs.create_dir('/tmp/images/nightly/7.3-apache')
         self.version_manager = self.create_instance()
 
     def create_instance(self):
@@ -53,7 +57,7 @@ class VersionManagerTestCase(TestCase):
         '8.1.3': ('7.2', '7.3', '7.4', '8.0', '8.1'),
         '8.1.x': ('7.2', '7.3', '7.4', '8.0', '8.1'),
         '9.0.x': ('8.1', '8.2', '8.3'),
-        'nightly': ('7.1',)
+        'nightly': ('7.1', '7.2', '7.3'),
     }
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
@@ -165,7 +169,7 @@ class VersionManagerTestCase(TestCase):
         # Nightly version uses develop as the branch
         result = self.version_manager.get_version_from_string('nightly')
         self.assertEqual(
-            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.1',), 'container_version': None},
+            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.1', '7.2', '7.3'), 'container_version': None},
             result
         )
 
@@ -193,6 +197,11 @@ class VersionManagerTestCase(TestCase):
             {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': None},
             result
         )
+        result = self.version_manager.get_version_from_string('nightly-7.2')
+        self.assertEqual(
+            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.2',), 'container_version': None},
+            result
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_get_version_from_string_with_container_version_and_type(self):
@@ -209,6 +218,11 @@ class VersionManagerTestCase(TestCase):
         result = self.version_manager.get_version_from_string('9.0.x-8.2-fpm')
         self.assertEqual(
             {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': 'fpm'},
+            result
+        )
+        result = self.version_manager.get_version_from_string('nightly-7.2-fpm')
+        self.assertEqual(
+            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.2',), 'container_version': 'fpm'},
             result
         )
 
@@ -287,6 +301,17 @@ class VersionManagerTestCase(TestCase):
             },
             self.version_manager.parse_version('9.0.x')
         )
+        self.assertEqual(
+            {
+                'nightly-7.1-apache': '/tmp/images/nightly/7.1-apache',
+                'nightly-7.1-fpm': '/tmp/images/nightly/7.1-fpm',
+                'nightly-7.2-apache': '/tmp/images/nightly/7.2-apache',
+                'nightly-7.2-fpm': '/tmp/images/nightly/7.2-fpm',
+                'nightly-7.3-apache': '/tmp/images/nightly/7.3-apache',
+                'nightly-7.3-fpm': '/tmp/images/nightly/7.3-fpm',
+            },
+            self.version_manager.parse_version('nightly')
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_parse_version_with_valid_version_and_php_version(self):
@@ -311,6 +336,13 @@ class VersionManagerTestCase(TestCase):
             },
             self.version_manager.parse_version('9.0.x-8.2')
         )
+        self.assertEqual(
+            {
+                'nightly-7.2-apache': '/tmp/images/nightly/7.2-apache',
+                'nightly-7.2-fpm': '/tmp/images/nightly/7.2-fpm',
+            },
+            self.version_manager.parse_version('nightly-7.2')
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_parse_version_with_valid_version_php_version_and_container(self):
@@ -331,6 +363,12 @@ class VersionManagerTestCase(TestCase):
                 '9.0.x-8.2-apache': '/tmp/images/9.0.x/8.2-apache',
             },
             self.version_manager.parse_version('9.0.x-8.2-apache')
+        )
+        self.assertEqual(
+            {
+                'nightly-7.2-apache': '/tmp/images/nightly/7.2-apache',
+            },
+            self.version_manager.parse_version('nightly-7.2-apache')
         )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
@@ -436,6 +474,10 @@ class VersionManagerTestCase(TestCase):
             '9.0.x-8.3-apache': '/tmp/images/9.0.x/8.3-apache',
             'nightly-7.1-fpm': '/tmp/images/nightly/7.1-fpm',
             'nightly-7.1-apache': '/tmp/images/nightly/7.1-apache',
+            'nightly-7.2-fpm': '/tmp/images/nightly/7.2-fpm',
+            'nightly-7.2-apache': '/tmp/images/nightly/7.2-apache',
+            'nightly-7.3-fpm': '/tmp/images/nightly/7.3-fpm',
+            'nightly-7.3-apache': '/tmp/images/nightly/7.3-apache',
         }
         # Useful for debug
         # pprint.pp(manager_versions)
@@ -624,8 +666,10 @@ class VersionManagerTestCase(TestCase):
             '9.0.x-8.2-apache': ['9.0.x-8.2'],
             '9.0.x-8.3-apache': ['9.0.x-8.3', '9.0.x', '9.0.x-apache'],
             '9.0.x-8.3-fpm': ['9.0.x-fpm'],
-            'nightly-7.1-apache': ['nightly-7.1', 'nightly', 'nightly-apache'],
-            'nightly-7.1-fpm': ['nightly-fpm'],
+            'nightly-7.1-apache': ['nightly-7.1'],
+            'nightly-7.2-apache': ['nightly-7.2'],
+            'nightly-7.3-apache': ['nightly-7.3', 'nightly', 'nightly-apache'],
+            'nightly-7.3-fpm': ['nightly-fpm'],
         }
         manager_aliases = self.version_manager.get_aliases()
         # Useful for debug
