@@ -27,6 +27,8 @@ class VersionManagerTestCase(TestCase):
         self.fs.create_dir('/tmp/images/9.0.x/8.1-apache')
         self.fs.create_dir('/tmp/images/9.0.x/8.2-fpm')
         self.fs.create_dir('/tmp/images/9.0.x/8.2-apache')
+        self.fs.create_dir('/tmp/images/9.0.x/8.3-fpm')
+        self.fs.create_dir('/tmp/images/9.0.x/8.3-apache')
         self.fs.create_dir('/tmp/images/nightly/7.1-fpm')
         self.fs.create_dir('/tmp/images/nightly/7.1-apache')
         self.version_manager = self.create_instance()
@@ -186,6 +188,11 @@ class VersionManagerTestCase(TestCase):
             {'ps_version': '8.0.0', 'branch_version': '8.0.x', 'php_versions': ('7.2',), 'container_version': None},
             result
         )
+        result = self.version_manager.get_version_from_string('9.0.x-8.2')
+        self.assertEqual(
+            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': None},
+            result
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_get_version_from_string_with_container_version_and_type(self):
@@ -197,6 +204,11 @@ class VersionManagerTestCase(TestCase):
         result = self.version_manager.get_version_from_string('8.0.0-7.2-fpm')
         self.assertEqual(
             {'ps_version': '8.0.0', 'branch_version': '8.0.x', 'php_versions': ('7.2',), 'container_version': 'fpm'},
+            result
+        )
+        result = self.version_manager.get_version_from_string('9.0.x-8.2-fpm')
+        self.assertEqual(
+            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': 'fpm'},
             result
         )
 
@@ -264,6 +276,17 @@ class VersionManagerTestCase(TestCase):
             },
             self.version_manager.parse_version('8.0.0')
         )
+        self.assertEqual(
+            {
+                '9.0.x-8.1-apache': '/tmp/images/9.0.x/8.1-apache',
+                '9.0.x-8.1-fpm': '/tmp/images/9.0.x/8.1-fpm',
+                '9.0.x-8.2-apache': '/tmp/images/9.0.x/8.2-apache',
+                '9.0.x-8.2-fpm': '/tmp/images/9.0.x/8.2-fpm',
+                '9.0.x-8.3-apache': '/tmp/images/9.0.x/8.3-apache',
+                '9.0.x-8.3-fpm': '/tmp/images/9.0.x/8.3-fpm',
+            },
+            self.version_manager.parse_version('9.0.x')
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_parse_version_with_valid_version_and_php_version(self):
@@ -281,6 +304,13 @@ class VersionManagerTestCase(TestCase):
             },
             self.version_manager.parse_version('8.1.0-7.2')
         )
+        self.assertEqual(
+            {
+                '9.0.x-8.2-apache': '/tmp/images/9.0.x/8.2-apache',
+                '9.0.x-8.2-fpm': '/tmp/images/9.0.x/8.2-fpm',
+            },
+            self.version_manager.parse_version('9.0.x-8.2')
+        )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_parse_version_with_valid_version_php_version_and_container(self):
@@ -295,6 +325,12 @@ class VersionManagerTestCase(TestCase):
                 '8.1.3-7.2-apache': '/tmp/images/8.1.3/7.2-apache',
             },
             self.version_manager.parse_version('8.1.3-7.2-apache')
+        )
+        self.assertEqual(
+            {
+                '9.0.x-8.2-apache': '/tmp/images/9.0.x/8.2-apache',
+            },
+            self.version_manager.parse_version('9.0.x-8.2-apache')
         )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
