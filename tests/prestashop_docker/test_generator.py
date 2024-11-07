@@ -29,7 +29,7 @@ class GeneratorTestCase(TestCase):
             contents='''
             CONTAINER_VERSION: $container_version
             RUN apt -y install git
-            RUN git clone -b $branch_version https://github.com/PrestaShop/PrestaShop.git /tmp/data-ps
+            ENV PS_BRANCH=$branch_version
             '''
         )
 
@@ -156,7 +156,7 @@ class GeneratorTestCase(TestCase):
             )
             self.assertIn('CONTAINER_VERSION: 8.1-alpine', content)
             self.assertIn('RUN apt -y install git', content)
-            self.assertIn('RUN git clone -b 9.0.x https://github.com/PrestaShop/PrestaShop.git /tmp/data-ps', content)
+            self.assertIn('ENV PS_BRANCH=9.0.x', content)
 
     def test_generate_all(self):
         files = (
