@@ -45,11 +45,6 @@ jobs:
         working-directory: base
 
       - name: Base Images > Docker Build & Push
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.changes.outputs.base != 'true'  }}
-        run: ./docker_tags.sh -p
-        working-directory: base
-
-      - name: Base Images > Docker Build & Push
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.changes.outputs.base == 'true' }}
         run: ./docker_tags.sh -p -f
         working-directory: base
