@@ -111,3 +111,46 @@ $ nosetests --with-id 7
 ```
 
 This will also generate a `.nodeids` binary file, when you add new test methods you need to remove this file to re-generate the list of IDs.
+
+## Building and running PrestaShop docker locally
+
+First to make sure you will use the local docker containers and not the ones from Docker hub make sure you remove all existing PrestaShop images (including the base images)
+
+```
+# This should be empty to be extra sure
+$ docker images
+```
+
+Then you'll have to build the base image for the PHP version and server you are willing to use. If you are on MacOS this is crucial that you clean any image from cache and tun this locally,
+especially if your architecture is based on linux/arm64 (processor M1, M2, ...).
+
+```shell
+docker build base/images/8.3-apache -t prestashop/base:8.3-apache
+# You should see an image with Repository: prestashop Tag: 8.3-apache
+docker images
+```
+
+Then you can build the image of the PrestaShop version you want to use:
+
+```
+# Now build the PrestaShop version you want based on this local base image
+$ docker build images/9.0.x/8.3-apache -t prestashop/prestashop:9.0.x-8.3-apache
+```
+
+Finally, you can launch your PrestaShop container using docker compose
+
+```
+$ PS_VERSION=9.0.x PHP_VERSION=8.3 docker compose -f images/docker-compose.yml up
+```
+
+Or you can use this script that performs these actions based on the arguments
+
+```
+# Default values are nightly 8.3 apache
+./build-local-docker.sh 9.0.x 8.1 fpm
+```
+
+Now you should be able to access a shop at this address: `http://localhost:8001/`
+The BO is accessible at `http://localhost:8001/admin-dev` with the following login:
+Email: `demo@prestashop.com`
+Password: `Correct Horse Battery Staple`

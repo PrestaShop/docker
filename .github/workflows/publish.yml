@@ -39,12 +39,12 @@ jobs:
         run: ./generate_tags.sh
         working-directory: base
 
-      - name: Base Images > Docker Build Tags
+      - name: Base Images > Docker Build Tags without pushing
         run: ./docker_tags.sh
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name != 'push' || github.ref != 'refs/heads/master' || steps.changes.outputs.base != 'true' }}
         working-directory: base
 
-      - name: Base Images > Docker Build & Push
+      - name: Base Images > Docker Build & Force Push
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.changes.outputs.base == 'true' }}
         run: ./docker_tags.sh -p -f
         working-directory: base
