@@ -31,6 +31,7 @@ generate_image()
 
     if [ -d images/$folder ] && [ -z "$FORCE" ]; then
         # Do not erase what we already defined in the directory
+        echo Already defined, skipping Use -f to forcre update
         return
     fi
 

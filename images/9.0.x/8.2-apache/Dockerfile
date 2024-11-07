@@ -4,6 +4,6 @@ LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 RUN apt update
 RUN apt -y install git
 
-RUN git clone -b 9.0.x https://github.com/PrestaShop/PrestaShop.git /tmp/data-ps
+ENV PS_BRANCH=9.0.x
 
-CMD ["/tmp/docker_run.sh"]
+CMD ["/tmp/docker_branch_run.sh"]

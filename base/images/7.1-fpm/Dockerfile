@@ -51,7 +51,7 @@ RUN docker-php-source extract \
     && docker-php-source delete
 
 # Prepare install and CMD script
-COPY config_files/ps-extractor.sh config_files/docker_run.sh config_files/docker_nightly_run.sh /tmp/
+COPY config_files/ps-extractor.sh config_files/docker_run.sh config_files/docker_nightly_run.sh config_files/docker_branch_run.sh /tmp/
 
 # If handle dynamic domain
 COPY config_files/docker_updt_ps_domains.php /tmp/
