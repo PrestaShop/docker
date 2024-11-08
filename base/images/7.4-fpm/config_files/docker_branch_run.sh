@@ -19,7 +19,7 @@ if [ ! -f /usr/local/bin/composer ]; then
   fi
 fi
 
-# Install vendor dependencies
+# Install vendor dependencies (vendor are always installed)
 if [ ! -f /var/www/html/vendor/autoload.php ]; then
   echo "\n* Running composer ...";
   pushd /var/www/html
@@ -30,8 +30,9 @@ if [ ! -f /var/www/html/vendor/autoload.php ]; then
   popd
 fi
 
-# Build assets
-if [ "${DISABLE_MAKE}" != "1" ]; then
+# Build assets unless make is disabled (which can b the case when we only need PHP dependencies in CI)
+# If auto install is enabled though we must build the assets
+if [ "${DISABLE_MAKE}" != "1" ] || [ "${PS_INSTALL_AUTO}" == "1"]; then
   mkdir -p /var/www/.npm
   chown -R www-data:www-data /var/www/.npm
 
