@@ -30,6 +30,7 @@ class GeneratorTestCase(TestCase):
             CONTAINER_VERSION: $container_version
             RUN apt -y install git
             ENV PS_BRANCH=$branch_version
+            ENV NODE_VERSION=$node_version
             '''
         )
 
@@ -157,6 +158,7 @@ class GeneratorTestCase(TestCase):
             self.assertIn('CONTAINER_VERSION: 8.1-alpine', content)
             self.assertIn('RUN apt -y install git', content)
             self.assertIn('ENV PS_BRANCH=9.0.x', content)
+            self.assertIn('ENV NODE_VERSION=v20.17.0', content)
 
     def test_generate_all(self):
         files = (

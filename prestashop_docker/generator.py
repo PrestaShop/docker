@@ -73,6 +73,15 @@ class Generator:
         ps_version = parsed_version['ps_version']
         branch_version = parsed_version['branch_version']
 
+        if split_version is None:
+            node_version = 'v20.17.0'
+        elif split_version['major'] == '1.7':
+            node_version = 'v14.20.0'
+        elif split_version['major'] == '8':
+            node_version = 'v16.20.2'
+        else:
+            node_version = 'v20.17.0'
+
         with open(file_path, 'w+') as f:
             use_github_url = True
             # We use 1.7.8.8 as the comparison base because the 1.7.8.9 is not hosted on the .com anymore but until 1.7.8.8,
@@ -90,6 +99,7 @@ class Generator:
                         'ps_version': ps_version,
                         'branch_version': branch_version,
                         'container_version': container_version,
+                        'node_version': node_version,
                         'ps_url': ps_url
                     }
                 )

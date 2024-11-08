@@ -143,11 +143,25 @@ Finally, you can launch your PrestaShop container using docker compose
 $ PS_VERSION=9.0.x PHP_VERSION=8.3 docker compose -f images/docker-compose.yml up
 ```
 
-Or you can use this script that performs these actions based on the arguments
+Or you can use the `build-local-docker.sh` script that performs these actions based on the options
 
 ```
+# Script options:
+#
+# -v PRESTA_SHOP_VERSION
+# -s SERVER (apache|fpm)
+# -p PHP_VERSION (7.1, 8.2, ...)
+# -l Launch shop thanks to a docker compose (default false)
+#
 # Default values are nightly 8.3 apache
-./build-local-docker.sh 9.0.x 8.1 fpm
+
+$ ./build-local-docker.sh -v 9.0.x -p 8.1 -s fpm
+```
+
+Adding the `-l` option will also launch a container build with docker compose so you get an accessible shop locally
+
+```
+$ ./build-local-docker.sh -v 9.0.x -p 8.1 -s fpm -l
 ```
 
 Now you should be able to access a shop at this address: `http://localhost:8001/`
