@@ -35,7 +35,6 @@ services:
       PS_USE_DOCKER_MAILDEV: ${PS_USE_DOCKER_MAILDEV:-1}
       ADMIN_MAIL: ${ADMIN_MAIL:-demo@prestashop.com}
       ADMIN_PASSWD: ${ADMIN_PASSWD:-Correct Horse Battery Staple}
-      NODE_VERSION: ${NODE_VERSION:-v20.17.0}
     ports:
       - "8001:80"
       - "8002:443"
