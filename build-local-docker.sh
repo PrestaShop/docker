@@ -1,7 +1,7 @@
 #!/bin/sh
 
 PS_VERSION=nigthly
-PHP_VERSION=8.3
+PHP_VERSION=8.4
 SERVER=apache
 
 LAUNCH=false
