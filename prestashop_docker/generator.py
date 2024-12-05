@@ -65,13 +65,15 @@ class Generator:
 
         template = self.nightly_template if (
             ps_version == self.NIGHTLY
-        ) else self.branch_template if (
+        ) else self.nightly_template if (
             split_version is not None and split_version['patch'] == 'x'
         ) else self.template
 
         # Get valid PS version (for branch versions it returns to future next patch)
-        ps_version = parsed_version['ps_version']
         branch_version = parsed_version['branch_version']
+        ps_version = branch_version if (
+            split_version is not None and split_version['patch'] == 'x'
+        ) else parsed_version['ps_version']
 
         if split_version is None:
             node_version = 'v20.17.0'

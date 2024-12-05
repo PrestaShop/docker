@@ -140,7 +140,7 @@ class GeneratorTestCase(TestCase):
             self.assertIn('PS_VERSION: nightly', content)
             self.assertIn('CONTAINER_VERSION: 7.2-alpine', content)
 
-    def test_generate_branch_image(self):
+    def test_generate_nightly_90x_image(self):
         dockerfile = '/tmp/images/9.0.x/8.1-alpine/Dockerfile'
         self.assertFalse(path.exists(dockerfile))
         self.generator.generate_image(
@@ -155,10 +155,29 @@ class GeneratorTestCase(TestCase):
                 'PS_URL',
                 content
             )
+
+            self.assertIn('PS_VERSION: 9.0.x', content)
             self.assertIn('CONTAINER_VERSION: 8.1-alpine', content)
-            self.assertIn('RUN apt -y install git', content)
-            self.assertIn('ENV PS_BRANCH=9.0.x', content)
-            self.assertIn('ENV NODE_VERSION=v20.17.0', content)
+
+    # def test_generate_branch_image(self):
+    #     dockerfile = '/tmp/images/9.0.x/8.1-alpine/Dockerfile'
+    #     self.assertFalse(path.exists(dockerfile))
+    #     self.generator.generate_image(
+    #         '9.0.x',
+    #         '8.1-alpine'
+    #     )
+    #     self.assertTrue(path.exists(dockerfile))
+
+    #     with open(dockerfile) as f:
+    #         content = f.read()
+    #         self.assertNotIn(
+    #             'PS_URL',
+    #             content
+    #         )
+    #         self.assertIn('CONTAINER_VERSION: 8.1-alpine', content)
+    #         self.assertIn('RUN apt -y install git', content)
+    #         self.assertIn('ENV PS_BRANCH=9.0.x', content)
+    #         self.assertIn('ENV NODE_VERSION=v20.17.0', content)
 
     def test_generate_all(self):
         files = (
