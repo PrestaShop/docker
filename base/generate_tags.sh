@@ -41,7 +41,7 @@ generate_image()
             s/{PHP_TAG}/'"${version}"'/
         ' Dockerfile.model > images/$folder/Dockerfile
 
-    if [[ $version = *"7.1"* || $version = *"7.2"* || $version = *"7.3"* || $version = *"7.4"* ]]; then
+    if [[ $version = *"7.1"* || $version = *"7.2"* || $version = *"7.3"* ]]; then
         local before='RUN docker-php-ext-configure gd --with-freetype=\/usr\/include\/ --with-jpeg=\/usr\/include\/ --with-webp=\/usr\/include'
         local after='# PHP < 7.4 have an old syntax to install GD. See https:\/\/github.com\/docker-library\/php\/issues\/912\nRUN docker-php-ext-configure gd --with-freetype-dir=\/usr\/include\/ --with-jpeg-dir=\/usr\/include\/ --with-webp-dir=\/usr\/include'
 
