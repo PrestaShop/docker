@@ -95,8 +95,8 @@ class VersionManager:
 
         @param version: The version you want
         @type version: str
-        @return: A tuple containing ('PS_VERSION', 'BRANCH_VERSION', (PHP_VERSIONS), 'CONTAINER_TYPE')
-                 or ('PS_VERSION', 'BRANCH_VERSION', 'PHP_VERSION', 'CONTAINER_TYPE')
+        @return: A tuple containing ('PS_VERSION', 'BRANCH_VERSION', (PHP_VERSIONS), 'CONTAINER_TYPE', 'FLAVOR_VERSION')
+                 or ('PS_VERSION', 'BRANCH_VERSION', 'PHP_VERSION', 'CONTAINER_TYPE', 'FLAVOR_VERSION')
         @rtype: tuple
         '''
         matches = self.parse_version_from_string(version)
@@ -104,6 +104,12 @@ class VersionManager:
             return None
 
         ps_version = matches.group('version')
+
+        flavor_versions = None
+        if matches.group('flavor'):
+            flavor_versions = matches.group('flavor')
+            ps_version = ps_version + '-' + flavor_versions
+
         if matches.group('php'):
             php_versions = (matches.group('php'),)
         else:
@@ -140,7 +146,8 @@ class VersionManager:
             'ps_version': ps_version,
             'branch_version': branch_version,
             'php_versions': php_versions,
-            'container_version': container_version
+            'container_version': container_version,
+            'flavor_versions': flavor_versions
         }
 
     def get_last_patch_from_version(self, version):
@@ -159,6 +166,8 @@ class VersionManager:
         for ps_version, php_versions in VERSIONS.items():
             split_ps_version = self.split_prestashop_version(ps_version)
             if split_ps_version is None:
+                continue
+            if split_ps_version['prerelease'] is not None:
                 continue
             if (split_ps_version['major'] != split_version['major'] or split_ps_version['minor'] != split_version['minor']):
                 continue
@@ -201,7 +210,7 @@ class VersionManager:
         @return: Return None if no position in the string matches the pattern otherwise a Match object.
         @rtpe: None|Match
         '''
-        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+|nightly|x)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
+        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+|nightly|x)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<flavor>classic))?(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
         return re.search(regex, version)
 
     def get_aliases(self):

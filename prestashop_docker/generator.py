@@ -24,6 +24,7 @@ class Generator:
         self.download_url = 'https://www.prestashop.com/download/old/' \
             'prestashop_{}.zip'
         self.download_url_github = 'https://github.com/PrestaShop/PrestaShop/releases/download/{}/prestashop_{}.zip'
+        self.download_url_github_classic = 'https://github.com/PrestaShopCorp/PrestaShop-classic/releases/download/{}/prestashop_{}.zip'
         self.directory_path = directory_path
         self.template = Template(template)
         self.nightly_template = Template(nightly_template)
@@ -92,7 +93,10 @@ class Generator:
                 use_github_url = False
 
             if use_github_url:
-                ps_url = self.download_url_github.format(ps_version, ps_version)
+                if parsed_version['flavor_versions'] == 'classic':
+                    ps_url = self.download_url_github_classic.format(ps_version, ps_version)
+                else:
+                    ps_url = self.download_url_github.format(ps_version, ps_version)
             else:
                 ps_url = self.download_url.format(ps_version)
             f.write(
