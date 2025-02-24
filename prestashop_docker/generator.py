@@ -93,7 +93,7 @@ class Generator:
                 use_github_url = False
 
             if use_github_url:
-                if parsed_version['flavor_versions'] == 'classic':
+                if parsed_version['distribution'] == 'classic':
                     ps_url = self.download_url_github_classic.format(ps_version, ps_version)
                 else:
                     ps_url = self.download_url_github.format(ps_version, ps_version)
