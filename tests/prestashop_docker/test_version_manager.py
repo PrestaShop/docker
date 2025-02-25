@@ -19,6 +19,10 @@ class VersionManagerTestCase(TestCase):
         self.fs.create_dir('/tmp/images/8.0.0/7.2-fpm')
         self.fs.create_dir('/tmp/images/8.0.0/8.0-apache')
         self.fs.create_dir('/tmp/images/8.0.0/8.0-fpm')
+        self.fs.create_dir('/tmp/images/8.0.0-rc.1/7.4-apache')
+        self.fs.create_dir('/tmp/images/8.0.0-rc.1/7.4-fpm')
+        self.fs.create_dir('/tmp/images/8.0.0-rc.1/8.1-apache')
+        self.fs.create_dir('/tmp/images/8.0.0-rc.1/8.1-fpm')
         self.fs.create_dir('/tmp/images/8.1.0/7.2-apache')
         self.fs.create_dir('/tmp/images/8.1.0/7.2-fpm')
         self.fs.create_dir('/tmp/images/8.1.3/7.2-apache')
@@ -29,6 +33,12 @@ class VersionManagerTestCase(TestCase):
         self.fs.create_dir('/tmp/images/9.0.x/8.2-apache')
         self.fs.create_dir('/tmp/images/9.0.x/8.3-fpm')
         self.fs.create_dir('/tmp/images/9.0.x/8.3-apache')
+        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.1-fpm')
+        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.1-apache')
+        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.2-fpm')
+        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.2-apache')
+        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.3-fpm')
+        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.3-apache')
         self.fs.create_dir('/tmp/images/nightly/7.1-fpm')
         self.fs.create_dir('/tmp/images/nightly/7.1-apache')
         self.fs.create_dir('/tmp/images/nightly/7.2-fpm')
@@ -65,32 +75,43 @@ class VersionManagerTestCase(TestCase):
     def test_split_prestashop_version(self):
         result = self.version_manager.split_prestashop_version('8.0.0')
         self.assertEqual(
-            {'version': '8.0.0', 'major': '8', 'minor': '0', 'patch': '0', 'prerelease': None},
+            {'version': '8.0.0', 'major': '8', 'minor': '0', 'patch': '0', 'prerelease': None, 'distribution': None},
             result
         )
         result = self.version_manager.split_prestashop_version('10.2.24')
         self.assertEqual(
-            {'version': '10.2.24', 'major': '10', 'minor': '2', 'patch': '24', 'prerelease': None},
+            {'version': '10.2.24', 'major': '10', 'minor': '2', 'patch': '24', 'prerelease': None, 'distribution': None},
             result
         )
         result = self.version_manager.split_prestashop_version('9.0.x')
         self.assertEqual(
-            {'version': '9.0.x', 'major': '9', 'minor': '0', 'patch': 'x', 'prerelease': None},
+            {'version': '9.0.x', 'major': '9', 'minor': '0', 'patch': 'x', 'prerelease': None, 'distribution': None},
+            result
+        )
+        result = self.version_manager.split_prestashop_version('9.0.0-beta.1-classic')
+        self.assertEqual(
+            {'version': '9.0.0', 'major': '9', 'minor': '0', 'patch': '0', 'prerelease': 'beta.1', 'distribution': 'classic'},
+            result
+        )
+
+        result = self.version_manager.split_prestashop_version('9.0.0-classic')
+        self.assertEqual(
+            {'version': '9.0.0', 'major': '9', 'minor': '0', 'patch': '0', 'prerelease': None, 'distribution': 'classic'},
             result
         )
         result = self.version_manager.split_prestashop_version('1.7.4.3')
         self.assertEqual(
-            {'version': '1.7.4.3', 'major': '1.7', 'minor': '4', 'patch': '3', 'prerelease': None},
+            {'version': '1.7.4.3', 'major': '1.7', 'minor': '4', 'patch': '3', 'prerelease': None, 'distribution': None},
             result
         )
         result = self.version_manager.split_prestashop_version('1.7.8.x')
         self.assertEqual(
-            {'version': '1.7.8.x', 'major': '1.7', 'minor': '8', 'patch': 'x', 'prerelease': None},
+            {'version': '1.7.8.x', 'major': '1.7', 'minor': '8', 'patch': 'x', 'prerelease': None, 'distribution': None},
             result
         )
         result = self.version_manager.split_prestashop_version('1.7.7.0-rc.1')
         self.assertEqual(
-            {'version': '1.7.7.0', 'major': '1.7', 'minor': '7', 'patch': '0', 'prerelease': 'rc.1'},
+            {'version': '1.7.7.0', 'major': '1.7', 'minor': '7', 'patch': '0', 'prerelease': 'rc.1', 'distribution': None},
             result
         )
         result = self.version_manager.split_prestashop_version('nightly')
@@ -142,35 +163,35 @@ class VersionManagerTestCase(TestCase):
         # Existing patch versions deduce the branch version with a finishing x
         result = self.version_manager.get_version_from_string('1.7.6.8')
         self.assertEqual(
-            {'ps_version': '1.7.6.8', 'branch_version': '1.7.6.x', 'php_versions': ('5.6', '7.1', '7.2'), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '1.7.6.8', 'branch_version': '1.7.6.x', 'php_versions': ('5.6', '7.1', '7.2'), 'container_version': None, 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('8.0.0')
         self.assertEqual(
-            {'ps_version': '8.0.0', 'branch_version': '8.0.x', 'php_versions': ('7.2', '7.3', '7.4', '8.0', '8.1'), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '8.0.0', 'branch_version': '8.0.x', 'php_versions': ('7.2', '7.3', '7.4', '8.0', '8.1'), 'container_version': None, 'distribution': None},
             result
         )
         # Branch input return target version patch + 1
         result = self.version_manager.get_version_from_string('8.1.x')
         self.assertEqual(
-            {'ps_version': '8.1.4', 'branch_version': '8.1.x', 'php_versions': ('7.2', '7.3', '7.4', '8.0', '8.1'), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '8.1.4', 'branch_version': '8.1.x', 'php_versions': ('7.2', '7.3', '7.4', '8.0', '8.1'), 'container_version': None, 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('1.7.6.x')
         self.assertEqual(
-            {'ps_version': '1.7.6.25', 'branch_version': '1.7.6.x', 'php_versions': ('5.6', '7.1', '7.2'), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '1.7.6.25', 'branch_version': '1.7.6.x', 'php_versions': ('5.6', '7.1', '7.2'), 'container_version': None, 'distribution': None},
             result
         )
         # Branch input with no other patch versions returns patch 0
         result = self.version_manager.get_version_from_string('9.0.x')
         self.assertEqual(
-            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3'), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3'), 'container_version': None, 'distribution': None},
             result
         )
         # Nightly version uses develop as the branch
         result = self.version_manager.get_version_from_string('nightly')
         self.assertEqual(
-            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.1', '7.2', '7.3'), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.1', '7.2', '7.3'), 'container_version': None, 'distribution': None},
             result
         )
 
@@ -185,22 +206,22 @@ class VersionManagerTestCase(TestCase):
     def test_get_version_from_string_with_container_version(self):
         result = self.version_manager.get_version_from_string('1.7.6.8-5.6')
         self.assertEqual(
-            {'ps_version': '1.7.6.8', 'branch_version': '1.7.6.x', 'php_versions': ('5.6',), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '1.7.6.8', 'branch_version': '1.7.6.x', 'php_versions': ('5.6',), 'container_version': None, 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('8.0.0-7.2')
         self.assertEqual(
-            {'ps_version': '8.0.0', 'branch_version': '8.0.x', 'php_versions': ('7.2',), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '8.0.0', 'branch_version': '8.0.x', 'php_versions': ('7.2',), 'container_version': None, 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('9.0.x-8.2')
         self.assertEqual(
-            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': None, 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('nightly-7.2')
         self.assertEqual(
-            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.2',), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.2',), 'container_version': None, 'distribution': None},
             result
         )
 
@@ -208,22 +229,22 @@ class VersionManagerTestCase(TestCase):
     def test_get_version_from_string_with_container_version_and_type(self):
         result = self.version_manager.get_version_from_string('1.7.6.8-5.6-fpm')
         self.assertEqual(
-            {'ps_version': '1.7.6.8', 'branch_version': '1.7.6.x', 'php_versions': ('5.6',), 'container_version': 'fpm', 'flavor_versions': None},
+            {'ps_version': '1.7.6.8', 'branch_version': '1.7.6.x', 'php_versions': ('5.6',), 'container_version': 'fpm', 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('8.0.0-7.2-fpm')
         self.assertEqual(
-            {'ps_version': '8.0.0', 'branch_version': '8.0.x', 'php_versions': ('7.2',), 'container_version': 'fpm', 'flavor_versions': None},
+            {'ps_version': '8.0.0', 'branch_version': '8.0.x', 'php_versions': ('7.2',), 'container_version': 'fpm', 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('9.0.x-8.2-fpm')
         self.assertEqual(
-            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': 'fpm', 'flavor_versions': None},
+            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': 'fpm', 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('nightly-7.2-fpm')
         self.assertEqual(
-            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.2',), 'container_version': 'fpm', 'flavor_versions': None},
+            {'ps_version': 'nightly', 'branch_version': 'develop', 'php_versions': ('7.2',), 'container_version': 'fpm', 'distribution': None},
             result
         )
 
@@ -231,12 +252,12 @@ class VersionManagerTestCase(TestCase):
     def test_get_version_from_string_with_pre_release_and_without_container_version_and_type(self):
         result = self.version_manager.get_version_from_string('1.7.7.0-rc.1')
         self.assertEqual(
-            {'ps_version': '1.7.7.0-rc.1', 'branch_version': '1.7.7.x', 'php_versions': ('7.1', '7.2', '7.3'), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '1.7.7.0-rc.1', 'branch_version': '1.7.7.x', 'php_versions': ('7.1', '7.2', '7.3'), 'container_version': None, 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('8.0.0-rc.1')
         self.assertEqual(
-            {'ps_version': '8.0.0-rc.1', 'branch_version': '8.0.x', 'php_versions': ('7.2', '7.3', '7.4', '8.0', '8.1'), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '8.0.0-rc.1', 'branch_version': '8.0.x', 'php_versions': ('7.2', '7.3', '7.4', '8.0', '8.1'), 'container_version': None, 'distribution': None},
             result
         )
 
@@ -244,12 +265,12 @@ class VersionManagerTestCase(TestCase):
     def test_get_version_from_string_with_pre_release_and_php_version_and_without_container_version(self):
         result = self.version_manager.get_version_from_string('1.7.7.0-rc.1-7.3')
         self.assertEqual(
-            {'ps_version': '1.7.7.0-rc.1', 'branch_version': '1.7.7.x', 'php_versions': ('7.3',), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '1.7.7.0-rc.1', 'branch_version': '1.7.7.x', 'php_versions': ('7.3',), 'container_version': None, 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('8.0.0-rc.1-7.3')
         self.assertEqual(
-            {'ps_version': '8.0.0-rc.1', 'branch_version': '8.0.x', 'php_versions': ('7.3',), 'container_version': None, 'flavor_versions': None},
+            {'ps_version': '8.0.0-rc.1', 'branch_version': '8.0.x', 'php_versions': ('7.3',), 'container_version': None, 'distribution': None},
             result
         )
 
@@ -257,20 +278,20 @@ class VersionManagerTestCase(TestCase):
     def test_get_version_from_string_with_pre_release_and_php_version_and_with_container_version(self):
         result = self.version_manager.get_version_from_string('1.7.7.0-rc.1-7.3-apache')
         self.assertEqual(
-            {'ps_version': '1.7.7.0-rc.1', 'branch_version': '1.7.7.x', 'php_versions': ('7.3',), 'container_version': 'apache', 'flavor_versions': None},
+            {'ps_version': '1.7.7.0-rc.1', 'branch_version': '1.7.7.x', 'php_versions': ('7.3',), 'container_version': 'apache', 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('8.0.0-rc.1-7.3-apache')
         self.assertEqual(
-            {'ps_version': '8.0.0-rc.1', 'branch_version': '8.0.x', 'php_versions': ('7.3',), 'container_version': 'apache', 'flavor_versions': None},
+            {'ps_version': '8.0.0-rc.1', 'branch_version': '8.0.x', 'php_versions': ('7.3',), 'container_version': 'apache', 'distribution': None},
             result
         )
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
-    def test_get_version_from_string_with_flavor_versions(self):
+    def test_get_version_from_string_with_distribution(self):
         result = self.version_manager.get_version_from_string('9.0.0-beta.1-classic')
         self.assertEqual(
-            {'ps_version': '9.0.0-beta.1-classic', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3', '8.4'), 'container_version': None, 'flavor_versions': 'classic'},
+            {'ps_version': '9.0.0-beta.1-classic', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3', '8.4'), 'container_version': None, 'distribution': 'classic'},
             result
         )
 
@@ -301,6 +322,15 @@ class VersionManagerTestCase(TestCase):
         )
         self.assertEqual(
             {
+                '8.0.0-rc.1-7.4-apache': '/tmp/images/8.0.0-rc.1/7.4-apache',
+                '8.0.0-rc.1-7.4-fpm': '/tmp/images/8.0.0-rc.1/7.4-fpm',
+                '8.0.0-rc.1-8.1-apache': '/tmp/images/8.0.0-rc.1/8.1-apache',
+                '8.0.0-rc.1-8.1-fpm': '/tmp/images/8.0.0-rc.1/8.1-fpm'
+            },
+            self.version_manager.parse_version('8.0.0-rc.1')
+        )
+        self.assertEqual(
+            {
                 '9.0.x-8.1-apache': '/tmp/images/9.0.x/8.1-apache',
                 '9.0.x-8.1-fpm': '/tmp/images/9.0.x/8.1-fpm',
                 '9.0.x-8.2-apache': '/tmp/images/9.0.x/8.2-apache',
@@ -309,6 +339,17 @@ class VersionManagerTestCase(TestCase):
                 '9.0.x-8.3-fpm': '/tmp/images/9.0.x/8.3-fpm',
             },
             self.version_manager.parse_version('9.0.x')
+        )
+        self.assertEqual(
+            {
+                '9.0.0-beta.1-classic-8.1-apache': '/tmp/images/9.0.0-beta.1-classic/8.1-apache',
+                '9.0.0-beta.1-classic-8.1-fpm': '/tmp/images/9.0.0-beta.1-classic/8.1-fpm',
+                '9.0.0-beta.1-classic-8.2-apache': '/tmp/images/9.0.0-beta.1-classic/8.2-apache',
+                '9.0.0-beta.1-classic-8.2-fpm': '/tmp/images/9.0.0-beta.1-classic/8.2-fpm',
+                '9.0.0-beta.1-classic-8.3-apache': '/tmp/images/9.0.0-beta.1-classic/8.3-apache',
+                '9.0.0-beta.1-classic-8.3-fpm': '/tmp/images/9.0.0-beta.1-classic/8.3-fpm',
+            },
+            self.version_manager.parse_version('9.0.0-beta.1-classic')
         )
         self.assertEqual(
             {

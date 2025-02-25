@@ -65,21 +65,29 @@ class VersionManager:
         '''
 
         data = self.get_version_from_string(version)
+        if data is None:
+            raise ValueError('{} is not a valid version'.format(version))
+
         if data is not None and data['ps_version'] == self.NIGHTLY:
             ps_version = self.NIGHTLY
         else:
-            # Initial PS version(can also be a branch like 9.0.x)
             split_version = self.split_prestashop_version(version)
-            if split_version is None or not (self.directory_path / split_version['version']).exists():
-                raise ValueError('{} is not a valid version'.format(version))
-            ps_version = split_version['version']
+            if split_version is not None and split_version['patch'] == 'x':
+                # Special case for branch versions (like 9.0.x)
+                ps_version = split_version['version']
+            else:
+                # Other use case we get the parsed version (stripped from container details)
+                ps_version = data['ps_version']
+
+        ps_version_path = self.directory_path / ps_version
+        if not ps_version_path.exists():
+            raise ValueError('{} directory not found for version {}'.format(ps_version_path, version))
 
         if data is None or data['container_version'] is None:
             containers = ('fpm', 'apache',)
         else:
             containers = (data['container_version'],)
 
-        ps_version_path = self.directory_path / ps_version
         result = {}
         for php_version in data['php_versions']:
             for container in containers:
@@ -95,8 +103,8 @@ class VersionManager:
 
         @param version: The version you want
         @type version: str
-        @return: A tuple containing ('PS_VERSION', 'BRANCH_VERSION', (PHP_VERSIONS), 'CONTAINER_TYPE', 'FLAVOR_VERSION')
-                 or ('PS_VERSION', 'BRANCH_VERSION', 'PHP_VERSION', 'CONTAINER_TYPE', 'FLAVOR_VERSION')
+        @return: A tuple containing ('PS_VERSION', 'BRANCH_VERSION', (PHP_VERSIONS), 'CONTAINER_TYPE', 'DISTRIBUTION')
+                 or ('PS_VERSION', 'BRANCH_VERSION', 'PHP_VERSION', 'CONTAINER_TYPE', 'DISTRIBUTION')
         @rtype: tuple
         '''
         matches = self.parse_version_from_string(version)
@@ -105,10 +113,10 @@ class VersionManager:
 
         ps_version = matches.group('version')
 
-        flavor_versions = None
-        if matches.group('flavor'):
-            flavor_versions = matches.group('flavor')
-            ps_version = ps_version + '-' + flavor_versions
+        distribution = None
+        if matches.group('distribution'):
+            distribution = matches.group('distribution')
+            ps_version = ps_version + '-' + distribution
 
         if matches.group('php'):
             php_versions = (matches.group('php'),)
@@ -147,7 +155,7 @@ class VersionManager:
             'branch_version': branch_version,
             'php_versions': php_versions,
             'container_version': container_version,
-            'flavor_versions': flavor_versions
+            'distribution': distribution
         }
 
     def get_last_patch_from_version(self, version):
@@ -186,12 +194,15 @@ class VersionManager:
         @return: Return None if no patch is found otherwise an int with the patch.
         @rtpe: None|tuple
         '''
-        regex = r"^(?P<major>(1.)?[0-9]+)\.(?P<minor>[0-9]+)\.(?P<patch>[0-9x]+)(?P<prerelease>-(alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?"
+
+        regex = r"^(?P<major>(1.)?[0-9]+)\.(?P<minor>[0-9]+)\.(?P<patch>[0-9x]+)(?P<prerelease>-(alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?(?:-(?P<distribution>classic))?"
+
         matches = re.search(regex, version)
 
         if (matches and matches.group() and matches.group('major') and matches.group('major') and matches.group('major')):
             # Remove the initial matched -
             prerelease = matches.group('prerelease')[1:] if matches.group('prerelease') else None
+            distribution = matches.group('distribution') if matches.group('distribution') else None
 
             return {
                 'version': matches.group('major') + '.' + matches.group('minor') + '.' + matches.group('patch'),
@@ -199,6 +210,7 @@ class VersionManager:
                 'minor': matches.group('minor'),
                 'patch': matches.group('patch'),
                 'prerelease': prerelease,
+                'distribution': distribution
             }
         return None
 
@@ -210,7 +222,7 @@ class VersionManager:
         @return: Return None if no position in the string matches the pattern otherwise a Match object.
         @rtpe: None|Match
         '''
-        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+|nightly|x)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<flavor>classic))?(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
+        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+|nightly|x)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<distribution>classic))?(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
         return re.search(regex, version)
 
     def get_aliases(self):

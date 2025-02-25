@@ -89,11 +89,11 @@ class Generator:
             use_github_url = True
             # We use 1.7.8.8 as the comparison base because the 1.7.8.9 is not hosted on the .com anymore but until 1.7.8.8,
             # it still works so the .com url is used
-            if split_version is not None and split_version['major'] == '1.7' and version.parse(ps_version) <= version.parse('1.7.8.8'):
+            if split_version is not None and split_version['patch'] != 'x' and split_version['major'] == '1.7' and version.parse(ps_version) <= version.parse('1.7.8.8'):
                 use_github_url = False
 
             if use_github_url:
-                if parsed_version['flavor_versions'] == 'classic':
+                if parsed_version['distribution'] == 'classic':
                     ps_url = self.download_url_github_classic.format(ps_version, ps_version)
                 else:
                     ps_url = self.download_url_github.format(ps_version, ps_version)
