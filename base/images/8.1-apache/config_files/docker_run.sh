@@ -22,7 +22,7 @@ fi
 # From now, stop at error
 set -e
 
-if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
+if [ ! -f ./config/settings.inc.php ] && [ ! -f ./app/config/parameters.php ] &&  [ ! -f ./install.lock ]; then
 
     echo "\n* Setting up install lock file..."
     touch ./install.lock
@@ -113,13 +113,13 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./install.lock ]; then
     echo "\n* Setup completed, removing lock file..."
     rm ./install.lock
 
-elif [ ! -f ./config/settings.inc.php ] && [ -f ./install.lock ]; then
+elif [ ! -f ./config/settings.inc.php ] && [ ! -f ./app/config/parameters.php ] && [ -f ./install.lock ]; then
 
     echo "\n* Another setup is currently running..."
     sleep 10
     exit 42
 
-elif [ -f ./config/settings.inc.php ] && [ -f ./install.lock ]; then
+elif [ -f ./config/settings.inc.php ] && [ ! -f ./app/config/parameters.php ] && [ -f ./install.lock ]; then
 
     echo "\n* Shop seems setup but remaining install lock still present..."
     sleep 10
