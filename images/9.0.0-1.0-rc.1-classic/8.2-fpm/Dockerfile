@@ -1,10 +1,10 @@
-FROM prestashop/base:8.4-fpm
+FROM prestashop/base:8.2-fpm
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION 9.0.0-beta.1-classic
+ENV PS_VERSION 9.0.0-1.0-rc.1-classic
 
 # Get PrestaShop
-ADD https://github.com/PrestaShopCorp/PrestaShop-classic/releases/download/9.0.0-beta.1-classic/prestashop_9.0.0-beta.1-classic.zip /tmp/prestashop.zip
+ADD https://github.com/PrestaShopCorp/prestashop-classic/releases/download/9.0.0-1.0-rc.1/prestashop_9.0.0-1.0-rc.1.zip /tmp/prestashop.zip
 
 # Extract
 RUN mkdir -p /tmp/data-ps \
