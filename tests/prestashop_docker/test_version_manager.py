@@ -33,12 +33,18 @@ class VersionManagerTestCase(TestCase):
         self.fs.create_dir('/tmp/images/9.0.x/8.2-apache')
         self.fs.create_dir('/tmp/images/9.0.x/8.3-fpm')
         self.fs.create_dir('/tmp/images/9.0.x/8.3-apache')
-        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.1-fpm')
-        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.1-apache')
-        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.2-fpm')
-        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.2-apache')
-        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.3-fpm')
-        self.fs.create_dir('/tmp/images/9.0.0-beta.1-classic/8.3-apache')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-beta.1-classic/8.1-fpm')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-beta.1-classic/8.1-apache')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-beta.1-classic/8.2-fpm')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-beta.1-classic/8.2-apache')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-beta.1-classic/8.3-fpm')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-beta.1-classic/8.3-apache')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-rc.1-classic/8.1-fpm')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-rc.1-classic/8.1-apache')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-rc.1-classic/8.2-fpm')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-rc.1-classic/8.2-apache')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-rc.1-classic/8.3-fpm')
+        self.fs.create_dir('/tmp/images/9.0.0-1.0-rc.1-classic/8.3-apache')
         self.fs.create_dir('/tmp/images/nightly/7.1-fpm')
         self.fs.create_dir('/tmp/images/nightly/7.1-apache')
         self.fs.create_dir('/tmp/images/nightly/7.2-fpm')
@@ -66,7 +72,8 @@ class VersionManagerTestCase(TestCase):
         '8.1.0': ('7.2', '7.3', '7.4', '8.0', '8.1'),
         '8.1.3': ('7.2', '7.3', '7.4', '8.0', '8.1'),
         '8.1.x': ('7.2', '7.3', '7.4', '8.0', '8.1'),
-        '9.0.0-beta.1-classic': ('8.1', '8.2', '8.3', '8.4'),
+        '9.0.0-1.0-beta.1-classic': ('8.1', '8.2', '8.3', '8.4'),
+        '9.0.0-1.0-rc.1-classic': ('8.1', '8.2', '8.3', '8.4'),
         '9.0.x': ('8.1', '8.2', '8.3'),
         'nightly': ('7.1', '7.2', '7.3'),
     }
@@ -289,9 +296,14 @@ class VersionManagerTestCase(TestCase):
 
     @patch('prestashop_docker.version_manager.VERSIONS', all_versions)
     def test_get_version_from_string_with_distribution(self):
-        result = self.version_manager.get_version_from_string('9.0.0-beta.1-classic')
+        result = self.version_manager.get_version_from_string('9.0.0-1.0-beta.1-classic')
         self.assertEqual(
-            {'ps_version': '9.0.0-beta.1-classic', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3', '8.4'), 'container_version': None, 'distribution': 'classic'},
+            {'ps_version': '9.0.0-1.0-beta.1-classic', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3', '8.4'), 'container_version': None, 'distribution': 'classic'},
+            result
+        )
+        result = self.version_manager.get_version_from_string('9.0.0-1.0-rc.1-classic')
+        self.assertEqual(
+            {'ps_version': '9.0.0-1.0-rc.1-classic', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3', '8.4'), 'container_version': None, 'distribution': 'classic'},
             result
         )
 
@@ -342,14 +354,25 @@ class VersionManagerTestCase(TestCase):
         )
         self.assertEqual(
             {
-                '9.0.0-beta.1-classic-8.1-apache': '/tmp/images/9.0.0-beta.1-classic/8.1-apache',
-                '9.0.0-beta.1-classic-8.1-fpm': '/tmp/images/9.0.0-beta.1-classic/8.1-fpm',
-                '9.0.0-beta.1-classic-8.2-apache': '/tmp/images/9.0.0-beta.1-classic/8.2-apache',
-                '9.0.0-beta.1-classic-8.2-fpm': '/tmp/images/9.0.0-beta.1-classic/8.2-fpm',
-                '9.0.0-beta.1-classic-8.3-apache': '/tmp/images/9.0.0-beta.1-classic/8.3-apache',
-                '9.0.0-beta.1-classic-8.3-fpm': '/tmp/images/9.0.0-beta.1-classic/8.3-fpm',
+                '9.0.0-1.0-beta.1-classic-8.1-apache': '/tmp/images/9.0.0-1.0-beta.1-classic/8.1-apache',
+                '9.0.0-1.0-beta.1-classic-8.1-fpm': '/tmp/images/9.0.0-1.0-beta.1-classic/8.1-fpm',
+                '9.0.0-1.0-beta.1-classic-8.2-apache': '/tmp/images/9.0.0-1.0-beta.1-classic/8.2-apache',
+                '9.0.0-1.0-beta.1-classic-8.2-fpm': '/tmp/images/9.0.0-1.0-beta.1-classic/8.2-fpm',
+                '9.0.0-1.0-beta.1-classic-8.3-apache': '/tmp/images/9.0.0-1.0-beta.1-classic/8.3-apache',
+                '9.0.0-1.0-beta.1-classic-8.3-fpm': '/tmp/images/9.0.0-1.0-beta.1-classic/8.3-fpm',
             },
-            self.version_manager.parse_version('9.0.0-beta.1-classic')
+            self.version_manager.parse_version('9.0.0-1.0-beta.1-classic')
+        )
+        self.assertEqual(
+            {
+                '9.0.0-1.0-rc.1-classic-8.1-apache': '/tmp/images/9.0.0-1.0-rc.1-classic/8.1-apache',
+                '9.0.0-1.0-rc.1-classic-8.1-fpm': '/tmp/images/9.0.0-1.0-rc.1-classic/8.1-fpm',
+                '9.0.0-1.0-rc.1-classic-8.2-apache': '/tmp/images/9.0.0-1.0-rc.1-classic/8.2-apache',
+                '9.0.0-1.0-rc.1-classic-8.2-fpm': '/tmp/images/9.0.0-1.0-rc.1-classic/8.2-fpm',
+                '9.0.0-1.0-rc.1-classic-8.3-apache': '/tmp/images/9.0.0-1.0-rc.1-classic/8.3-apache',
+                '9.0.0-1.0-rc.1-classic-8.3-fpm': '/tmp/images/9.0.0-1.0-rc.1-classic/8.3-fpm',
+            },
+            self.version_manager.parse_version('9.0.0-1.0-rc.1-classic')
         )
         self.assertEqual(
             {
@@ -516,14 +539,22 @@ class VersionManagerTestCase(TestCase):
             '8.1.x-8.0-apache': '/tmp/images/8.1.x/8.0-apache',
             '8.1.x-8.1-fpm': '/tmp/images/8.1.x/8.1-fpm',
             '8.1.x-8.1-apache': '/tmp/images/8.1.x/8.1-apache',
-            '9.0.0-beta.1-classic-8.1-fpm': '/tmp/images/9.0.0-beta.1-classic/8.1-fpm',
-            '9.0.0-beta.1-classic-8.1-apache': '/tmp/images/9.0.0-beta.1-classic/8.1-apache',
-            '9.0.0-beta.1-classic-8.2-fpm': '/tmp/images/9.0.0-beta.1-classic/8.2-fpm',
-            '9.0.0-beta.1-classic-8.2-apache': '/tmp/images/9.0.0-beta.1-classic/8.2-apache',
-            '9.0.0-beta.1-classic-8.3-fpm': '/tmp/images/9.0.0-beta.1-classic/8.3-fpm',
-            '9.0.0-beta.1-classic-8.3-apache': '/tmp/images/9.0.0-beta.1-classic/8.3-apache',
-            '9.0.0-beta.1-classic-8.4-fpm': '/tmp/images/9.0.0-beta.1-classic/8.4-fpm',
-            '9.0.0-beta.1-classic-8.4-apache': '/tmp/images/9.0.0-beta.1-classic/8.4-apache',
+            '9.0.0-1.0-beta.1-classic-8.1-fpm': '/tmp/images/9.0.0-1.0-beta.1-classic/8.1-fpm',
+            '9.0.0-1.0-beta.1-classic-8.1-apache': '/tmp/images/9.0.0-1.0-beta.1-classic/8.1-apache',
+            '9.0.0-1.0-beta.1-classic-8.2-fpm': '/tmp/images/9.0.0-1.0-beta.1-classic/8.2-fpm',
+            '9.0.0-1.0-beta.1-classic-8.2-apache': '/tmp/images/9.0.0-1.0-beta.1-classic/8.2-apache',
+            '9.0.0-1.0-beta.1-classic-8.3-fpm': '/tmp/images/9.0.0-1.0-beta.1-classic/8.3-fpm',
+            '9.0.0-1.0-beta.1-classic-8.3-apache': '/tmp/images/9.0.0-1.0-beta.1-classic/8.3-apache',
+            '9.0.0-1.0-beta.1-classic-8.4-fpm': '/tmp/images/9.0.0-1.0-beta.1-classic/8.4-fpm',
+            '9.0.0-1.0-beta.1-classic-8.4-apache': '/tmp/images/9.0.0-1.0-beta.1-classic/8.4-apache',
+            '9.0.0-1.0-rc.1-classic-8.1-fpm': '/tmp/images/9.0.0-1.0-rc.1-classic/8.1-fpm',
+            '9.0.0-1.0-rc.1-classic-8.1-apache': '/tmp/images/9.0.0-1.0-rc.1-classic/8.1-apache',
+            '9.0.0-1.0-rc.1-classic-8.2-fpm': '/tmp/images/9.0.0-1.0-rc.1-classic/8.2-fpm',
+            '9.0.0-1.0-rc.1-classic-8.2-apache': '/tmp/images/9.0.0-1.0-rc.1-classic/8.2-apache',
+            '9.0.0-1.0-rc.1-classic-8.3-fpm': '/tmp/images/9.0.0-1.0-rc.1-classic/8.3-fpm',
+            '9.0.0-1.0-rc.1-classic-8.3-apache': '/tmp/images/9.0.0-1.0-rc.1-classic/8.3-apache',
+            '9.0.0-1.0-rc.1-classic-8.4-fpm': '/tmp/images/9.0.0-1.0-rc.1-classic/8.4-fpm',
+            '9.0.0-1.0-rc.1-classic-8.4-apache': '/tmp/images/9.0.0-1.0-rc.1-classic/8.4-apache',
             '9.0.x-8.1-fpm': '/tmp/images/9.0.x/8.1-fpm',
             '9.0.x-8.1-apache': '/tmp/images/9.0.x/8.1-apache',
             '9.0.x-8.2-fpm': '/tmp/images/9.0.x/8.2-fpm',
@@ -608,8 +639,11 @@ class VersionManagerTestCase(TestCase):
             '9.0.x': {
                 'value': '9.0.x'
             },
-            '9.0.0-beta.1-classic': {
-                'value': '9.0.0-beta.1-classic'
+            '9.0.0-1.0-beta.1-classic': {
+                'value': '9.0.0-1.0-beta.1-classic'
+            },
+            '9.0.0-1.0-rc.1-classic': {
+                'value': '9.0.0-1.0-rc.1-classic'
             },
             'nightly': {
                 'value': 'nightly'
@@ -723,11 +757,16 @@ class VersionManagerTestCase(TestCase):
             '8.1.x-8.0-apache': ['8.1.x-8.0'],
             '8.1.x-8.1-apache': ['8.1.x-8.1', '8.1.x', '8.1.x-apache'],
             '8.1.x-8.1-fpm': ['8.1.x-fpm'],
-            '9.0.0-beta.1-classic-8.1-apache': ['9.0.0-beta.1-classic-8.1'],
-            '9.0.0-beta.1-classic-8.2-apache': ['9.0.0-beta.1-classic-8.2'],
-            '9.0.0-beta.1-classic-8.3-apache': ['9.0.0-beta.1-classic-8.3'],
-            '9.0.0-beta.1-classic-8.4-apache': ['9.0.0-beta.1-classic-8.4', '9.0.0-beta.1-classic', '9.0.0-beta.1-classic-apache'],
-            '9.0.0-beta.1-classic-8.4-fpm': ['9.0.0-beta.1-classic-fpm'],
+            '9.0.0-1.0-beta.1-classic-8.1-apache': ['9.0.0-1.0-beta.1-classic-8.1'],
+            '9.0.0-1.0-beta.1-classic-8.2-apache': ['9.0.0-1.0-beta.1-classic-8.2'],
+            '9.0.0-1.0-beta.1-classic-8.3-apache': ['9.0.0-1.0-beta.1-classic-8.3'],
+            '9.0.0-1.0-beta.1-classic-8.4-apache': ['9.0.0-1.0-beta.1-classic-8.4', '9.0.0-1.0-beta.1-classic', '9.0.0-1.0-beta.1-classic-apache'],
+            '9.0.0-1.0-beta.1-classic-8.4-fpm': ['9.0.0-1.0-beta.1-classic-fpm'],
+            '9.0.0-1.0-rc.1-classic-8.1-apache': ['9.0.0-1.0-rc.1-classic-8.1'],
+            '9.0.0-1.0-rc.1-classic-8.2-apache': ['9.0.0-1.0-rc.1-classic-8.2'],
+            '9.0.0-1.0-rc.1-classic-8.3-apache': ['9.0.0-1.0-rc.1-classic-8.3'],
+            '9.0.0-1.0-rc.1-classic-8.4-apache': ['9.0.0-1.0-rc.1-classic-8.4', '9.0.0-1.0-rc.1-classic', '9.0.0-1.0-rc.1-classic-apache'],
+            '9.0.0-1.0-rc.1-classic-8.4-fpm': ['9.0.0-1.0-rc.1-classic-fpm'],
             '9.0.x-8.1-apache': ['9.0.x-8.1'],
             '9.0.x-8.2-apache': ['9.0.x-8.2'],
             '9.0.x-8.3-apache': ['9.0.x-8.3', '9.0.x', '9.0.x-apache'],

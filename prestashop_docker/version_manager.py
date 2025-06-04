@@ -195,7 +195,7 @@ class VersionManager:
         @rtpe: None|tuple
         '''
 
-        regex = r"^(?P<major>(1.)?[0-9]+)\.(?P<minor>[0-9]+)\.(?P<patch>[0-9x]+)(?P<prerelease>-(alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?(?:-(?P<distribution>classic))?"
+        regex = r"^(?P<major>(1.)?[0-9]+)\.(?P<minor>[0-9]+)\.(?P<patch>[0-9x]+)(\-(?P<distribution_major>[0-9]+)\.(?P<distribution_minor>[0-9]+))?(?P<prerelease>-(alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?(?:-(?P<distribution>classic))?"
 
         matches = re.search(regex, version)
 
@@ -222,7 +222,10 @@ class VersionManager:
         @return: Return None if no position in the string matches the pattern otherwise a Match object.
         @rtpe: None|Match
         '''
-        regex = r"^(?P<version>(?:[0-9]+\.){0,3}(?:[0-9]+|nightly|x)(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<distribution>classic))?(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
+        if "-classic" in version:
+            regex = r"^(?P<version>(?:[0-9]+\.){0,3}((?:[0-9]+|nightly|x))(?:-(?:[0-9]+\.[0-9]+))?(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<distribution>classic))?(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
+        else:
+            regex = r"^(?P<version>(?:[0-9]+\.){0,3}((?:[0-9]+|nightly|x))(?:-(?:alpha|beta|rc)(?:\.\d+)?(?:\+\d+)?)?)(?:-(?P<distribution>classic))?(?:-(?P<php>\d+\.\d+))?(?:-(?P<container>fpm|apache))?$"
         return re.search(regex, version)
 
     def get_aliases(self):
