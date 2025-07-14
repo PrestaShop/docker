@@ -1,7 +1,7 @@
 FROM prestashop/base:$container_version
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION $ps_version
+ENV PS_VERSION=$ps_version
 
 # Get PrestaShop
 ADD $ps_url /tmp/prestashop.zip
