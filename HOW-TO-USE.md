@@ -15,19 +15,33 @@ Display the help:
 
 ```bash
 $ ./prestashop_docker.py --help
-usage: prestashop_docker.py [-h] [--debug] [--cache] [subcommand] ...
+usage: prestashop_docker.py [-h] [--debug] [--quiet] [--cache] [subcommand] ...
 
 PrestaShop Docker manager.
 
 positional arguments:
   [subcommand]
-    tag         Tag managment
+    backlog     Update backlog of stable versions of PrestaShop to build from data on Distribution API
     generate    Generate Dockerfile
+    tag         Tag managment
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
   --debug       Use Debug
-  --cache    Enable cache
+  --quiet       Use Debug
+  --cache       Enable cache
+```
+
+### Backlog
+
+Updates the info about stable releases of PrestaShop inside versions.py, based on the contents of Ditribution API.
+
+```bash
+./prestashop_docker.py backlog --help
+usage: prestashop_docker.py backlog [-h]
+
+optional arguments:
+  -h, --help  show this help message and exit
 ```
 
 ### Generate
@@ -63,7 +77,7 @@ optional arguments:
 
 ## Using docker compose
 
-To generate the new base files, you need to update the `versions.py` file, add a section ith your new version along with the associated PHP versions, then run
+To generate the new base files, you need to update the `versions.py` file, add a section with your new version along with the associated PHP versions, then run
 
 ```php
 docker compose up generate

@@ -9,8 +9,6 @@ logger = logging.getLogger(__name__)
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
-# Docker api
-#
 class DockerApi():
     retries = 0
 
@@ -23,14 +21,14 @@ class DockerApi():
         @type debug: bool
         """
         self.sleep_time = 1
-        self.url = 'https://hub.docker.com/v2/repositories/prestashop/prestashop'
+        self.url = 'https://hub.docker.com/v2/repositories/'
         self.cache = cache
         self.is_debug = debug
 
         if self.cache:
             requests_cache.install_cache('cache')
 
-    def get_tags(self):
+    def get_tags(self, image_name='prestashop/prestashop'):
         """Generate return tags
 
         @return: The json content
@@ -42,7 +40,7 @@ class DockerApi():
         )
 
         data = self.execute(
-            self.url + '/tags'
+            self.url + image_name + '/tags?page_size=100'
         )
 
         return data['results']
