@@ -1,7 +1,6 @@
 from errno import EEXIST
 from os import path, makedirs
 from string import Template
-from packaging import version
 from . import CONTAINERS
 from prestashop_docker.version_manager import VersionManager
 
@@ -9,9 +8,11 @@ from prestashop_docker.version_manager import VersionManager
 class Generator:
     NIGHTLY = 'nightly'
 
-    def __init__(self, directory_path, template, nightly_template, branch_template):
+    def __init__(self, distribution_api, directory_path, template, nightly_template, branch_template):
         """Constructor
 
+        @param distribution_api: Distrihbution API
+        @type distribution_api: DistributionApi
         @param directory_path: Directory path
         @type directory_path: str
         @param template: Base template
@@ -21,10 +22,7 @@ class Generator:
         @param branch_template: Branch template
         @type branch_template: str
         """
-        self.download_url = 'https://www.prestashop.com/download/old/' \
-            'prestashop_{}.zip'
-        self.download_url_github = 'https://github.com/PrestaShop/PrestaShop/releases/download/{}/prestashop_{}.zip'
-        self.download_url_github_classic = 'https://github.com/PrestaShopCorp/prestashop-classic/releases/download/{}/prestashop_{}.zip'
+        self.distribution_api = distribution_api
         self.directory_path = directory_path
         self.template = Template(template)
         self.nightly_template = Template(nightly_template)
@@ -86,19 +84,7 @@ class Generator:
             node_version = 'v20.17.0'
 
         with open(file_path, 'w+') as f:
-            use_github_url = True
-            # We use 1.7.8.8 as the comparison base because the 1.7.8.9 is not hosted on the .com anymore but until 1.7.8.8,
-            # it still works so the .com url is used
-            if split_version is not None and split_version['patch'] != 'x' and split_version['major'] == '1.7' and version.parse(ps_version) <= version.parse('1.7.8.8'):
-                use_github_url = False
-
-            if use_github_url:
-                if parsed_version['distribution'] == 'classic':
-                    ps_url = self.download_url_github_classic.format(ps_version.replace("-classic", ""), ps_version.replace("-classic", ""))
-                else:
-                    ps_url = self.download_url_github.format(ps_version, ps_version)
-            else:
-                ps_url = self.download_url.format(ps_version)
+            ps_url = self.distribution_api.get_download_url_of(ps_version)
             f.write(
                 template.substitute(
                     {

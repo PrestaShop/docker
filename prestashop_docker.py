@@ -110,6 +110,7 @@ def main():
 
     if args.subcommand == 'generate':
         generator = Generator(
+            DistributionApi(),
             path.join(path.dirname(path.realpath(__file__)), 'images'),
             open('./Dockerfile.model').read(),
             open('./Dockerfile-nightly.model').read(),
