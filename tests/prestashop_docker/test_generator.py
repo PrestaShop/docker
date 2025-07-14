@@ -1,5 +1,7 @@
+import json
 from pyfakefs.fake_filesystem_unittest import TestCase
 from prestashop_docker.generator import Generator
+from prestashop_docker.distribution_api import DistributionApi
 from os import path
 
 
@@ -7,6 +9,7 @@ class GeneratorTestCase(TestCase):
     generator = None
 
     def setUp(self):
+        fake_data = json.loads(open('tests/prestashop_docker/prestashop_versions.json').read())
         self.setUpPyfakefs()
         self.fs.create_dir('/tmp/images')
         self.fs.create_file(
@@ -35,6 +38,7 @@ class GeneratorTestCase(TestCase):
         )
 
         self.generator = Generator(
+            DistributionApi(fake_data),
             '/tmp/images',
             open('Dockerfile.model').read(),
             open('Dockerfile-nightly.model').read(),
@@ -58,8 +62,8 @@ class GeneratorTestCase(TestCase):
         with open(dockerfile) as f:
             content = f.read()
             self.assertIn(
-                'PS_URL: https://www.prestashop.com/download/old/'
-                'prestashop_1.7.8.0.zip',
+                'PS_URL: https://api.prestashop-project.org/assets/prestashop/1.7.8.0/'
+                'prestashop.zip',
                 content
             )
             self.assertIn('PS_VERSION: 1.7.8.0', content)
@@ -77,8 +81,8 @@ class GeneratorTestCase(TestCase):
         with open(dockerfile) as f:
             content = f.read()
             self.assertIn(
-                'PS_URL: https://www.prestashop.com/download/old/'
-                'prestashop_1.7.8.8.zip',
+                'PS_URL: https://api.prestashop-project.org/assets/prestashop/1.7.8.8/'
+                'prestashop.zip',
                 content
             )
             self.assertIn('PS_VERSION: 1.7.8.8', content)
@@ -96,8 +100,8 @@ class GeneratorTestCase(TestCase):
         with open(dockerfile) as f:
             content = f.read()
             self.assertIn(
-                'PS_URL: https://github.com/PrestaShop/PrestaShop/releases/download/1.7.8.9/'
-                'prestashop_1.7.8.9.zip',
+                'PS_URL: https://api.prestashop-project.org/assets/prestashop/1.7.8.9/'
+                'prestashop.zip',
                 content
             )
             self.assertIn('PS_VERSION: 1.7.8.9', content)
@@ -115,12 +119,31 @@ class GeneratorTestCase(TestCase):
         with open(dockerfile) as f:
             content = f.read()
             self.assertIn(
-                'PS_URL: https://github.com/PrestaShop/PrestaShop/releases/download/8.0.0/'
-                'prestashop_8.0.0.zip',
+                'PS_URL: https://api.prestashop-project.org/assets/prestashop/8.0.0/'
+                'prestashop.zip',
                 content
             )
             self.assertIn('PS_VERSION: 8.0.0', content)
             self.assertIn('CONTAINER_VERSION: 7.4-alpine', content)
+
+    def test_generate_image_900(self):
+        dockerfile = '/tmp/images/9.0.0/8.4-alpine/Dockerfile'
+        self.assertFalse(path.exists(dockerfile))
+        self.generator.generate_image(
+            '9.0.0',
+            '8.4-alpine'
+        )
+        self.assertTrue(path.exists(dockerfile))
+
+        with open(dockerfile) as f:
+            content = f.read()
+            self.assertIn(
+                'PS_URL: https://api.prestashop-project.org/assets/prestashop-classic/9.0.0-3.0/'
+                'prestashop.zip',
+                content
+            )
+            self.assertIn('PS_VERSION: 9.0.0', content)
+            self.assertIn('CONTAINER_VERSION: 8.4-alpine', content)
 
     def test_generate_nightly_image(self):
         dockerfile = '/tmp/images/nightly/7.2-alpine/Dockerfile'
