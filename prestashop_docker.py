@@ -107,8 +107,7 @@ def main():
             nightly_const=Generator.NIGHTLY
         )
         backlog.generate()
-
-    if args.subcommand == 'generate':
+    elif args.subcommand == 'generate':
         generator = Generator(
             DistributionApi(),
             path.join(path.dirname(path.realpath(__file__)), 'images'),

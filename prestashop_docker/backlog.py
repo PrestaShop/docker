@@ -26,9 +26,13 @@ class Backlog:
         self.NIGHTLY = nightly_const
 
     def generate(self):
+        print('Refreshing contents of versions.py')
+        print('Step 1/3: Fetching PHP tags from Docker Hub API')
         available_php_versions = self.get_available_php_versions()
+        print('Step 2/3: Fetching PrestaShop releases from Distribution API')
         prestashop_data = self.distribution_api.fetch_prestashop_versions()
 
+        print('Step 3/3: Building list')
         versions_dict = self.parse_prestashop_versions(prestashop_data, available_php_versions)
         branches_dict = self.get_branches_and_nightly_from_existing_file()
         self.write_versions_py(versions_dict | branches_dict)
@@ -91,6 +95,6 @@ class Backlog:
                 php_versions = versions[ps_version]
                 f.write(f"    '{ps_version}': (\n")
                 for php_version in php_versions:
-                    f.write(f"        '{php_version}', \n")
+                    f.write(f"        '{php_version}',\n")  # noqa: E231
                 f.write("    ),\n")
             f.write("}\n")

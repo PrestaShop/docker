@@ -19,7 +19,7 @@ class DistributionApi():
     def get_download_url_of(self, version):
         url = None
         distribution_version = None
-        for entry in self.prestashop_versions:
+        for entry in self.fetch_prestashop_versions():
             if version == entry.get('version') and (url is None or Version(entry.get('distribution_version')) > Version(distribution_version)):
                 # We can have different distribution releases for the same PrestaShop version. We look for the most recent.
                 url = entry.get('zip_download_url')
