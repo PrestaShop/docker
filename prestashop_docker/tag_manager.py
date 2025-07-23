@@ -1,4 +1,6 @@
 import logging
+import shutil
+import subprocess
 from .stream import Stream
 
 logger = logging.getLogger(__name__)
@@ -27,7 +29,7 @@ class TagManager():
         self.cache = cache
         self.tags = None
 
-    def build(self, version=None, force=False):
+    def build(self, version=None, force=False, push=False):
         '''
         Build version on the current machine
 
@@ -46,67 +48,33 @@ class TagManager():
                 # Do not build images that already exists on Docker Hub
                 continue
 
-            log = self.docker_client.api.build(
-                path=str(version_path),
-                tag='prestashop/prestashop:' + version,
-                rm=True,
-                nocache=(not self.cache),
-                decode=True
-            )
+            if not shutil.which("docker"):
+                raise RuntimeError("The docker client must be installed")
 
-            self.stream.display(log)
-
+            tags = ["--tag", "prestashop/prestashop:" + version]
             aliases = self.version_manager.get_aliases()
             if version in aliases:
                 for alias in aliases[version]:
-                    print(
-                        'Create tag {}'.format(alias)
-                    )
-                    self.docker_client.api.tag(
-                        'prestashop/prestashop:' + version,
-                        'prestashop/prestashop',
-                        alias
-                    )
+                    print('Will be aliased as tag {}'.format(alias))
+                    tags = tags + ["--tag", "prestashop/prestashop:" + alias]
 
-    def push(self, version=None, force=False):
-        '''
-        Push version on Docker Hub
+            args = []
+            if push:
+                args.append('--push')
+            if not self.cache:
+                args.append('--no-cache')
 
-        @param version: Optional version you want to build
-        @type version: str
-        '''
-        versions = self.get_versions(version)
+            cmd_args = [
+                "docker", "buildx", "build",
+                "--platform", "linux/arm/v7,linux/arm64/v8,linux/amd64",
+                "--builder", "container",
+            ] + tags + args + [
+                str(version_path)
+            ]
 
-        for version in versions.keys():
-            print(
-                'Pushing {}'.format(version)
-            )
-
-            if not force and self.exists(version):
-                continue
-
-            log = self.docker_client.api.push(
-                repository='prestashop/prestashop',
-                tag=version,
-                decode=True,
-                stream=True
-            )
+            log = subprocess.Popen(cmd_args, shell=True, stdout=subprocess.PIPE).stdout.read()
 
             self.stream.display(log)
-
-            aliases = self.version_manager.get_aliases()
-            if version in aliases:
-                for alias in aliases[version]:
-                    print(
-                        'Pushing tag {}'.format(alias)
-                    )
-                    log = self.docker_client.api.push(
-                        repository='prestashop/prestashop',
-                        tag=alias,
-                        decode=True,
-                        stream=True
-                    )
-                    self.stream.display(log)
 
     def exists(self, version):
         '''

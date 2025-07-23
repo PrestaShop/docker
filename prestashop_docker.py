@@ -138,7 +138,7 @@ def main():
             elif args.tag_subcommand == 'build':
                 tag_manager.build(args.version, args.force)
             elif args.tag_subcommand == 'push':
-                tag_manager.push(args.version, args.force)
+                tag_manager.build(args.version, args.force, True)
             elif args.tag_subcommand == 'aliases':
                 tag_manager.get_aliases(args.version)
     else:

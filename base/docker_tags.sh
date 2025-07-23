@@ -1,5 +1,8 @@
 #!/bin/bash
 
+: ${PLATFORM_ARGS:="linux/arm/v7,linux/arm64/v8,linux/amd64"}
+: ${DOCKER_REPOSITORY:="prestashop/base"}
+
 cd $(cd "$( dirname "$0" )" && pwd)
 
 if [ -z "$1" ] || [ "$1" == "-p" ]; then
@@ -21,28 +24,23 @@ while getopts ":fp" option; do
 done
 
 docker_tag_exists() {
-    curl --silent -f -lSL https://hub.docker.com/v2/repositories/$1/tags/$2 > /dev/null
+    curl --silent -f -lSL https://hub.docker.com/v2/repositories/$1/tags/$2 > /dev/null 2>&1
 }
 
 docker_image()
 {
-    if ! $FORCE && docker_tag_exists prestashop/base ${version}; then
-        echo "Docker Image already pushed : prestashop/base:$version"
+    if ! $FORCE && docker_tag_exists ${DOCKER_REPOSITORY} ${version}; then
+        echo "Docker Image already pushed : $DOCKER_REPOSITORY:$version"
         return
     else 
-        echo "Docker build & tag : prestashop/base:$version"
-        id=$(echo $(docker build --quiet=true images/${version} 2>/dev/null) | awk '{print $NF}')
-        echo $id;
-        docker tag $id prestashop/base:${version}
-
-
-        if [ -z "$PUSH" ]; then
-            # Do not push
-            return
-        fi
-        echo "Docker Push : prestashop/base:$version"
-
-        docker push prestashop/base:${version}
+        echo "Docker build & tag : $DOCKER_REPOSITORY:$version"
+        docker buildx build \
+            --progress=plain \
+            --platform ${PLATFORM_ARGS} \
+            --builder container \
+            --tag ${DOCKER_REPOSITORY}:${version} \
+            $([ "${PUSH}" == "true" ] && echo "--push" || echo "") \
+            images/${version}
     fi
 }
 
