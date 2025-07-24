@@ -5,30 +5,45 @@
 
 cd $(cd "$( dirname "$0" )" && pwd)
 
-if [ -z "$1" ] || [ "$1" == "-p" ]; then
-    PS_VERSIONS_FILE="tags.txt";
-else
-    PS_VERSIONS_FILE="$1";
-fi
-
+# Default values
+PS_VERSIONS_FILE="tags.txt"
+SINGLE_VERSION=""
 FORCE=false
-while getopts ":fp" option; do
-   case $option in
-      p)
-         PUSH=true
-         ;;
-      f)
-         FORCE=true
-         ;;
-   esac
+PUSH=false
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --version)
+            SINGLE_VERSION="$2"
+            shift 2
+            ;;
+        --file)
+            PS_VERSIONS_FILE="$2"
+            shift 2
+            ;;
+        -f)
+            FORCE=true
+            shift
+            ;;
+        -p)
+            PUSH=true
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Usage: $0 [--version <version>] [--file <filename>] [-f] [-p]"
+            exit 1
+            ;;
+    esac
 done
 
 docker_tag_exists() {
     curl --silent -f -lSL https://hub.docker.com/v2/repositories/$1/tags/$2 > /dev/null 2>&1
 }
 
-docker_image()
-{
+docker_image() {
+    version="$1"
     if ! $FORCE && docker_tag_exists ${DOCKER_REPOSITORY} ${version}; then
         echo "Docker Image already pushed : $DOCKER_REPOSITORY:$version"
         return
@@ -39,14 +54,18 @@ docker_image()
             --platform ${PLATFORM_ARGS} \
             --builder container \
             --tag ${DOCKER_REPOSITORY}:${version} \
-            $([ "${PUSH}" == "true" ] && echo "--push" || echo "") \
+            $([ "$PUSH" == "true" ] && echo "--push") \
             images/${version}
     fi
 }
 
-
-# Generate base images for PHP tags
-echo "Reading tags in ${PS_VERSIONS_FILE} ..."
-while read version; do
-    docker_image $version
-done < $PS_VERSIONS_FILE
+if [ -n "$SINGLE_VERSION" ]; then
+    echo "Building single version: $SINGLE_VERSION"
+    docker_image "$SINGLE_VERSION"
+else
+    echo "Reading tags in ${PS_VERSIONS_FILE} ..."
+    while read -r version; do
+        [ -z "$version" ] && continue
+        docker_image "$version"
+    done < "$PS_VERSIONS_FILE"
+fi
