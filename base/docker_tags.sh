@@ -3,6 +3,7 @@
 : ${PLATFORM_ARGS:="linux/arm/v7,linux/arm64/v8,linux/amd64"}
 : ${DOCKER_REPOSITORY:="prestashop/base"}
 
+set -e 
 cd $(cd "$( dirname "$0" )" && pwd)
 
 # Default values
