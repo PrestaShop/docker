@@ -42,7 +42,7 @@ jobs:
     needs: list_base_images
     strategy:
         matrix:
-            manifest: ${{ fromJson(needs.list_base_images.outputs.versions) }}
+            version: ${{ fromJson(needs.list_base_images.outputs.versions) }}
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -60,13 +60,13 @@ jobs:
         working-directory: base
 
       - name: Base Images > Docker Build Tags
-        run: DOCKER_REPOSITORY=${{ vars.DOCKER_REPOSITORY}} ./docker_tags.sh --version ${{ matrix.version }}
+        run: DOCKER_REPOSITORY=${{ vars.DOCKER_BASE_REPOSITORY}} ./docker_tags.sh --version ${{ matrix.version }}
         if: ${{ github.event_name == 'pull_request' }}
         working-directory: base
 
       - name: Base Images > Docker Build & Force Push
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && needs.list_base_images.outputs.base_has_changed == 'true' }}
-        run: DOCKER_REPOSITORY=${{ vars.DOCKER_REPOSITORY}} ./docker_tags.sh -p -f --version ${{ matrix.version }}
+        run: DOCKER_REPOSITORY=${{ vars.DOCKER_BASE_REPOSITORY}} ./docker_tags.sh -p -f --version ${{ matrix.version }}
         working-directory: base
 
 
