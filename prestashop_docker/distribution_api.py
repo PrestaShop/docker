@@ -1,11 +1,11 @@
 import requests
-from packaging.version import Version
 
 
 class DistributionApi():
     PRESTASHOP_API_URL = "https://api.prestashop-project.org/prestashop"
 
-    def __init__(self, data=None):
+    def __init__(self, version_manager, data=None):
+        self.version_manager = version_manager
         self.prestashop_versions = data
 
     def fetch_prestashop_versions(self):
@@ -17,12 +17,8 @@ class DistributionApi():
         return self.prestashop_versions
 
     def get_download_url_of(self, version):
-        url = None
-        distribution_version = None
-        for entry in self.fetch_prestashop_versions():
-            if version == entry.get('version') and (url is None or Version(entry.get('distribution_version')) > Version(distribution_version)):
-                # We can have different distribution releases for the same PrestaShop version. We look for the most recent.
-                url = entry.get('zip_download_url')
-                distribution_version = entry.get('distribution_version')
+        prestashop_versions = self.fetch_prestashop_versions()
 
-        return url
+        for entry in prestashop_versions:
+            if version == self.version_manager.create_version_from_distribution_api(entry.get('version'), entry.get('distribution'), entry.get('distribution_version')):
+                return entry.get('zip_download_url')

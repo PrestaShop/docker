@@ -99,17 +99,20 @@ def main():
         logging.getLogger().setLevel(logging.DEBUG)
 
     if args.subcommand == 'backlog':
+        version_manager = VersionManager(path.join(path.dirname(path.realpath(__file__)), 'images'))
         backlog = Backlog(
             DockerApi(args.cache, args.debug),
             docker.from_env(),
-            DistributionApi(),
+            DistributionApi(version_manager),
+            version_manager,
             previous_state_versions=VERSIONS,
             nightly_const=Generator.NIGHTLY
         )
         backlog.generate()
     elif args.subcommand == 'generate':
+        version_manager = VersionManager(path.join(path.dirname(path.realpath(__file__)), 'images'))
         generator = Generator(
-            DistributionApi(),
+            DistributionApi(version_manager),
             path.join(path.dirname(path.realpath(__file__)), 'images'),
             open('./Dockerfile.model').read(),
             open('./Dockerfile-nightly.model').read(),

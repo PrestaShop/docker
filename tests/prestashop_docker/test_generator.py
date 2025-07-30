@@ -2,6 +2,7 @@ import json
 from pyfakefs.fake_filesystem_unittest import TestCase
 from prestashop_docker.generator import Generator
 from prestashop_docker.distribution_api import DistributionApi
+from prestashop_docker.version_manager import VersionManager
 from os import path
 
 
@@ -37,8 +38,12 @@ class GeneratorTestCase(TestCase):
             '''
         )
 
+        version_manager = VersionManager(
+            '/tmp/images'
+        )
+
         self.generator = Generator(
-            DistributionApi(fake_data),
+            DistributionApi(version_manager, fake_data),
             '/tmp/images',
             open('Dockerfile.model').read(),
             open('Dockerfile-nightly.model').read(),
@@ -127,10 +132,10 @@ class GeneratorTestCase(TestCase):
             self.assertIn('CONTAINER_VERSION: 7.4-alpine', content)
 
     def test_generate_image_900(self):
-        dockerfile = '/tmp/images/9.0.0/8.4-alpine/Dockerfile'
+        dockerfile = '/tmp/images/9.0.0-1.0-classic/8.4-alpine/Dockerfile'
         self.assertFalse(path.exists(dockerfile))
         self.generator.generate_image(
-            '9.0.0',
+            '9.0.0-1.0-classic',
             '8.4-alpine'
         )
         self.assertTrue(path.exists(dockerfile))
@@ -138,11 +143,11 @@ class GeneratorTestCase(TestCase):
         with open(dockerfile) as f:
             content = f.read()
             self.assertIn(
-                'PS_URL: https://api.prestashop-project.org/assets/prestashop-classic/9.0.0-3.0/'
+                'PS_URL: https://api.prestashop-project.org/assets/prestashop-classic/9.0.0-1.0/'
                 'prestashop.zip',
                 content
             )
-            self.assertIn('PS_VERSION: 9.0.0', content)
+            self.assertIn('PS_VERSION: 9.0.0-1.0-classic', content)
             self.assertIn('CONTAINER_VERSION: 8.4-alpine', content)
 
     def test_generate_nightly_image(self):

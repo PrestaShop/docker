@@ -5,15 +5,17 @@ from packaging.version import Version
 class Backlog:
     MINIMUM_PRESTASHOP_VERSION_TO_BUILD = '1.7.7.0'
 
-    def __init__(self, docker_api, docker_client, distribution_api, previous_state_versions, nightly_const):
+    def __init__(self, docker_api, docker_client, distribution_api, version_manager, previous_state_versions, nightly_const):
         """Constructor
 
         @param docker_api: Customer docker API
         @type docker_api: DockerApi
         @param docker_client: Docker client
         @type docker_client: docker
-        @param distribution_api: Distrihbution API
+        @param distribution_api: Distribution API
         @type distribution_api: DistributionApi
+        @param version_manager: Version Manager
+        @type version_manager: VersionManager
         @param previous_state_versions: Contents of the version.py file before regeneration
         @type previous_state_versions: dict
         @param nightly_const: Value of nightly case
@@ -22,6 +24,7 @@ class Backlog:
         self.docker_api = docker_api
         self.docker_client = docker_client
         self.distribution_api = distribution_api
+        self.version_manager = version_manager
         self.previous_state_versions = previous_state_versions
         self.NIGHTLY = nightly_const
 
@@ -58,13 +61,11 @@ class Backlog:
     def parse_prestashop_versions(self, prestashop_json, available_php_versions):
         versions = {}
         for entry in prestashop_json:
-            if entry.get('stability') != 'stable':
-                continue  # Only include stable versions
 
             if Version(entry.get('version')) < Version(self.MINIMUM_PRESTASHOP_VERSION_TO_BUILD):
                 continue
 
-            ps_version = entry['version']
+            ps_version = self.version_manager.create_version_from_distribution_api(entry['version'], entry['distribution'], entry['distribution_version'])
             php_min = entry['php_min_version']
             php_max = entry['php_max_version']
 
