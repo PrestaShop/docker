@@ -2,9 +2,11 @@
 
 import docker
 from versions import VERSIONS
+from prestashop_docker.backlog import Backlog
 from prestashop_docker.generator import Generator
 from prestashop_docker.tag_manager import TagManager
 from prestashop_docker.docker_api import DockerApi
+from prestashop_docker.distribution_api import DistributionApi
 from prestashop_docker.version_manager import VersionManager
 from os import path
 import argparse
@@ -74,11 +76,21 @@ def get_generate_parser(subparser):
     return generate_parser
 
 
+def get_backlog_parser(subparser):
+    backlog_parser = subparser.add_parser(
+        'backlog',
+        help='Update backlog of stable versions of PrestaShop to build from data on Distribution API'
+    )
+
+    return backlog_parser
+
+
 def main():
     parser = get_parser()
     subparser = get_subparser(parser)
-    tag_parser = get_tag_parser(subparser)
+    get_backlog_parser(subparser)
     get_generate_parser(subparser)
+    tag_parser = get_tag_parser(subparser)
 
     args = parser.parse_args()
 
@@ -86,8 +98,21 @@ def main():
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    if args.subcommand == 'generate':
+    if args.subcommand == 'backlog':
+        version_manager = VersionManager(path.join(path.dirname(path.realpath(__file__)), 'images'))
+        backlog = Backlog(
+            DockerApi(args.cache, args.debug),
+            docker.from_env(),
+            DistributionApi(version_manager),
+            version_manager,
+            previous_state_versions=VERSIONS,
+            nightly_const=Generator.NIGHTLY
+        )
+        backlog.generate()
+    elif args.subcommand == 'generate':
+        version_manager = VersionManager(path.join(path.dirname(path.realpath(__file__)), 'images'))
         generator = Generator(
+            DistributionApi(version_manager),
             path.join(path.dirname(path.realpath(__file__)), 'images'),
             open('./Dockerfile.model').read(),
             open('./Dockerfile-nightly.model').read(),

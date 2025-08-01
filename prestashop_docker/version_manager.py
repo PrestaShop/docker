@@ -302,8 +302,9 @@ class VersionManager:
                 current_version = semver.VersionInfo.parse(ps_version)
             else:
                 current_version = semver.VersionInfo.parse(splitted_version[1])
-            # Ignore prerelease versions
-            if current_version.prerelease:
+
+            # Ignore prerelease versions only if we find a tag that mentions a pre release (beta, rc etc.)
+            if current_version.prerelease and re.search(r'(\D+\.\d)', current_version.prerelease):
                 aliases[ps_version] = {
                     'value': ps_version
                 }
@@ -323,6 +324,9 @@ class VersionManager:
                 version_with_major_name = str(current_version.major) + '.' + str(current_version.minor)
             else:
                 version_with_major_name = splitted_version[0] + '.' + str(current_version.major) + '.' + str(current_version.minor)
+
+            version_with_patch_name = version_with_major_name + '.' + str(current_version.patch)
+
             if version_with_major_name not in aliases or aliases[version_with_major_name]['version'] < current_version:
                 aliases[version_with_major_name] = {
                     'version': current_version,
@@ -330,6 +334,7 @@ class VersionManager:
                 }
                 aliases[ps_version] = aliases[version_name]
                 aliases['latest'] = aliases[version_name]
+                aliases[version_with_patch_name] = aliases[version_name]
 
         return aliases
 
@@ -344,3 +349,26 @@ class VersionManager:
         @type container_version: str
         '''
         return ps_version + '-' + php_version + '-' + container_version
+
+    def create_version_from_distribution_api(self, version, distribution=None, version_distribution=None):
+        '''
+        Build the future tag from the details provided by Distribution API
+        @param version: PrestaShop version (x.x.x)
+        @type version: str
+        @param distribution: If provided, the name of the distribution
+        @type distribution: str
+        @param version_distribution: Version of the distribution release for the PrestaShop version
+        @type version_distribution: str
+        '''
+        if distribution != 'open_source' and version_distribution is not None:
+            split_version = version.split('-')
+
+            version_label = split_version[0]
+            if len(split_version) > 1:
+                prerelease_version = split_version[1]
+                version_label += '-{}-{}-{}'.format(version_distribution, prerelease_version, distribution)
+            else:
+                version_label += '-{}-{}'.format(version_distribution, distribution)
+            return version_label
+
+        return version

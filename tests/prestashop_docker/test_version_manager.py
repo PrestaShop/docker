@@ -74,6 +74,9 @@ class VersionManagerTestCase(TestCase):
         '8.1.x': ('7.2', '7.3', '7.4', '8.0', '8.1'),
         '9.0.0-1.0-beta.1-classic': ('8.1', '8.2', '8.3', '8.4'),
         '9.0.0-1.0-rc.1-classic': ('8.1', '8.2', '8.3', '8.4'),
+        '9.0.0-1.0-classic': ('8.1', '8.2', '8.3', '8.4'),
+        '9.0.0-1.1-classic': ('8.1', '8.2', '8.3', '8.4'),
+        '9.0.2-1.0-classic': ('8.1', '8.2', '8.3', '8.4'),
         '9.0.x': ('8.1', '8.2', '8.3'),
         'nightly': ('7.1', '7.2', '7.3'),
     }
@@ -156,7 +159,7 @@ class VersionManagerTestCase(TestCase):
         )
         result = self.version_manager.get_last_patch_from_version('9.0.x')
         self.assertEqual(
-            None,
+            '2',
             result
         )
         result = self.version_manager.get_last_patch_from_version('nightly')
@@ -192,7 +195,7 @@ class VersionManagerTestCase(TestCase):
         # Branch input with no other patch versions returns patch 0
         result = self.version_manager.get_version_from_string('9.0.x')
         self.assertEqual(
-            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3'), 'container_version': None, 'distribution': None},
+            {'ps_version': '9.0.3', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3'), 'container_version': None, 'distribution': None},
             result
         )
         # Nightly version uses develop as the branch
@@ -223,7 +226,7 @@ class VersionManagerTestCase(TestCase):
         )
         result = self.version_manager.get_version_from_string('9.0.x-8.2')
         self.assertEqual(
-            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': None, 'distribution': None},
+            {'ps_version': '9.0.3', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': None, 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('nightly-7.2')
@@ -246,7 +249,7 @@ class VersionManagerTestCase(TestCase):
         )
         result = self.version_manager.get_version_from_string('9.0.x-8.2-fpm')
         self.assertEqual(
-            {'ps_version': '9.0.0', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': 'fpm', 'distribution': None},
+            {'ps_version': '9.0.3', 'branch_version': '9.0.x', 'php_versions': ('8.2',), 'container_version': 'fpm', 'distribution': None},
             result
         )
         result = self.version_manager.get_version_from_string('nightly-7.2-fpm')
@@ -304,6 +307,11 @@ class VersionManagerTestCase(TestCase):
         result = self.version_manager.get_version_from_string('9.0.0-1.0-rc.1-classic')
         self.assertEqual(
             {'ps_version': '9.0.0-1.0-rc.1-classic', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3', '8.4'), 'container_version': None, 'distribution': 'classic'},
+            result
+        )
+        result = self.version_manager.get_version_from_string('9.0.0-1.0-classic')
+        self.assertEqual(
+            {'ps_version': '9.0.0-1.0-classic', 'branch_version': '9.0.x', 'php_versions': ('8.1', '8.2', '8.3', '8.4'), 'container_version': None, 'distribution': 'classic'},
             result
         )
 
@@ -555,6 +563,30 @@ class VersionManagerTestCase(TestCase):
             '9.0.0-1.0-rc.1-classic-8.3-apache': '/tmp/images/9.0.0-1.0-rc.1-classic/8.3-apache',
             '9.0.0-1.0-rc.1-classic-8.4-fpm': '/tmp/images/9.0.0-1.0-rc.1-classic/8.4-fpm',
             '9.0.0-1.0-rc.1-classic-8.4-apache': '/tmp/images/9.0.0-1.0-rc.1-classic/8.4-apache',
+            '9.0.0-1.0-classic-8.1-fpm': '/tmp/images/9.0.0-1.0-classic/8.1-fpm',
+            '9.0.0-1.0-classic-8.1-apache': '/tmp/images/9.0.0-1.0-classic/8.1-apache',
+            '9.0.0-1.0-classic-8.2-fpm': '/tmp/images/9.0.0-1.0-classic/8.2-fpm',
+            '9.0.0-1.0-classic-8.2-apache': '/tmp/images/9.0.0-1.0-classic/8.2-apache',
+            '9.0.0-1.0-classic-8.3-fpm': '/tmp/images/9.0.0-1.0-classic/8.3-fpm',
+            '9.0.0-1.0-classic-8.3-apache': '/tmp/images/9.0.0-1.0-classic/8.3-apache',
+            '9.0.0-1.0-classic-8.4-fpm': '/tmp/images/9.0.0-1.0-classic/8.4-fpm',
+            '9.0.0-1.0-classic-8.4-apache': '/tmp/images/9.0.0-1.0-classic/8.4-apache',
+            '9.0.0-1.1-classic-8.1-fpm': '/tmp/images/9.0.0-1.1-classic/8.1-fpm',
+            '9.0.0-1.1-classic-8.1-apache': '/tmp/images/9.0.0-1.1-classic/8.1-apache',
+            '9.0.0-1.1-classic-8.2-fpm': '/tmp/images/9.0.0-1.1-classic/8.2-fpm',
+            '9.0.0-1.1-classic-8.2-apache': '/tmp/images/9.0.0-1.1-classic/8.2-apache',
+            '9.0.0-1.1-classic-8.3-fpm': '/tmp/images/9.0.0-1.1-classic/8.3-fpm',
+            '9.0.0-1.1-classic-8.3-apache': '/tmp/images/9.0.0-1.1-classic/8.3-apache',
+            '9.0.0-1.1-classic-8.4-fpm': '/tmp/images/9.0.0-1.1-classic/8.4-fpm',
+            '9.0.0-1.1-classic-8.4-apache': '/tmp/images/9.0.0-1.1-classic/8.4-apache',
+            '9.0.2-1.0-classic-8.1-fpm': '/tmp/images/9.0.2-1.0-classic/8.1-fpm',
+            '9.0.2-1.0-classic-8.1-apache': '/tmp/images/9.0.2-1.0-classic/8.1-apache',
+            '9.0.2-1.0-classic-8.2-fpm': '/tmp/images/9.0.2-1.0-classic/8.2-fpm',
+            '9.0.2-1.0-classic-8.2-apache': '/tmp/images/9.0.2-1.0-classic/8.2-apache',
+            '9.0.2-1.0-classic-8.3-fpm': '/tmp/images/9.0.2-1.0-classic/8.3-fpm',
+            '9.0.2-1.0-classic-8.3-apache': '/tmp/images/9.0.2-1.0-classic/8.3-apache',
+            '9.0.2-1.0-classic-8.4-fpm': '/tmp/images/9.0.2-1.0-classic/8.4-fpm',
+            '9.0.2-1.0-classic-8.4-apache': '/tmp/images/9.0.2-1.0-classic/8.4-apache',
             '9.0.x-8.1-fpm': '/tmp/images/9.0.x/8.1-fpm',
             '9.0.x-8.1-apache': '/tmp/images/9.0.x/8.1-apache',
             '9.0.x-8.2-fpm': '/tmp/images/9.0.x/8.2-fpm',
@@ -587,9 +619,6 @@ class VersionManagerTestCase(TestCase):
             },
             '1.7.5.1': {
                 'version': semver.VersionInfo(7, 5, 1), 'value': '1.7.5.1'
-            },
-            'latest': {
-                'version': semver.VersionInfo(8, 1, 3), 'value': '8.1.3'
             },
             '1.7.6': {
                 'version': semver.VersionInfo(7, 6, 24), 'value': '1.7.6.24'
@@ -645,14 +674,38 @@ class VersionManagerTestCase(TestCase):
             '9.0.0-1.0-rc.1-classic': {
                 'value': '9.0.0-1.0-rc.1-classic'
             },
+            '9.0.0-1.0-classic': {
+                'version': semver.VersionInfo(9, 0, 0, '1.0-classic'), 'value': '9.0.0-1.0-classic'
+            },
+            '9.0.0-1.1-classic': {
+                'version': semver.VersionInfo(9, 0, 0, '1.1-classic'), 'value': '9.0.0-1.1-classic'
+            },
+            '9.0.2-1.0-classic': {
+                'version': semver.VersionInfo(9, 0, 2, '1.0-classic'), 'value': '9.0.2-1.0-classic'
+            },
+            '9.0.0': {
+                'version': semver.VersionInfo(9, 0, 0, '1.1-classic'), 'value': '9.0.0-1.1-classic'
+            },
+            '9.0.2': {
+                'version': semver.VersionInfo(9, 0, 2, '1.0-classic'), 'value': '9.0.2-1.0-classic'
+            },
+            '9.0': {
+                'version': semver.VersionInfo(9, 0, 2, '1.0-classic'), 'value': '9.0.2-1.0-classic'
+            },
+            '9': {
+                'version': semver.VersionInfo(9, 0, 2, '1.0-classic'), 'value': '9.0.2-1.0-classic'
+            },
             'nightly': {
                 'value': 'nightly'
+            },
+            'latest': {
+                'version': semver.VersionInfo(9, 0, 2, '1.0-classic'), 'value': '9.0.2-1.0-classic'
             },
         }
         manager_versions_aliases = self.version_manager.get_ps_versions_aliases()
         # Useful for debug
-        # pprint.pp(manager_versions_aliases)
         # pprint.pp(expected_versions_aliases)
+        # pprint.pp(manager_versions_aliases)
 
         self.assertEqual(expected_versions_aliases, manager_versions_aliases)
 
@@ -739,7 +792,6 @@ class VersionManagerTestCase(TestCase):
             '8.1.3-7.4-apache': ['8-7.4', '8.1-7.4', '8.1.3-7.4'],
             '8.1.3-8.0-apache': ['8-8.0', '8.1-8.0', '8.1.3-8.0'],
             '8.1.3-8.1-apache': [
-                'latest',
                 '8-8.1',
                 '8',
                 '8-apache',
@@ -767,6 +819,42 @@ class VersionManagerTestCase(TestCase):
             '9.0.0-1.0-rc.1-classic-8.3-apache': ['9.0.0-1.0-rc.1-classic-8.3'],
             '9.0.0-1.0-rc.1-classic-8.4-apache': ['9.0.0-1.0-rc.1-classic-8.4', '9.0.0-1.0-rc.1-classic', '9.0.0-1.0-rc.1-classic-apache'],
             '9.0.0-1.0-rc.1-classic-8.4-fpm': ['9.0.0-1.0-rc.1-classic-fpm'],
+            '9.0.0-1.0-classic-8.1-apache': ['9.0.0-1.0-classic-8.1'],
+            '9.0.0-1.0-classic-8.2-apache': ['9.0.0-1.0-classic-8.2'],
+            '9.0.0-1.0-classic-8.3-apache': ['9.0.0-1.0-classic-8.3'],
+            '9.0.0-1.0-classic-8.4-apache': ['9.0.0-1.0-classic-8.4', '9.0.0-1.0-classic', '9.0.0-1.0-classic-apache'],
+            '9.0.0-1.0-classic-8.4-fpm': ['9.0.0-1.0-classic-fpm'],
+            '9.0.0-1.1-classic-8.1-apache': ['9.0.0-8.1', '9.0.0-1.1-classic-8.1'],
+            '9.0.0-1.1-classic-8.2-apache': ['9.0.0-8.2', '9.0.0-1.1-classic-8.2'],
+            '9.0.0-1.1-classic-8.3-apache': ['9.0.0-8.3', '9.0.0-1.1-classic-8.3'],
+            '9.0.0-1.1-classic-8.4-apache': [
+                '9.0.0-8.4',
+                '9.0.0',
+                '9.0.0-apache',
+                '9.0.0-1.1-classic-8.4',
+                '9.0.0-1.1-classic',
+                '9.0.0-1.1-classic-apache',
+            ],
+            '9.0.0-1.1-classic-8.4-fpm': ['9.0.0-fpm', '9.0.0-1.1-classic-fpm'],
+            '9.0.2-1.0-classic-8.4-apache': [
+                'latest',
+                '9-8.4',
+                '9',
+                '9-apache',
+                '9.0-8.4',
+                '9.0',
+                '9.0-apache',
+                '9.0.2-1.0-classic-8.4',
+                '9.0.2-1.0-classic',
+                '9.0.2-1.0-classic-apache',
+                '9.0.2-8.4',
+                '9.0.2',
+                '9.0.2-apache',
+            ],
+            '9.0.2-1.0-classic-8.1-apache': ['9-8.1', '9.0-8.1', '9.0.2-1.0-classic-8.1', '9.0.2-8.1'],
+            '9.0.2-1.0-classic-8.2-apache': ['9-8.2', '9.0-8.2', '9.0.2-1.0-classic-8.2', '9.0.2-8.2'],
+            '9.0.2-1.0-classic-8.3-apache': ['9-8.3', '9.0-8.3', '9.0.2-1.0-classic-8.3', '9.0.2-8.3'],
+            '9.0.2-1.0-classic-8.4-fpm': ['9-fpm', '9.0-fpm', '9.0.2-1.0-classic-fpm', '9.0.2-fpm'],
             '9.0.x-8.1-apache': ['9.0.x-8.1'],
             '9.0.x-8.2-apache': ['9.0.x-8.2'],
             '9.0.x-8.3-apache': ['9.0.x-8.3', '9.0.x', '9.0.x-apache'],
@@ -789,3 +877,19 @@ class VersionManagerTestCase(TestCase):
             expected_aliases,
             manager_aliases,
         )
+
+    def test_create_version_from_distribution_api_basic(self):
+        actual = self.version_manager.create_version_from_distribution_api('9.9.9')
+        self.assertEqual('9.9.9', actual)
+
+    def test_create_version_from_distribution_api_beta(self):
+        actual = self.version_manager.create_version_from_distribution_api('8.1.0-beta.1')
+        self.assertEqual('8.1.0-beta.1', actual)
+
+    def test_create_version_from_distribution_api_other_distribution(self):
+        actual = self.version_manager.create_version_from_distribution_api('9.0.0', '💁‍♀️🙅‍♀️🙆‍♀️', '1.2.3')
+        self.assertEqual('9.0.0-1.2.3-💁‍♀️🙅‍♀️🙆‍♀️', actual)
+
+    def test_create_version_from_distribution_api_other_distributionand_prerelease(self):
+        actual = self.version_manager.create_version_from_distribution_api('9.0.0-rc.1', 'distrib', '2.3')
+        self.assertEqual('9.0.0-2.3-rc.1-distrib', actual)
