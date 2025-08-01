@@ -1,7 +1,7 @@
 FROM prestashop/base:7.3-apache
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION 8.1.x
+ENV PS_VERSION=8.1.x
 
 ENV PATH /root/google-cloud-sdk/bin/:$PATH
 

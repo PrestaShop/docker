@@ -1,10 +1,10 @@
 FROM prestashop/base:7.2-apache
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION 1.7.7.1
+ENV PS_VERSION=1.7.7.1
 
 # Get PrestaShop
-ADD https://www.prestashop.com/download/old/prestashop_1.7.7.1.zip /tmp/prestashop.zip
+ADD https://api.prestashop-project.org/assets/prestashop/1.7.7.1/prestashop.zip /tmp/prestashop.zip
 
 # Extract
 RUN mkdir -p /tmp/data-ps \

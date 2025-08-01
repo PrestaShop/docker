@@ -1,10 +1,10 @@
 FROM prestashop/base:8.0-fpm
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION 8.1.0-beta.1
+ENV PS_VERSION=8.1.0-beta.1
 
 # Get PrestaShop
-ADD https://github.com/PrestaShop/PrestaShop/releases/download/8.1.0-beta.1/prestashop_8.1.0-beta.1.zip /tmp/prestashop.zip
+ADD https://api.prestashop-project.org/assets/prestashop/8.1.0-beta.1/prestashop.zip /tmp/prestashop.zip
 
 # Extract
 RUN mkdir -p /tmp/data-ps \
