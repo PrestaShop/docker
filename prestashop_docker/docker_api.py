@@ -28,7 +28,7 @@ class DockerApi():
         if self.cache:
             requests_cache.install_cache('cache')
 
-    def get_tags(self, image_name='prestashop/prestashop'):
+    def get_tags(self, image_name):
         """Generate return tags
 
         @return: The json content
