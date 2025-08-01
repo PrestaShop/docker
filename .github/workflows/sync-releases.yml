@@ -21,8 +21,22 @@ jobs:
           pip install -r requirements.txt
       - name: Update backlog
         run: python prestashop_docker.py backlog
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          base: HEAD
+          filters: |
+            versions:
+              - 'versions.py'
+
+      - name: Generate Dockerfiles
+        if: steps.filter.outputs.versions == 'true'
+        run: python prestashop_docker.py generate
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
+        if: steps.filter.outputs.versions == 'true'
         with:
             commit-message: Update versions.py with new images to generate
             title: Sync backlog of Docker images
