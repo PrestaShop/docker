@@ -12,10 +12,10 @@ jobs:
     steps:
       # Fetch versions to work for images
       - uses: actions/checkout@v2
-      - name: Set up Python 3.8
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.9
       - id: set-versions
         run: echo "::set-output name=versions::$(./get_json_versions.py)"
 
@@ -69,7 +69,7 @@ jobs:
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.9
       - name: Install dependencies
         run: pip install -r requirements.txt
 

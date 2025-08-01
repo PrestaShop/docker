@@ -1,7 +1,7 @@
 # How to use
 
 The PrestaShop Docker tool aims to easily configure, build and tag PrestaShop Docker images.
-It requires Python 3.6+.
+It requires Python 3.9+.
 
 ## Installation
 
