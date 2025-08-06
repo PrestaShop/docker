@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: 3.9
       - id: set-versions
-        run: echo "::set-output name=versions::$(./get_json_versions.py)"
+        run: echo "versions=$(./get_json_versions.py)" >> $GITHUB_OUTPUT
 
       # Push image base
       - name: Login to Docker Hub
