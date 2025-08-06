@@ -1,7 +1,7 @@
 FROM prestashop/base:7.4-fpm
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION 8.1.1
+ENV PS_VERSION=8.1.1
 
 # Get PrestaShop
 ADD https://assets.prestashop3.com/dst/edition/corporate/8.1.1/prestashop_edition_classic_version_8.1.1.zip /tmp/prestashop.zip

@@ -1,7 +1,7 @@
 FROM prestashop/base:8.1-apache
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION 8.0.2
+ENV PS_VERSION=8.0.2
 
 # Get PrestaShop
 ADD https://github.com/PrestaShopCorp/prestashop-classic/releases/download/classic-v1.1.23/prestashop_8.0.2.zip /tmp/prestashop.zip
