@@ -1,11 +1,13 @@
 import logging
+import shutil
+import subprocess
 from .stream import Stream
 
 logger = logging.getLogger(__name__)
 
 
 class TagManager():
-    def __init__(self, docker_api, docker_client, version_manager, cache, quiet):
+    def __init__(self, docker_api, docker_client, version_manager, cache, quiet, docker_repository_name):
         '''
         Constructor
 
@@ -19,6 +21,8 @@ class TagManager():
         @type cache: bool
         @param quiet: Quiet mode
         @type quiet: bool
+        @param docker_repository_name: Name of the Docker Hub repository
+        @type docker_repository_name: string
         '''
         self.docker_api = docker_api
         self.docker_client = docker_client
@@ -26,8 +30,9 @@ class TagManager():
         self.version_manager = version_manager
         self.cache = cache
         self.tags = None
+        self.docker_repository_name = docker_repository_name
 
-    def build(self, version=None, force=False):
+    def build(self, version=None, force=False, push=False):
         '''
         Build version on the current machine
 
@@ -46,67 +51,36 @@ class TagManager():
                 # Do not build images that already exists on Docker Hub
                 continue
 
-            log = self.docker_client.api.build(
-                path=str(version_path),
-                tag='prestashop/prestashop:' + version,
-                rm=True,
-                nocache=(not self.cache),
-                decode=True
-            )
+            if not shutil.which("docker"):
+                raise RuntimeError("The docker client must be installed")
 
-            self.stream.display(log)
-
+            tags = ["--tag", self.docker_repository_name + ":" + version]
             aliases = self.version_manager.get_aliases()
             if version in aliases:
                 for alias in aliases[version]:
-                    print(
-                        'Create tag {}'.format(alias)
-                    )
-                    self.docker_client.api.tag(
-                        'prestashop/prestashop:' + version,
-                        'prestashop/prestashop',
-                        alias
-                    )
+                    print('Will be aliased as tag {}'.format(alias))
+                    tags = tags + ["--tag", self.docker_repository_name + ":" + alias]
 
-    def push(self, version=None, force=False):
-        '''
-        Push version on Docker Hub
+            args = []
+            if push:
+                args.append('--push')
+            if not self.cache:
+                args.append('--no-cache')
 
-        @param version: Optional version you want to build
-        @type version: str
-        '''
-        versions = self.get_versions(version)
+            cmd_args = [
+                "docker", "buildx", "build",
+                "--platform", "linux/arm/v7,linux/arm64/v8,linux/amd64",
+                "--builder", "container",
+            ] + tags + args + [
+                str(version_path)
+            ]
 
-        for version in versions.keys():
-            print(
-                'Pushing {}'.format(version)
-            )
+            process = subprocess.Popen(cmd_args, stdout=subprocess.PIPE)
+            process.stdout.read()
+            process.wait()
 
-            if not force and self.exists(version):
-                continue
-
-            log = self.docker_client.api.push(
-                repository='prestashop/prestashop',
-                tag=version,
-                decode=True,
-                stream=True
-            )
-
-            self.stream.display(log)
-
-            aliases = self.version_manager.get_aliases()
-            if version in aliases:
-                for alias in aliases[version]:
-                    print(
-                        'Pushing tag {}'.format(alias)
-                    )
-                    log = self.docker_client.api.push(
-                        repository='prestashop/prestashop',
-                        tag=alias,
-                        decode=True,
-                        stream=True
-                    )
-                    self.stream.display(log)
+            if process.returncode:
+                raise Exception('Command returned code {} while building version {}.'.format(process.returncode, version))
 
     def exists(self, version):
         '''
@@ -119,7 +93,7 @@ class TagManager():
         '''
 
         if self.tags is None:
-            self.tags = self.docker_api.get_tags()
+            self.tags = self.docker_api.get_tags(image_name=self.docker_repository_name)
 
         for tag in self.tags:
             if tag['name'] == version:

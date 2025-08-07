@@ -1,5 +1,5 @@
 ---
-name: Publish containers
+name: Publish images
 
 on:
   push:
@@ -7,8 +7,26 @@ on:
       - master
 
 jobs:
-  publish_base:
+  list_base_images:
     runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.set-versions.outputs.versions }}
+      base_has_changed: ${{ steps.changes.outputs.base }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-versions
+        run: echo "versions=$(ls base/images/ | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            base:
+              - 'base/**'
+
+  list_prestashop_images:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.set-versions.outputs.versions }}
     steps:
       # Fetch versions to work for images
       - uses: actions/checkout@v2
@@ -19,51 +37,57 @@ jobs:
       - id: set-versions
         run: echo "versions=$(./get_json_versions.py)" >> $GITHUB_OUTPUT
 
-      # Push image base
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      ## Check if there are modifications in the base/ directory
-      ## and store it in the variable `steps.changes.outputs.base`
-      ## The variable is built like: steps.{#id}.outputs.{#filter}
-      - uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            base:
-              - 'base/**'
-
-      - name: Base Images > Generate Tags
-        run: ./generate_tags.sh
-        working-directory: base
-
-      - name: Base Images > Docker Build Tags
-        run: ./docker_tags.sh
-        if: ${{ github.event_name == 'pull_request' }}
-        working-directory: base
-
-      - name: Base Images > Docker Build & Force Push
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.changes.outputs.base == 'true' }}
-        run: ./docker_tags.sh -p -f
-        working-directory: base
-    outputs:
-      versions: ${{ steps.set-versions.outputs.versions }}
-
-  publish_images:
+  publish_base:
     runs-on: ubuntu-latest
-    needs: publish_base
+    needs: list_base_images
     strategy:
-      fail-fast: false
-      matrix:
-        ps-version: ${{ fromJson(needs.publish_base.outputs.versions) }}
+        matrix:
+            version: ${{ fromJson(needs.list_base_images.outputs.versions) }}
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Enable multi-platform builds
+        run: docker buildx create --name container --driver=docker-container
+
+      - uses: actions/checkout@v2
+
+      - name: Base Images > Generate Tags
+        run: ./generate_tags.sh
+        working-directory: base
+
+      - name: Base Images > Docker Build Tags
+        run: DOCKER_REPOSITORY=${{ vars.DOCKER_BASE_REPOSITORY}} ./docker_tags.sh --version ${{ matrix.version }}
+        if: ${{ github.event_name == 'pull_request' }}
+        working-directory: base
+
+      - name: Base Images > Docker Build & Force Push
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && needs.list_base_images.outputs.base_has_changed == 'true' }}
+        run: DOCKER_REPOSITORY=${{ vars.DOCKER_BASE_REPOSITORY}} ./docker_tags.sh -p -f --version ${{ matrix.version }}
+        working-directory: base
+
+
+  publish_prestashop:
+    runs-on: ubuntu-latest
+    needs:
+      - list_prestashop_images
+      - publish_base
+    strategy:
+      fail-fast: false
+      matrix:
+        ps-version: ${{ fromJson(needs.list_prestashop_images.outputs.versions) }}
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Enable multi-platform builds
+        run: docker buildx create --name container --driver=docker-container
 
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
@@ -73,9 +97,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Build Docker images
-        run: ./prestashop_docker.py --quiet tag build ${{ matrix.ps-version }} --force
-
-      - name: Push Docker images
+      - name: Build & Push Docker images
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-        run: ./prestashop_docker.py --quiet tag push ${{ matrix.ps-version }} --force
+        run: DOCKER_REPOSITORY=${{ vars.DOCKER_REPOSITORY}} ./prestashop_docker.py --quiet tag push ${{ matrix.ps-version }} --force
+

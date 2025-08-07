@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import docker
+import os
 from versions import VERSIONS
 from prestashop_docker.backlog import Backlog
 from prestashop_docker.generator import Generator
@@ -11,6 +12,8 @@ from prestashop_docker.version_manager import VersionManager
 from os import path
 import argparse
 import logging
+
+docker_repository_name = os.getenv('DOCKER_REPOSITORY', 'prestashop/prestashop')
 
 
 def get_parser():
@@ -53,7 +56,7 @@ def get_tag_parser(subparser):
 
     push_parser = tag_subparser.add_parser(
         'push',
-        help='Push docker tags'
+        help='Build container and create docker tag then push docker tags'
     )
     push_parser.add_argument('version', type=str, help='Version name', nargs='?')
     push_parser.add_argument('--force', action='store_const', const=True, help='Force build even if image already exists on Docker hub', default=False)
@@ -125,7 +128,8 @@ def main():
             docker.from_env(),
             VersionManager(path.join(path.dirname(path.realpath(__file__)), 'images')),
             args.cache,
-            args.quiet
+            args.quiet,
+            docker_repository_name,
         )
         if args.tag_subcommand is None:
             tag_parser.print_help()
@@ -138,7 +142,7 @@ def main():
             elif args.tag_subcommand == 'build':
                 tag_manager.build(args.version, args.force)
             elif args.tag_subcommand == 'push':
-                tag_manager.push(args.version, args.force)
+                tag_manager.build(args.version, args.force, True)
             elif args.tag_subcommand == 'aliases':
                 tag_manager.get_aliases(args.version)
     else:

@@ -9,6 +9,12 @@ It requires Python 3.9+.
 $ pip install -r requirements.txt --break-system-packages
 ```
 
+If you plan to build the images locally, you'll need to create a builder instance. This command just needs to be run one time.
+
+```bash
+$ docker buildx create --name container --driver=docker-container
+```
+
 ## Usage
 
 Display the help:
@@ -68,10 +74,10 @@ positional arguments:
   {exists,build,push,aliases}
     exists              Check if tag exists on Docker Hub
     build               Build container and create docker tag
-    push                Push docker tags
+    push                Build container and create docker tag then push docker tags
     aliases             Get aliases
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
 ```
 
@@ -126,7 +132,7 @@ $ nosetests --with-id 7
 
 This will also generate a `.nodeids` binary file, when you add new test methods you need to remove this file to re-generate the list of IDs.
 
-## Building and running PrestaShop docker locally
+## Building and running PrestaShop docker locally (local platform only, deprecated)
 
 First to make sure you will use the local docker containers and not the ones from Docker hub make sure you remove all existing PrestaShop images (including the base images)
 
