@@ -76,6 +76,7 @@ jobs:
       - list_prestashop_images
       - publish_base
     strategy:
+      max-parallel: 2
       fail-fast: false
       matrix:
         ps-version: ${{ fromJson(needs.list_prestashop_images.outputs.versions) }}
