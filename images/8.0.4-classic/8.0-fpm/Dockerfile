@@ -1,10 +1,10 @@
 FROM prestashop/base:8.0-fpm
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION=8.0.4
+ENV PS_VERSION=8.0.4-classic
 
 # Get PrestaShop
-ADD https://assets.prestashop3.com/dst/edition/corporate/8.0.4/prestashop_edition_classic_version_8.0.4.zip /tmp/prestashop.zip
+ADD None /tmp/prestashop.zip
 
 # Extract
 RUN mkdir -p /tmp/data-ps \
