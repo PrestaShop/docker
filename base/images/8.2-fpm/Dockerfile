@@ -27,7 +27,6 @@ PS_FOLDER_INSTALL=install
 RUN apt-get update \
     && apt-get install -y libmcrypt-dev \
         libjpeg62-turbo-dev \
-        libpcre3-dev \
         libpng-dev \
         libwebp-dev \
         libfreetype6-dev \
@@ -37,9 +36,13 @@ RUN apt-get update \
         default-mysql-client \
         wget \
         unzip \
-        libonig-dev
+        libonig-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN rm -rf /var/lib/apt/lists/*
+RUN if [[ "$(cat /etc/os-release)" == *"bookworm"* ]]; then apt-get update \
+    && apt-get install -y libpcre3-dev \
+    && rm -rf /var/lib/apt/lists/*; fi
+
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ --with-webp=/usr/include
 RUN docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip bcmath
 
