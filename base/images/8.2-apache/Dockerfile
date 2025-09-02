@@ -1,4 +1,6 @@
-FROM php:8.2-apache
+# Debian Trixie provides a package of the MySQL client that prevent the connexion to succeed for SSL reasons
+# We stick to Bookworm until we find the solution
+FROM php:8.2-apache-bookworm
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_DOMAIN="<to be defined>" \
