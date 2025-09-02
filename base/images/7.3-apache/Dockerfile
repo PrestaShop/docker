@@ -63,6 +63,12 @@ COPY config_files/docker_updt_ps_domains.php /tmp/
 COPY config_files/defines_custom.inc.php /tmp/
 RUN chown www-data:www-data /tmp/defines_custom.inc.php
 
+# Force mysql client to disable SSL only in dev mode
+RUN if [ "$PS_DEV_MODE" = "1" ]; then \
+        mkdir -p /etc/mysql/conf.d \
+        && echo "[client]\nssl=0\n" > /etc/mysql/conf.d/disable-ssl.cnf; \
+    fi
+
 # Apache configuration
 RUN if [ -x "$(command -v apache2-foreground)" ]; then a2enmod rewrite; fi
 
