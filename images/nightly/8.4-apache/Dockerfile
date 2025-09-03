@@ -18,3 +18,9 @@ LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_VERSION=nightly
 COPY --from=gcloud /tmp/prestashop.zip /tmp/prestashop.zip
+
+# Extract PrestaShop files
+RUN mkdir -p /tmp/data-ps && \
+    unzip -q /tmp/prestashop.zip -d /tmp/data-ps/ && \
+    bash /tmp/ps-extractor.sh /tmp/data-ps && \
+    rm /tmp/prestashop.zip
