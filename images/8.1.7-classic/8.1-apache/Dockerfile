@@ -1,10 +1,10 @@
 FROM prestashop/base:8.1-apache
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
-ENV PS_VERSION=8.1.7
+ENV PS_VERSION=8.1.7-classic
 
 # Get PrestaShop
-ADD https://github.com/PrestaShopCorp/prestashop-classic/releases/download/classic-v1.1.44/prestashop_8.1.7.zip /tmp/prestashop.zip
+ADD None /tmp/prestashop.zip
 
 # Extract
 RUN mkdir -p /tmp/data-ps \
