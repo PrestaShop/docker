@@ -37,7 +37,7 @@ class Backlog:
 
         print('Step 3/3: Building list')
         versions_dict = self.parse_prestashop_versions(prestashop_data, available_php_versions)
-        branches_dict = self.previous_state_versions
+        branches_dict = self.get_branches_and_nightly_from_existing_file()
         self.write_versions_py(versions_dict | branches_dict)
 
     def get_available_php_versions(self):
@@ -48,6 +48,15 @@ class Backlog:
             if match:
                 available_versions.add(match.group(1))
         return available_versions
+
+    # Branches and nightly entries are manually added in versions.py file.
+    # Let's reuse the existing contents on each generation.
+    def get_branches_and_nightly_from_existing_file(self):
+        branches = {}
+        for branch, php_versions in self.previous_state_versions.items():
+            if branch == self.NIGHTLY or branch.endswith('x'):
+                branches[branch] = (tuple(php_versions))
+        return branches
 
     def parse_prestashop_versions(self, prestashop_json, available_php_versions):
         versions = {}
