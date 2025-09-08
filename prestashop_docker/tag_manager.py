@@ -71,6 +71,7 @@ class TagManager():
                 "docker", "buildx", "build",
                 "--platform", "linux/arm/v7,linux/arm64/v8,linux/amd64",
                 "--builder", "container",
+                "--progress", "plain",
             ] + tags + args + [
                 str(version_path)
             ]
