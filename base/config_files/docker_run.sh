@@ -66,12 +66,6 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./app/config/parameters.php ] &&
         sed -ie "s/DirectoryIndex\ index.php\ index.html/DirectoryIndex\ docker_updt_ps_domains.php\ index.php\ index.html/g" $APACHE_CONFDIR/conf-available/docker-php.conf
     fi
 
-    if [ $PS_ERASE_DB = 1 ]; then
-        echo "\n* Drop mysql database...";
-        echo "\n* Dropping existing database $DB_NAME..."
-        mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
-    fi
-
     if [ $PS_INSTALL_DB = 1 ]; then
         echo "\n* Create mysql database...";
         echo "\n* Creating database $DB_NAME..."
@@ -86,11 +80,16 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./app/config/parameters.php ] &&
         fi
 
         echo "\n* Launching the installer script..."
+
+        if [ $PS_ERASE_DB = 1 ]; then
+            echo "\n* Existing database $DB_NAME will be droped"
+        fi
+
         runuser -g www-data -u www-data -- php -d memory_limit=-1 /var/www/html/$PS_FOLDER_INSTALL/index_cli.php \
         --domain="$PS_DOMAIN" --db_server=$DB_SERVER:$DB_PORT --db_name="$DB_NAME" --db_user=$DB_USER \
         --db_password=$DB_PASSWD --prefix="$DB_PREFIX" --firstname="John" --lastname="Doe" \
         --password="$ADMIN_PASSWD" --email="$ADMIN_MAIL" --language=$PS_LANGUAGE --country=$PS_COUNTRY \
-        --all_languages=$PS_ALL_LANGUAGES --newsletter=0 --send_email=0 --ssl=$PS_ENABLE_SSL
+        --all_languages=$PS_ALL_LANGUAGES --newsletter=0 --send_email=0 --ssl=$PS_ENABLE_SSL --db_clear=$PS_ERASE_DB
 
         if [ $? -ne 0 ]; then
             echo 'warning: PrestaShop installation failed.'
