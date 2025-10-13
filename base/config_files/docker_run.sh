@@ -82,7 +82,7 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./app/config/parameters.php ] &&
         echo "\n* Launching the installer script..."
 
         if [ $PS_ERASE_DB = 1 ]; then
-            echo "\n* Existing database $DB_NAME will be droped"
+            echo "\n* Existing database $DB_NAME will be dropped"
         fi
 
         runuser -g www-data -u www-data -- php -d memory_limit=-1 /var/www/html/$PS_FOLDER_INSTALL/index_cli.php \
