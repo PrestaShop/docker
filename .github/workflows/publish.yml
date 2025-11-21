@@ -98,24 +98,24 @@ jobs:
               - 'images/${{ matrix.ps-version }}/**'
 
       - name: Set up QEMU
-        if: ${{ steps.filter.outputs.image_has_changed == 'true' }}
+        if: ${{ (needs.list_base_images.outputs.base_has_changed == 'true' || steps.filter.outputs.image_has_changed == 'true') }}
         uses: docker/setup-qemu-action@v3
 
       - name: Enable multi-platform builds
-        if: ${{ steps.filter.outputs.image_has_changed == 'true' }}
+        if: ${{ (needs.list_base_images.outputs.base_has_changed == 'true' || steps.filter.outputs.image_has_changed == 'true') }}
         uses: docker/setup-buildx-action@v3
         with:
           name: container
           version: latest
 
       - name: Set up Python
-        if: ${{ steps.filter.outputs.image_has_changed == 'true' }}
+        if: ${{ (needs.list_base_images.outputs.base_has_changed == 'true' || steps.filter.outputs.image_has_changed == 'true') }}
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
 
       - name: Install dependencies
-        if: ${{ steps.filter.outputs.image_has_changed == 'true' }}
+        if: ${{ (needs.list_base_images.outputs.base_has_changed == 'true' || steps.filter.outputs.image_has_changed == 'true') }}
         run: pip install -r requirements.txt
 
       - name: Build Docker images
