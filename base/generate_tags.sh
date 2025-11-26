@@ -49,6 +49,21 @@ generate_image()
             s/'"${before}"'/'"${after}"'/
         ' images/$folder/Dockerfile
     fi
+    if [[ $version = *"8.1"* || $version = *"8.2"* || $version = *"8.3"*  || $version = *"8.4"*  || $version = *"8.5"* ]]; then
+        local before="FROM php:${version}"
+        local after="# Debian Trixie provides a package of the MySQL client that prevent the connexion to succeed for SSL reasons\n# We stick to Bookworm until we find the solution\nFROM php:${version}-bookworm"
+        sed -i '
+            s/'"${before}"'/'"${after}"'/
+        ' images/$folder/Dockerfile
+    
+        if [[ $version = *"8.5"* ]]; then
+            ## -z is used for final line break
+            local before='    && if \[ -d \"\/usr\/src\/php\/ext\/opcache\" \]; then docker-php-ext-install opcache; fi \\\n'
+            sed -z -i '
+                s/'"${before}"'/'""'/g
+            ' images/$folder/Dockerfile
+        fi
+    fi
 
     cp -R config_files images/$folder/
     sed '
