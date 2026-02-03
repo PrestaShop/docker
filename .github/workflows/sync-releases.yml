@@ -44,3 +44,4 @@ jobs:
             base: master
             branch: docker-images-backlog-update
             delete-branch: true
+            token: ${{ secrets.JARVIS_TOKEN }}
