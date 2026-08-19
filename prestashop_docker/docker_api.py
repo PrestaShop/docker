@@ -71,9 +71,7 @@ class DockerApi():
         # Tokens are short-lived, never serve one from the cache
         with requests_cache.disabled():
             resp = self.execute(
-                self.auth_url
-                + '?service=registry.docker.io'
-                + '&scope=repository:' + image_name + ':pull'
+                self.auth_url + '?service=registry.docker.io&scope=repository:' + image_name + ':pull'
             )
 
         return resp.json()['token']
