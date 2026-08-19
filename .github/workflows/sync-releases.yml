@@ -9,10 +9,17 @@ jobs:
   sync-releases:
     runs-on: ubuntu-latest
     steps:
+      - name: Check team membership
+        if: github.event_name == 'workflow_dispatch'
+        uses: PrestaShop/.github/.github/actions/team-guard@master
+        with:
+          team_slug: prestashop-sa
+          token: ${{ secrets.JARVIS_TOKEN }}
+
       - name: Checkout the repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: 3.9
       - name: Install dependencies
