@@ -6,6 +6,10 @@ on:
     branches:
       - master
 
+# Shared with publish-manual.yml so two runs never force push the same tags at the same time
+concurrency:
+  group: publish-images
+
 jobs:
   list_base_images:
     runs-on: ubuntu-latest
