@@ -1,0 +1,162 @@
+---
+name: Publish images manually
+
+on:
+  workflow_dispatch:
+    inputs:
+      php_versions:
+        description: 'PHP versions to rebuild, comma separated (e.g. 8.1,8.4), or "all"'
+        required: true
+        default: 'all'
+      build_base:
+        description: 'Rebuild and push the base images of these PHP versions'
+        type: boolean
+        default: true
+      build_prestashop:
+        description: 'Rebuild and push the PrestaShop images using these PHP versions'
+        type: boolean
+        default: true
+
+# Shared with publish.yml so two runs never force push the same tags at the same time
+concurrency:
+  group: publish-images
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check team membership
+        uses: PrestaShop/.github/.github/actions/team-guard@master
+        with:
+          team_slug: prestashop-sa
+          token: ${{ secrets.JARVIS_TOKEN }}
+
+  list_images:
+    runs-on: ubuntu-latest
+    needs: guard
+    outputs:
+      base_versions: ${{ steps.set-versions.outputs.base_versions }}
+      ps_versions: ${{ steps.set-versions.outputs.ps_versions }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - id: set-versions
+        env:
+          PHP_VERSIONS: ${{ inputs.php_versions }}
+        run: |
+          base_versions=$(./get_json_versions.py --php "$PHP_VERSIONS" --base)
+          ps_versions=$(./get_json_versions.py --php "$PHP_VERSIONS")
+          echo "Base images: $base_versions"
+          echo "PrestaShop versions: $ps_versions"
+          echo "base_versions=$base_versions" >> $GITHUB_OUTPUT
+          echo "ps_versions=$ps_versions" >> $GITHUB_OUTPUT
+
+  publish_base:
+    runs-on: ubuntu-latest
+    needs: list_images
+    if: ${{ inputs.build_base && needs.list_images.outputs.base_versions != '[]' }}
+    strategy:
+      matrix:
+        version: ${{ fromJson(needs.list_images.outputs.base_versions) }}
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Enable multi-platform builds
+        uses: docker/setup-buildx-action@v3
+        with:
+          name: container
+          version: latest
+
+      - uses: actions/checkout@v5
+
+      - name: Base Images > Generate Tags
+        run: ./generate_tags.sh
+        working-directory: base
+
+      - name: Base Images > Docker Build & Force Push
+        env:
+          DOCKER_REPOSITORY: ${{ vars.DOCKER_BASE_REPOSITORY }}
+          VERSION: ${{ matrix.version }}
+        run: ./docker_tags.sh -p -f --version "$VERSION"
+        working-directory: base
+
+  publish_prestashop:
+    runs-on: ubuntu-latest
+    needs:
+      - list_images
+      - publish_base
+    # Run after the base images, or without them when they are not rebuilt
+    if: ${{ !cancelled() && inputs.build_prestashop && needs.list_images.result == 'success' && (needs.publish_base.result == 'success' || needs.publish_base.result == 'skipped') && needs.list_images.outputs.ps_versions != '[]' }}
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        ps-version: ${{ fromJson(needs.list_images.outputs.ps_versions) }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Enable multi-platform builds
+        uses: docker/setup-buildx-action@v3
+        with:
+          name: container
+          version: latest
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and force push Docker images
+        env:
+          DOCKER_REPOSITORY: ${{ vars.DOCKER_REPOSITORY }}
+          PHP_VERSIONS: ${{ inputs.php_versions }}
+          PS_VERSION: ${{ matrix.ps-version }}
+        run: |
+          php_versions=$(./get_json_versions.py --php "$PHP_VERSIONS" --php-for "$PS_VERSION")
+          for php_version in $php_versions; do
+            ./prestashop_docker.py --quiet tag push "$PS_VERSION-$php_version" --force
+          done

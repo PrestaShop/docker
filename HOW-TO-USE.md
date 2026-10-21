@@ -81,6 +81,24 @@ options:
   -h, --help            show this help message and exit
 ```
 
+## Publishing images
+
+The `Publish images` workflow runs on each merge to `master` and only rebuilds images whose files changed (any change in `base/` rebuilds everything).
+
+To force a rebuild without a commit, members of the `prestashop-sa` team can run the `Publish images manually` workflow from the Actions tab:
+
+- `php_versions`: `all`, or a comma separated list like `8.1,8.4`
+- `build_base`: rebuild and push the base images of these PHP versions
+- `build_prestashop`: rebuild and push every PrestaShop image using these PHP versions
+
+All selected images are force pushed, even if their tag already exists on Docker Hub. The selection can be checked locally:
+
+```bash
+./get_json_versions.py --php 8.1,8.4 --base          # base images
+./get_json_versions.py --php 8.1,8.4                 # PrestaShop versions
+./get_json_versions.py --php 8.1,8.4 --php-for 9.2.x # PHP versions built for one PrestaShop version
+```
+
 ## Using docker compose
 
 To generate the new base files, you need to update the `versions.py` file, add a section with your new version along with the associated PHP versions, then run
