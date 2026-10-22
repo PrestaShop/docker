@@ -64,7 +64,7 @@ COPY config_files/defines_custom.inc.php /tmp/
 RUN chown www-data:www-data /tmp/defines_custom.inc.php
 
 # Apache configuration
-RUN if [ -x "$(command -v apache2-foreground)" ]; then a2enmod rewrite; fi
+RUN if [ -x "$(command -v apache2-foreground)" ]; then a2enmod rewrite headers; fi
 
 # PHP configuration
 COPY config_files/php.ini /usr/local/etc/php/
