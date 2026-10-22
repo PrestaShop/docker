@@ -168,12 +168,12 @@ class GeneratorTestCase(TestCase):
             self.assertIn('PS_VERSION: nightly', content)
             self.assertIn('CONTAINER_VERSION: 7.2-alpine', content)
 
-    def test_generate_nightly_90x_image(self):
-        dockerfile = '/tmp/images/9.0.x/8.1-alpine/Dockerfile'
+    def test_generate_nightly_92x_image(self):
+        dockerfile = '/tmp/images/9.2.x/8.5-alpine/Dockerfile'
         self.assertFalse(path.exists(dockerfile))
         self.generator.generate_image(
-            '9.0.x',
-            '8.1-alpine'
+            '9.2.x',
+            '8.5-alpine'
         )
         self.assertTrue(path.exists(dockerfile))
 
@@ -184,8 +184,8 @@ class GeneratorTestCase(TestCase):
                 content
             )
 
-            self.assertIn('PS_VERSION: 9.0.x', content)
-            self.assertIn('CONTAINER_VERSION: 8.1-alpine', content)
+            self.assertIn('PS_VERSION: 9.2.x', content)
+            self.assertIn('CONTAINER_VERSION: 8.5-alpine', content)
 
     # def test_generate_branch_image(self):
     #     dockerfile = '/tmp/images/9.0.x/8.1-alpine/Dockerfile'
@@ -217,12 +217,12 @@ class GeneratorTestCase(TestCase):
             '/tmp/images/8.0.0/7.2-fpm/Dockerfile',
             '/tmp/images/8.0.0/8.1-apache/Dockerfile',
             '/tmp/images/8.0.0/8.1-fpm/Dockerfile',
-            '/tmp/images/9.0.x/8.1-apache/Dockerfile',
-            '/tmp/images/9.0.x/8.1-fpm/Dockerfile',
-            '/tmp/images/9.0.x/8.2-apache/Dockerfile',
-            '/tmp/images/9.0.x/8.2-fpm/Dockerfile',
-            '/tmp/images/9.0.x/8.3-apache/Dockerfile',
-            '/tmp/images/9.0.x/8.3-fpm/Dockerfile',
+            '/tmp/images/9.2.x/8.1-apache/Dockerfile',
+            '/tmp/images/9.2.x/8.1-fpm/Dockerfile',
+            '/tmp/images/9.2.x/8.2-apache/Dockerfile',
+            '/tmp/images/9.2.x/8.2-fpm/Dockerfile',
+            '/tmp/images/9.2.x/8.3-apache/Dockerfile',
+            '/tmp/images/9.2.x/8.3-fpm/Dockerfile',
             '/tmp/images/nightly/8.1-apache/Dockerfile',
             '/tmp/images/nightly/8.1-fpm/Dockerfile',
             '/tmp/images/nightly/8.2-apache/Dockerfile',
@@ -237,7 +237,7 @@ class GeneratorTestCase(TestCase):
             {
                 '1.7.8.8': ('7.2', '7.3'),
                 '8.0.0': ('7.2', '8.1'),
-                '9.0.x': ('8.1', '8.2', '8.3'),
+                '9.2.x': ('8.1', '8.2', '8.3'),
                 'nightly': ('8.1', '8.2', '8.3'),
             }
         )
