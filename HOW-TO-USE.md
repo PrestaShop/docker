@@ -172,13 +172,13 @@ Then you can build the image of the PrestaShop version you want to use:
 
 ```
 # Now build the PrestaShop version you want based on this local base image
-$ docker build images/9.0.x/8.3-apache -t prestashop/prestashop:9.0.x-8.3-apache
+$ docker build images/9.2.x/8.3-apache -t prestashop/prestashop:9.2.x-8.3-apache
 ```
 
 Finally, you can launch your PrestaShop container using docker compose
 
 ```
-$ PS_VERSION=9.0.x PHP_VERSION=8.3 docker compose -f images/docker-compose.yml up
+$ PS_VERSION=9.2.x PHP_VERSION=8.3 docker compose -f images/docker-compose.yml up
 ```
 
 Or you can use the `build-local-docker.sh` script that performs these actions based on the options
@@ -193,13 +193,13 @@ Or you can use the `build-local-docker.sh` script that performs these actions ba
 #
 # Default values are nightly 8.3 apache
 
-$ ./build-local-docker.sh -v 9.0.x -p 8.1 -s fpm
+$ ./build-local-docker.sh -v 9.2.x -p 8.1 -s fpm
 ```
 
 Adding the `-l` option will also launch a container build with docker compose so you get an accessible shop locally
 
 ```
-$ ./build-local-docker.sh -v 9.0.x -p 8.1 -s fpm -l
+$ ./build-local-docker.sh -v 9.2.x -p 8.1 -s fpm -l
 ```
 
 Now you should be able to access a shop at this address: `http://localhost:8001/`
