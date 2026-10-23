@@ -49,6 +49,14 @@ generate_image()
             s/'"${before}"'/'"${after}"'/
         ' images/$folder/Dockerfile
     fi
+    if [[ $version = *"7.1"* || $version = *"7.2"* || $version = *"7.3"* || $version = *"7.4"* || $version = *"8.0"* ]]; then
+        local before='^RUN apt-get update \\$'
+        local after='# Debian Buster and Bullseye packages are only available on archive.debian.org\nRUN sed -i "s\/deb.debian.org\/archive.debian.org\/g" \/etc\/apt\/sources.list \\\n    \&\& sed -i "s\/security.debian.org\/archive.debian.org\/g" \/etc\/apt\/sources.list\n\nRUN apt-get update \\'
+
+        sed -i '
+            s/'"${before}"'/'"${after}"'/
+        ' images/$folder/Dockerfile
+    fi
     if [[ $version = *"8.1"* || $version = *"8.2"* || $version = *"8.3"*  || $version = *"8.4"*  || $version = *"8.5"* ]]; then
         local before="FROM php:${version}"
         local after="# Debian Trixie provides a package of the MySQL client that prevent the connexion to succeed for SSL reasons\n# We stick to Bookworm until we find the solution\nFROM php:${version}-bookworm"

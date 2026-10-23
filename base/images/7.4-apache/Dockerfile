@@ -24,6 +24,10 @@ PS_HANDLE_DYNAMIC_DOMAIN=0 \
 PS_FOLDER_ADMIN=admin \
 PS_FOLDER_INSTALL=install
 
+# Debian Buster and Bullseye packages are only available on archive.debian.org
+RUN sed -i "s/deb.debian.org/archive.debian.org/g" /etc/apt/sources.list \
+    && sed -i "s/security.debian.org/archive.debian.org/g" /etc/apt/sources.list
+
 RUN apt-get update \
     && apt-get install -y libmcrypt-dev \
         libjpeg62-turbo-dev \
