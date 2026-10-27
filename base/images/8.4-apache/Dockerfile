@@ -31,6 +31,7 @@ RUN apt-get update \
         libjpeg62-turbo-dev \
         libpng-dev \
         libwebp-dev \
+        libavif-dev \
         libfreetype6-dev \
         libxml2-dev \
         libicu-dev \
@@ -45,8 +46,8 @@ RUN if [[ "$(cat /etc/os-release)" == *"bookworm"* ]]; then apt-get update \
     && apt-get install -y libpcre3-dev \
     && rm -rf /var/lib/apt/lists/*; fi
 
-RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ --with-webp=/usr/include
-RUN docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip bcmath
+RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ --with-webp=/usr/include --with-avif
+RUN docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip bcmath exif
 
 RUN docker-php-source extract \
     && if [ -d "/usr/src/php/ext/mysql" ]; then docker-php-ext-install mysql; fi \
