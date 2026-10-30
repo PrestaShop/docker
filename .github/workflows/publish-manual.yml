@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   guard:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Check team membership
         uses: PrestaShop/.github/.github/actions/team-guard@master
@@ -32,7 +32,7 @@ jobs:
           token: ${{ secrets.JARVIS_TOKEN }}
 
   list_images:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: guard
     outputs:
       base_versions: ${{ steps.set-versions.outputs.base_versions }}
@@ -55,7 +55,7 @@ jobs:
           echo "ps_versions=$ps_versions" >> $GITHUB_OUTPUT
 
   publish_base:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: list_images
     if: ${{ inputs.build_base && needs.list_images.outputs.base_versions != '[]' }}
     strategy:
@@ -102,7 +102,7 @@ jobs:
         working-directory: base
 
   publish_prestashop:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - list_images
       - publish_base

@@ -7,7 +7,7 @@ on:
 
 jobs:
   sync-releases:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Check team membership
         if: github.event_name == 'workflow_dispatch'
