@@ -63,7 +63,13 @@ generate_image()
         sed -i '
             s/'"${before}"'/'"${after}"'/
         ' images/$folder/Dockerfile
-    
+
+        # GD supports AVIF since PHP 8.1, PrestaShop can generate AVIF thumbnails with it
+        sed -i '
+            s/^        libwebp-dev \\$/        libwebp-dev \\\n        libavif-dev \\/
+            s/--with-webp=\/usr\/include$/--with-webp=\/usr\/include --with-avif/
+        ' images/$folder/Dockerfile
+
         if [[ $version = *"8.5"* ]]; then
             ## -z is used for final line break
             local before='    && if \[ -d \"\/usr\/src\/php\/ext\/opcache\" \]; then docker-php-ext-install opcache; fi \\\n'

@@ -49,7 +49,7 @@ RUN if [[ "$(cat /etc/os-release)" == *"bookworm"* ]]; then apt-get update \
 
 # PHP < 7.4 have an old syntax to install GD. See https://github.com/docker-library/php/issues/912
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include
-RUN docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip bcmath
+RUN docker-php-ext-install iconv intl pdo_mysql mbstring soap gd zip bcmath exif
 
 RUN docker-php-source extract \
     && if [ -d "/usr/src/php/ext/mysql" ]; then docker-php-ext-install mysql; fi \
