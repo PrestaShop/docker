@@ -69,7 +69,7 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./app/config/parameters.php ] &&
     if [ $PS_ERASE_DB = 1 ]; then
         echo "\n* Drop mysql database...";
         echo "\n* Dropping existing database $DB_NAME..."
-        mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
+        mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists \`$DB_NAME\`;"
     fi
 
     if [ $PS_INSTALL_DB = 1 ]; then
