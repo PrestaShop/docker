@@ -1,7 +1,6 @@
 # Debian Trixie provides a package of the MySQL client that prevent the connexion to succeed for SSL reasons
 # We stick to Bookworm until we find the solution
-# PHP 8.6 is not GA yet (planned on 2026-11-19), switch to php:8.6-fpm-bookworm once released
-FROM php:8.6-rc-fpm-bookworm
+FROM php:8.6-fpm-bookworm
 LABEL maintainer="PrestaShop Core Team <coreteam@prestashop.com>"
 
 ENV PS_DOMAIN="<to be defined>" \
