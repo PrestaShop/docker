@@ -95,8 +95,11 @@ if [ ! -f ./config/settings.inc.php ] && [ ! -f ./app/config/parameters.php ] &&
         if [ $? -ne 0 ]; then
             echo 'warning: PrestaShop installation failed.'
         else
-            echo "\n* Removing install folder..."
-            rm -r /var/www/html/$PS_FOLDER_INSTALL/
+            # PrestaShop 9.2 and later remove it themselves at the end of the installation
+            if [ -d /var/www/html/$PS_FOLDER_INSTALL/ ]; then
+                echo "\n* Removing install folder..."
+                rm -r /var/www/html/$PS_FOLDER_INSTALL/
+            fi
         fi
     fi
 
